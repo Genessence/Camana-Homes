@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import asyncio
-from typing import List
+from typing import List, Optional
 import datetime as dt
 
 from fastapi import FastAPI, Depends, HTTPException, Request
@@ -550,6 +550,145 @@ async def delete_hero_slide(slide_id: int, db: AsyncSession = Depends(get_db)) -
     await db.delete(slide)
     await db.commit()
     return {"ok": True}
+
+
+# Properties Listing with Pagination and Filtering
+@app.get("/api/properties", response_model=dict)
+async def get_properties(
+    page: int = 1,
+    limit: int = 12,
+    search: Optional[str] = None,
+    property_type: Optional[str] = None,
+    min_price: Optional[float] = None,
+    max_price: Optional[float] = None,
+    min_bedrooms: Optional[int] = None,
+    max_bedrooms: Optional[int] = None,
+    sort_by: str = "created_at",
+    sort_order: str = "desc",
+    db: AsyncSession = Depends(get_db)
+) -> dict:
+    """
+    Get all properties with pagination, filtering, and sorting
+    """
+    # Calculate offset
+    offset = (page - 1) * limit
+    
+    # Build base query
+    query = select(Property)
+    
+    # Apply filters
+    if search:
+        search_term = f"%{search}%"
+        query = query.where(
+            (Property.title.ilike(search_term)) |
+            (Property.location_label.ilike(search_term)) |
+            (Property.description.ilike(search_term))
+        )
+    
+    if property_type:
+        query = query.where(Property.property_type == property_type)
+    
+    if min_price is not None:
+        query = query.where(Property.price_amount >= min_price)
+    
+    if max_price is not None:
+        query = query.where(Property.price_amount <= max_price)
+    
+    if min_bedrooms is not None:
+        query = query.where(Property.bedrooms >= min_bedrooms)
+    
+    if max_bedrooms is not None:
+        query = query.where(Property.bedrooms <= max_bedrooms)
+    
+    # Apply sorting
+    if sort_by == "price":
+        if sort_order == "asc":
+            query = query.order_by(Property.price_amount.asc())
+        else:
+            query = query.order_by(Property.price_amount.desc())
+    elif sort_by == "bedrooms":
+        if sort_order == "asc":
+            query = query.order_by(Property.bedrooms.asc())
+        else:
+            query = query.order_by(Property.bedrooms.desc())
+    elif sort_by == "views":
+        if sort_order == "asc":
+            query = query.order_by(Property.views_count.asc())
+        else:
+            query = query.order_by(Property.views_count.desc())
+    else:  # default: created_at
+        if sort_order == "asc":
+            query = query.order_by(Property.created_at.asc())
+        else:
+            query = query.order_by(Property.created_at.desc())
+    
+    # Get total count for pagination
+    count_query = select(func.count(Property.id))
+    if search:
+        search_term = f"%{search}%"
+        count_query = count_query.where(
+            (Property.title.ilike(search_term)) |
+            (Property.location_label.ilike(search_term)) |
+            (Property.description.ilike(search_term))
+        )
+    if property_type:
+        count_query = count_query.where(Property.property_type == property_type)
+    if min_price is not None:
+        count_query = count_query.where(Property.price_amount >= min_price)
+    if max_price is not None:
+        count_query = count_query.where(Property.price_amount <= max_price)
+    if min_bedrooms is not None:
+        count_query = count_query.where(Property.bedrooms >= min_bedrooms)
+    if max_bedrooms is not None:
+        count_query = count_query.where(Property.bedrooms <= max_bedrooms)
+    
+    total_count = (await db.execute(count_query)).scalar() or 0
+    
+    # Get paginated results
+    query = query.offset(offset).limit(limit)
+    properties = (await db.execute(query)).scalars().all()
+    
+    # Build response with property details
+    property_cards = []
+    for prop in properties:
+        # Get images for this property
+        images = (await db.execute(
+            select(PropertyImage)
+            .where(PropertyImage.property_id == prop.id)
+            .order_by(PropertyImage.sort_order.asc())
+        )).scalars().all()
+        
+        # Get agent and agency info
+        agent = None
+        agency = None
+        if prop.agent_id:
+            agent = (await db.execute(
+                select(Agent).where(Agent.id == prop.agent_id)
+            )).scalars().first()
+            if agent and agent.agency_id:
+                agency = (await db.execute(
+                    select(Agency).where(Agency.id == agent.agency_id)
+                )).scalars().first()
+        
+        property_card = build_property_card_out(prop, list(images), agent, agency)
+        property_cards.append(property_card)
+    
+    # Calculate pagination info
+    total_pages = (total_count + limit - 1) // limit
+    has_next = page < total_pages
+    has_prev = page > 1
+    
+    return {
+        "properties": property_cards,
+        "pagination": {
+            "current_page": page,
+            "total_pages": total_pages,
+            "total_count": total_count,
+            "limit": limit,
+            "has_next": has_next,
+            "has_prev": has_prev
+        }
+    }
 
 
 # Health
