@@ -13,6 +13,7 @@ import NewDevelopment from "./pages/NewDevelopment";
 import PropertyDetail from "./pages/PropertyDetail";
 import ArticleDetail from "./pages/ArticleDetail";
 import AgentProfile from "./pages/AgentProfile";
+import ListingPage from "./pages/ListingPage";
 import NotFound from "./pages/NotFound";
 import Footer from "./components/Footer";
 
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/property/:slug" element={<PropertyDetail />} />
           <Route path="/news/:slug" element={<ArticleDetail />} />
           <Route path="/AgentProfile" element={<AgentProfile />} />
+          <Route path="/listing/:slug" element={<ListingPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

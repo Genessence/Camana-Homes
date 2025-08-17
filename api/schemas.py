@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Optional, List, Dict, Any
 from pydantic import BaseModel
+from datetime import date, datetime
 
 
 class HeroSlideBase(BaseModel):
@@ -46,6 +47,7 @@ class AgentOut(BaseModel):
     name: str
     avatar_url: Optional[str] = None
     phone_number: Optional[str] = None
+    email: Optional[str] = None
     agency: Optional[AgencyOut] = None
 
     class Config:
@@ -103,9 +105,113 @@ class PropertyCardOut(BaseModel):
 
 class PropertyDetailOut(PropertyCardOut):
     """Extended property details for detail pages"""
+    # Enhanced property details for Listing Page
+    total_stories: Optional[int] = None
+    full_bathrooms: Optional[int] = None
+    half_bathrooms: Optional[int] = None
+    lot_size: Optional[str] = None
+    permit_number: Optional[str] = None
+    ded_number: Optional[str] = None
+    mls_id: Optional[str] = None
+    
+    # Interior features
+    interior_features: Optional[List[str]] = None
+    appliances: Optional[List[str]] = None
+    floor_description: Optional[str] = None
+    fireplace: Optional[bool] = None
+    fireplace_description: Optional[str] = None
+    cooling: Optional[bool] = None
+    cooling_description: Optional[str] = None
+    heating: Optional[bool] = None
+    heating_description: Optional[str] = None
+    basement: Optional[bool] = None
+    
+    # Exterior features
+    exterior_features: Optional[List[str]] = None
+    lot_features: Optional[str] = None
+    sewer: Optional[str] = None
+    patio_porch: Optional[str] = None
+    
+    # School information
+    high_school: Optional[str] = None
+    elementary_school: Optional[str] = None
+    
+    # Other property details
+    taxes: Optional[str] = None
+    tax_frequency: Optional[str] = None
+    days_on_market: Optional[int] = None
+    accessibility: Optional[str] = None
+    garage: Optional[bool] = None
+    garage_spaces: Optional[int] = None
+    parking: Optional[str] = None
+    parking_total: Optional[int] = None
+    view: Optional[str] = None
+    county: Optional[str] = None
+    water_source: Optional[str] = None
+    new_construction: Optional[bool] = None
+    pool: Optional[bool] = None
+    pool_features: Optional[str] = None
+    utilities: Optional[List[str]] = None
+    
     images: List[PropertyImageOut]
     created_at: str
     updated_at: str
+
+    class Config:
+        from_attributes = True
+
+
+# Tour Request schemas
+class TourRequestCreate(BaseModel):
+    property_id: int
+    visitor_name: str
+    visitor_email: str
+    visitor_phone: Optional[str] = None
+    preferred_date: date
+    preferred_time: str
+    message: Optional[str] = None
+
+
+class TourRequestOut(BaseModel):
+    id: int
+    property_id: int
+    visitor_name: str
+    visitor_email: str
+    visitor_phone: Optional[str] = None
+    preferred_date: str
+    preferred_time: str
+    message: Optional[str] = None
+    status: str
+    created_at: str
+
+    class Config:
+        from_attributes = True
+
+
+# Mortgage Inquiry schemas
+class MortgageInquiryCreate(BaseModel):
+    property_id: Optional[int] = None
+    inquirer_name: str
+    inquirer_email: str
+    inquirer_phone: Optional[str] = None
+    content_sum_insured: str
+    location: str
+    age: int
+    message: Optional[str] = None
+
+
+class MortgageInquiryOut(BaseModel):
+    id: int
+    property_id: Optional[int] = None
+    inquirer_name: str
+    inquirer_email: str
+    inquirer_phone: Optional[str] = None
+    content_sum_insured: str
+    location: str
+    age: int
+    message: Optional[str] = None
+    status: str
+    created_at: str
 
     class Config:
         from_attributes = True
@@ -129,6 +235,17 @@ class ArticleCardOut(BaseModel):
 class RecentlyViewedEntry(BaseModel):
     property: PropertyCardOut
     viewed_at: str
+
+    class Config:
+        from_attributes = True
+
+
+# Property statistics for the overview section
+class PropertyStats(BaseModel):
+    last_update: str
+    views_count: int
+    saves_count: int
+    days_on_market: Optional[int] = None
 
     class Config:
         from_attributes = True

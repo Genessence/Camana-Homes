@@ -264,11 +264,19 @@ const Index = () => {
 
         {/* Trending Properties */}
         <div className="mb-[40px] lg:mb-[80px]">
-          <h2 className="font-dm-sans text-[28px] lg:text-[35px] font-semibold text-black leading-normal mb-[20px] lg:mb-[30px]">
-            Trending Properties
-          </h2>
+          <div className="flex items-center justify-between mb-[20px] lg:mb-[30px]">
+            <h2 className="font-dm-sans text-[28px] lg:text-[35px] font-semibold text-black leading-normal">
+              Trending Properties
+            </h2>
+            <Link
+              to="/properties"
+              className="bg-black text-white px-6 py-3 hover:bg-gray-800 transition-colors font-dm-sans text-[16px] font-medium"
+            >
+              View All
+            </Link>
+          </div>
 
-          <TrendingPropertiesGrid />
+          <TrendingPropertiesCarousel />
         </div>
 
         {/* New to the Market */}
@@ -773,7 +781,7 @@ function TrendingPropertiesGrid() {
       {items.map((p) => (
         <Link
           key={p.id}
-          to={`/property/${p.slug}`}
+          to={`/listing/${p.slug}`}
           className="w-full border border-gray-light bg-white p-[10px] block hover:shadow-lg transition-shadow"
         >
           <div className="relative h-[316px] mb-[10px]">
@@ -871,6 +879,194 @@ function TrendingPropertiesGrid() {
           </div>
         </Link>
       ))}
+    </div>
+  );
+}
+
+function TrendingPropertiesCarousel() {
+  const [items, setItems] = React.useState<PropertyCard[] | null>(null);
+  const [error, setError] = React.useState<string | null>(null);
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    API.properties
+      .trending(9) // Fetch more items for carousel
+      .then(setItems)
+      .catch((e) => setError(String(e)));
+  }, []);
+
+  if (error) return <TrendingPropertiesPlaceholder />;
+  if (!items) return <TrendingPropertiesPlaceholder />;
+
+  const totalSlides = Math.ceil(items.length / 3);
+  const canGoLeft = currentIndex > 0;
+  const canGoRight = currentIndex < totalSlides - 1;
+
+  const goToPrevious = () => {
+    if (canGoLeft) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
+  const goToNext = () => {
+    if (canGoRight) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
+
+  const startIndex = currentIndex * 3;
+  const visibleItems = items.slice(startIndex, startIndex + 3);
+
+  return (
+    <div className="relative">
+      {/* Carousel Container */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-[18px]">
+        {visibleItems.map((p) => (
+          <Link
+            key={p.id}
+            to={`/listing/${p.slug}`}
+            className="w-full border border-gray-light bg-white p-[10px] block hover:shadow-lg transition-shadow"
+          >
+            <div className="relative h-[316px] mb-[10px]">
+              <img
+                src={p.primary_image_url}
+                alt={p.title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute top-[10px] left-[9px] flex gap-[10px]">
+                <div className="flex items-center gap-[6px] px-[9.681px] py-[8.471px] border border-white bg-black/10 backdrop-blur-[8px]">
+                  <Eye className="w-[18px] h-[18px] text-white" />
+                  <span className="text-white font-dm-sans text-[13.391px] font-medium leading-[17.14px]">
+                    {new Intl.NumberFormat().format(p.views_count)}
+                  </span>
+                </div>
+                {p.has_video && (
+                  <div className="px-[9.681px] py-[8.471px] border border-white bg-black/10 backdrop-blur-[8px] text-white font-dm-sans text-[13.391px] font-medium leading-[17.14px]">
+                    Video
+                  </div>
+                )}
+                {p.has_virtual_tour && (
+                  <div className="px-[9.681px] py-[8.471px] border border-white bg-black/10 backdrop-blur-[8px] text-white font-dm-sans text-[13.391px] font-medium leading-[17.14px]">
+                    Virtual Tours
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="flex flex-col gap-[11px]">
+              <div className="flex items-center justify-between">
+                <div className="font-dm-sans text-[23.607px] font-semibold text-black leading-[28.328px] tracking-[-0.472px]">
+                  {new Intl.NumberFormat(undefined, {
+                    style: "currency",
+                    currency: p.price_currency,
+                  }).format(p.price_amount)}
+                </div>
+                <div className="flex items-center gap-[5px]">
+                  <span className="font-dm-sans text-[14px] font-semibold text-black">
+                    Contact Agent
+                  </span>
+                  <ArrowRight className="w-[10px] h-[5px] text-[#999] transform -rotate-90" />
+                </div>
+              </div>
+              <h3 className="font-dm-sans text-[17.705px] font-bold text-black leading-[21.246px] tracking-[-0.354px]">
+                {p.title}
+              </h3>
+              <div className="flex items-center gap-[10px] text-[12.8px] font-normal text-black">
+                <span>{p.property_type}</span>
+                <span>|</span>
+                <div className="flex items-center gap-[2px]">
+                  <Bed className="w-[17.705px] h-[17.705px]" />
+                  <span className="font-plus-jakarta text-[11.803px] leading-[17.705px] tracking-[-0.236px]">
+                    {p.bedrooms}
+                  </span>
+                </div>
+                <div className="flex items-center gap-[2px]">
+                  <Bath className="w-[17.705px] h-[17.705px]" />
+                  <span className="font-plus-jakarta text-[11.803px] leading-[17.705px] tracking-[-0.236px]">
+                    {p.bathrooms}
+                  </span>
+                </div>
+                <span>|</span>
+                <span>
+                  Area : {p.area_value} {p.area_unit}
+                </span>
+              </div>
+              <div className="h-[1px] bg-gray-light"></div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-[5px]">
+                  <img
+                    src={
+                      p.agent?.avatar_url ||
+                      "https://api.builder.io/api/v1/image/assets/TEMP/21584c4a5fb695a4f53c9f609c46424507f3b08c?width=98"
+                    }
+                    alt={p.agent?.name || "Agent"}
+                    className="w-[49px] h-[49px] rounded-full"
+                  />
+                  <div>
+                    <div className="font-dm-sans text-[16px] font-semibold italic text-black">
+                      {p.agent?.name}
+                    </div>
+                    <div className="font-dm-sans text-[12px] font-normal italic text-[#666]">
+                      {p.agent?.agency?.name}
+                    </div>
+                  </div>
+                </div>
+                <img
+                  src={
+                    p.agent?.agency?.logo_url ||
+                    "https://api.builder.io/api/v1/image/assets/TEMP/b69a8ad654149a58105e1fcba5d408a8585535b9?width=146"
+                  }
+                  alt="Company Logo"
+                  className="w-[73px] h-[26px]"
+                />
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* Navigation Arrows */}
+      {totalSlides > 1 && (
+        <div className="flex justify-between items-center mt-6">
+          <button
+            onClick={goToPrevious}
+            disabled={!canGoLeft}
+            className={`flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all ${
+              canGoLeft
+                ? "border-black text-black hover:bg-black hover:text-white"
+                : "border-gray-300 text-gray-300 cursor-not-allowed"
+            }`}
+            aria-label="Previous properties"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+
+          <div className="flex gap-2">
+            {Array.from({ length: totalSlides }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentIndex(i)}
+                className={`w-3 h-3 rounded-full transition-all ${
+                  i === currentIndex ? "bg-black" : "bg-gray-300"
+                }`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
+
+          <button
+            onClick={goToNext}
+            disabled={!canGoRight}
+            className={`flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all ${
+              canGoRight
+                ? "border-black text-black hover:bg-black hover:text-white"
+                : "border-gray-300 text-gray-300 cursor-not-allowed"
+            }`}
+            aria-label="Next properties"
+          >
+            <ArrowRight className="w-5 h-5" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -1065,7 +1261,7 @@ function RecentlyViewedGrid() {
       {items.map((p) => (
         <Link
           key={p.id}
-          to={`/property/${p.slug}`}
+          to={`/listing/${p.slug}`}
           className="border border-gray-light overflow-hidden bg-white hover:shadow-lg transition-shadow"
         >
           <div className="h-[180px] overflow-hidden">
@@ -1143,7 +1339,7 @@ function FeaturedSection() {
       </div>
       {/* title + price */}
       <div className="absolute left-4 bottom-6 right-24 text-white">
-        <Link to={`/property/${current.slug}`} className="block">
+        <Link to={`/listing/${current.slug}`} className="block">
           <div className="font-dm-sans text-[22px] sm:text-[26px] font-bold mb-2 hover:underline">
             {current.title}
           </div>
