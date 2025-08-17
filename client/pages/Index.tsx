@@ -14,6 +14,7 @@ import {
   Star,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import StayInTheKnow from "@/components/StayInTheKnow";
 
 // 5-image hero carousel (using existing assets as placeholders). Later we can fetch these from FastAPI.
 const FALLBACK_HERO_IMAGES: string[] = [
@@ -270,7 +271,7 @@ const Index = () => {
             </h2>
             <Link
               to="/properties"
-              className="bg-black text-white px-6 py-3 hover:bg-gray-800 transition-colors font-dm-sans text-[16px] font-medium"
+              className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors font-dm-sans text-[16px] font-medium"
             >
               View All
             </Link>
@@ -676,84 +677,8 @@ const Index = () => {
         </div> */}
 
         {/* Stay in the Know (completed via MCP 3072:6983) */}
-        <div className="mb-[80px]">
-          <h2 className="font-dm-sans text-[35px] font-semibold text-black leading-normal mb-[30px]">
-            Stay in the Know
-          </h2>
+        <StayInTheKnow />
 
-          <div className="grid grid-cols-2 gap-[20px] items-start">
-            {/* Left column: gallery on top, followers + video on bottom */}
-            <div className="flex flex-col gap-[20px]">
-              <div className="relative overflow-hidden h-[334.5px]">
-                <img
-                  src={imgGroup12FigureGallery1Jpg}
-                  alt="Gallery"
-                  className="w-full h-full object-cover"
-                />
-                <button
-                  aria-label="Previous"
-                  className="absolute left-2.5 top-1/2 -translate-y-1/2 h-[46px] w-[70px] rounded-[50px] backdrop-blur-[25px] bg-[rgba(26,26,26,0.2)] grid place-items-center border border-white/10"
-                >
-                  <img src={imgIcon} alt="" className="w-4 h-4" />
-                </button>
-                <button
-                  aria-label="Next"
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 h-[46px] w-[70px] rounded-[50px] backdrop-blur-[25px] bg-[rgba(26,26,26,0.2)] grid place-items-center border border-white/10"
-                >
-                  <img src={imgIcon1} alt="" className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-2 gap-[20px]">
-                <div className="bg-black text-white p-[24px] h-[268px] relative">
-                  <div className="text-[40px] font-serif leading-[52px]">
-                    280k +
-                  </div>
-                  <div className="text-[19px] mt-1">Followers</div>
-                  <div className="text-[15px] mt-4 max-w-[247px]">
-                    Join us at Our Social handles to get updated soon.
-                  </div>
-                  <div className="flex items-center gap-3 mt-4 text-[15px]">
-                    <span className="text-white/90">Follow Us:</span>
-                    <span className="text-white"></span>
-                    <span className="text-[#fd2d15]"></span>
-                    <span className="text-white"></span>
-                    <span className="text-white"></span>
-                  </div>
-                </div>
-                <div className="relative h-[268px] overflow-hidden">
-                  <img
-                    src={imgBgVideoJpg}
-                    alt="Video"
-                    className="w-full h-full object-cover"
-                  />
-                  <button
-                    aria-label="Play"
-                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[56.6px] h-[56.6px] rounded-[35px] bg-black/20 border border-white/10 grid place-items-center"
-                  >
-                    <img
-                      src={imgSvg}
-                      alt="Play"
-                      className="w-[22px] h-[22px]"
-                    />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Right column: single large promo image */}
-            <div
-              className="relative overflow-hidden"
-              style={{ height: "622.5px" }}
-            >
-              <img
-                src={imgElements}
-                alt="Promo"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Footer removed (global Footer renders from App.tsx) */}
