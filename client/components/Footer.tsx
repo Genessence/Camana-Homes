@@ -122,7 +122,7 @@ export default function Footer() {
         {/* Right column: rating, payments, selects */}
         <div>
           {/* Rating */}
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <div className="text-[#6a6a6a] text-[12px]">Google Rating</div>
             <div className="flex items-center gap-3 mt-1">
               <span className="text-[#fea500] font-extrabold text-[18px]">
@@ -144,10 +144,10 @@ export default function Footer() {
                 ))}
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Payment options */}
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <div className="font-dm-sans text-[21px] font-bold mb-2">
               Payment options
             </div>
@@ -160,7 +160,7 @@ export default function Footer() {
               <span className="px-2 py-1 border border-[#cacaca]">PayPal</span>
               <span className="px-2 py-1 border border-[#cacaca]">Amex</span>
             </div>
-          </div>
+          </div> */}
 
           {/* Inputs */}
           <div className="grid grid-cols-1 gap-4 max-w-[223px]">

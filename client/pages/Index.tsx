@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import StayInTheKnow from "@/components/StayInTheKnow";
+import beyond from "../assets/beyond.png";
+import logoWhite from "../assets/Camana-white.png";
 
 // 5-image hero carousel (using existing assets as placeholders). Later we can fetch these from FastAPI.
 const FALLBACK_HERO_IMAGES: string[] = [
@@ -113,14 +115,15 @@ const Index = () => {
               {/* Logo */}
               <div className="flex items-center h-[66px] py-[14px]">
                 <img
-                  src="https://api.builder.io/api/v1/image/assets/TEMP/5a19f6126fa6dcda25d289130b048916b16fa621?width=310"
+                  src={logoWhite}
                   alt="Camana Homes"
-                  className="h-[43px] w-[155px] object-contain filter invert sepia saturate-[10000%] hue-rotate-[320deg] brightness-[1.1] contrast-[1.2] drop-shadow"
+                  className="object-contain drop-shadow"
+                  style={{width: '155px'}}
                 />
               </div>
 
               {/* Center Navigation - Hidden on mobile */}
-              <div className="hidden lg:flex items-center gap-[15px]">
+              {/* <div className="hidden lg:flex items-center gap-[15px]">
                 {["Buy", "Sell", "Rent", "Mortgage"].map((item) => (
                   <button
                     key={item}
@@ -129,7 +132,7 @@ const Index = () => {
                     {item}
                   </button>
                 ))}
-              </div>
+              </div> */}
 
               {/* Right Navigation */}
               <div className="flex items-center gap-[12px]">
@@ -272,13 +275,13 @@ const Index = () => {
       </div>
 
       {/* Main Content */}
-      <div className="pt-[60px] px-4 sm:px-8 lg:px-[70px] max-w-[1466.83px] mx-auto">
+      <div className="pt-[60px] px-4 sm:px-8 lg:px-[70px] max-w-[1466.83px] mx-auto" style={{marginBottom: "50px"}}>
         {/* Welcome Section */}
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-[20px] lg:gap-[30px] mb-[40px] lg:mb-[80px] px-0">
           <h2 className="font-dm-sans text-[32px] lg:text-[55px] font-semibold text-black leading-normal">
             Welcome Back Mr. Vijay
           </h2>
-          <p className="font-dm-sans text-[16px] lg:text-[18px] font-normal text-gray-medium leading-[24px] lg:leading-[28px] w-full lg:w-[611px] lg:text-right">
+          <p className="font-dm-sans text-[16px] lg:text-[18px] font-normal text-gray-medium leading-[24px] lg:leading-[28px] w-full lg:w-[611px] lg:text-justify">
             Explore an exclusive selection of premium properties, meticulously
             curated to provide you with the best in luxury living and prime real
             estate investment options, tailored to your needs
@@ -293,7 +296,7 @@ const Index = () => {
             </h2>
             <Link
               to="/properties"
-              className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors font-dm-sans text-[16px] font-medium shadow-lg"
+              className="bg-black text-white px-6 py-3 hover:bg-gray-800 transition-colors font-dm-sans text-[16px] font-medium shadow-lg"
             >
               View All
             </Link>
@@ -304,8 +307,8 @@ const Index = () => {
 
 
         {/* Statistics Section */}
-        <div className="mb-[60px] lg:mb-[100px] py-[50px] lg:py-[80px] bg-white">
-          <div className="px-4 sm:px-8 lg:px-[70px]">
+        <div className="mb-[60px] lg:mb-[100px] bg-white">
+          <div className="flex items-center">
             {/* Left Side - Text Content */}
             <div className="space-y-[40px]">
               {/* Main Heading */}
@@ -355,9 +358,9 @@ const Index = () => {
 
             {/* Right Side - Abstract Graphic */}
             <div className="relative flex justify-center lg:justify-end">
-              <div className="relative w-full max-w-[592px] h-[565px] opacity-20">
+              <div className="relative w-full max-w-[592px] h-[565px]">
                 <img
-                  src="http://localhost:3845/assets/4f03645bb59d539b30b7bd1bb7c19239af5f0b5b.svg"
+                  src={beyond}
                   alt="Abstract geometric pattern"
                   className="w-full h-full object-contain"
                 />
@@ -411,7 +414,7 @@ const Index = () => {
             </h2>
             <Link
               to="/journal"
-              className="bg-black text-white px-[35px] py-2 rounded hover:bg-gray-800 transition-colors font-dm-sans text-[16px] font-medium tracking-[-0.32px]"
+              className="bg-black text-white px-6 py-3 hover:bg-gray-800 transition-colors font-dm-sans text-[16px] font-medium shadow-lg"
             >
               View all
             </Link>
@@ -423,7 +426,7 @@ const Index = () => {
         </div>
            {/* Newsletter Signup (CTA) - Full Width */}
       <div className="overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-2 bg-black">
+        <div className="grid grid-cols-1 lg:grid-cols-2 bg-black px-[70px] py-[50px]">
           {/* Left: Image with overlay text */}
           <div className="relative h-[494px]">
             <img
@@ -508,7 +511,7 @@ const Index = () => {
                 </div>
               </div>
 
-              <button className="w-full bg-[#fd2d15] hover:bg-[#fd2d15]/90 text-white font-dm-sans font-extrabold py-[18px] px-5 text-[20px] h-[50px]">
+              <button className="w-full bg-[#fd2d15] hover:bg-[#fd2d15]/90 text-white font-dm-sans font-extrabold text-[20px] h-[50px]">
                 Join our Club
               </button>
             </div>

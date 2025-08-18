@@ -24,7 +24,6 @@ const queryClient = new QueryClient();
 
 const App = () => {
   
-  console.log(window.location.pathname);
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>

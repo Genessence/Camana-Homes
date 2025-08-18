@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import logoWhite from "../../assets/Camana-white.png";
 
 export function Header() {
   const [isMoreOpen, setIsMoreOpen] = useState(false);
@@ -17,14 +18,15 @@ export function Header() {
           {/* Logo */}
           <div className="flex items-center">
             <img 
-              src="https://api.builder.io/api/v1/image/assets/TEMP/5a19f6126fa6dcda25d289130b048916b16fa621?width=310"
+              src={logoWhite}
               alt="Camana Homes"
-              className="h-11"
+              className="object-contain drop-shadow"
+              style={{width: '155px'}}
             />
           </div>
 
           {/* Navigation Links */}
-          <div className="flex items-center gap-0">
+          {/* <div className="flex items-center gap-0">
             <Button 
               variant="outline" 
               className="bg-transparent border-white text-white hover:bg-white/10 rounded-none h-[50px] px-5"
@@ -49,7 +51,7 @@ export function Header() {
             >
               Mortgage
             </Button>
-          </div>
+          </div> */}
 
           {/* Right Actions */}
           <div className="flex items-center gap-0">
