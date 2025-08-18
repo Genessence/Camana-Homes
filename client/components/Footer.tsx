@@ -215,7 +215,7 @@ export default function Footer() {
             2025. All Right Reserved
           </div>
           <div className="flex items-center gap-4 text-[#222]">
-            <a
+            {/* <a
               href="#"
               aria-label="Instagram"
               title="Instagram"
@@ -297,7 +297,7 @@ export default function Footer() {
                 alt="Pinterest"
                 className="w-[26px] h-[26px]"
               />
-            </a>
+            </a> */}
           </div>
         </div>
       </div>

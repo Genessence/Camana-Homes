@@ -473,7 +473,7 @@ export default function ListingPage() {
                       Built in
                     </div>
                     <div className="text-[16px] font-semibold text-black">
-                      {property.year_built}
+                      {property.year_built || "-"}
                     </div>
                   </div>
                 </div>
@@ -497,8 +497,9 @@ export default function ListingPage() {
                       Property size
                     </div>
                     <div className="text-[16px] font-semibold text-black">
-                      {property.area_value.toLocaleString()}{" "}
-                      {property.area_unit}
+                      {property.area_value
+                        ? `${property.area_value.toLocaleString()} ${property.area_unit}`
+                        : "-"}
                     </div>
                   </div>
                 </div>
@@ -530,7 +531,7 @@ export default function ListingPage() {
                       Property type
                     </div>
                     <div className="text-[16px] font-semibold text-black">
-                      {property.property_type}
+                      {property.property_type || "-"}
                     </div>
                   </div>
                 </div>
@@ -601,7 +602,7 @@ export default function ListingPage() {
                       Bedrooms
                     </div>
                     <div className="text-[16px] font-semibold text-black">
-                      {property.bedrooms}
+                      {property.bedrooms || "-"}
                     </div>
                   </div>
                 </div>
@@ -609,38 +610,22 @@ export default function ListingPage() {
 
               {/* Property Description */}
               <div className="text-[16px] text-[#8c8c8c] leading-[24px]">
-                {property.description}
+                {property.description || "-"}
               </div>
 
               {/* Detailed Property Description */}
               <div className="space-y-8">
-                {/* Lorem Ipsum Text Blocks */}
+                {/* Property Description Blocks */}
                 <div className="space-y-4">
-                  <p className="text-[16px] text-[#8c8c8c] leading-[24px]">
-                    Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of 'de
-                    Finibus Bonorum et Malorum' (The Extremes of Good and Evil)
-                    by Cicero, written in 45 BC. This book is a treatise on the
-                    theory of ethics, very popular during the Renaissance. The
-                    first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..",
-                    comes from a line in section 1.10.32.
-                  </p>
-                  <p className="text-[16px] text-[#8c8c8c] leading-[24px]">
-                    The standard chunk of Lorem Ipsum used since the 1500s is
-                    reproduced below for those interested. Sections 1.10.32 and
-                    1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are
-                    also reproduced in their exact original form, accompanied by
-                    English versions from the 1914 translation by H. Rackham.
-                  </p>
-                  <p className="text-[16px] text-[#8c8c8c] leading-[24px]">
-                    Contrary to popular belief, Lorem Ipsum is not simply random
-                    text. It has roots in a piece of classical Latin literature
-                    from 45 BC, making it over 2000 years old. Richard
-                    McClintock, a Latin professor at Hampden-Sydney College in
-                    Virginia, looked up one of the more obscure Latin words,
-                    consectetur, from a Lorem Ipsum passage, and going through
-                    the cites of the word in classical literature, discovered
-                    the undoubtable source.
-                  </p>
+                  {property.description ? (
+                    <p className="text-[16px] text-[#8c8c8c] leading-[24px]">
+                      {property.description}
+                    </p>
+                  ) : (
+                    <p className="text-[16px] text-[#8c8c8c] leading-[24px]">
+                      No detailed description available for this property.
+                    </p>
+                  )}
                 </div>
 
                 {/* Property Overview Section */}
@@ -682,7 +667,9 @@ export default function ListingPage() {
                         />
                         <path d="M2 8h20M6 1v6" stroke="#666" strokeWidth="2" />
                       </svg>
-                      <span className="text-[16px] text-black">2 Bedrooms</span>
+                      <span className="text-[16px] text-black">
+                        {property.bedrooms || "-"} Bedrooms
+                      </span>
                     </div>
 
                     <div className="flex items-center gap-2">
@@ -708,7 +695,7 @@ export default function ListingPage() {
                         />
                       </svg>
                       <span className="text-[16px] text-black">
-                        3 Bathrooms
+                        {property.bathrooms || "-"} Bathrooms
                       </span>
                     </div>
 
@@ -732,14 +719,23 @@ export default function ListingPage() {
                         <path d="M7 7h6v6H7z" stroke="#666" strokeWidth="2" />
                       </svg>
                       <span className="text-[16px] text-black">
-                        700 Square Feet
+                        {property.area_value
+                          ? `${property.area_value.toLocaleString()} ${property.area_unit}`
+                          : "-"}
                       </span>
                     </div>
                   </div>
 
                   <div className="text-[14px] text-[#8c8c8c]">
-                    Last Update: December 18, 2024 - Views 2,44k - Saved by 78 -
-                    Report Listing
+                    Last Update:{" "}
+                    {property.updated_at
+                      ? new Date(property.updated_at).toLocaleDateString()
+                      : "-"}{" "}
+                    - Views{" "}
+                    {property.views_count
+                      ? property.views_count.toLocaleString()
+                      : "0"}{" "}
+                    - Saved by {property.saves_count || "0"} - Report Listing
                   </div>
                 </div>
 
@@ -753,11 +749,15 @@ export default function ListingPage() {
                       <span className="text-[16px] text-black w-1/3">
                         Permit no.
                       </span>
-                      <span className="text-[16px] text-black">2745887</span>
+                      <span className="text-[16px] text-black">
+                        {property.permit_number || "-"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">DED</span>
-                      <span className="text-[16px] text-black">1297</span>
+                      <span className="text-[16px] text-black">
+                        {property.ded_number || "-"}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -771,7 +771,9 @@ export default function ListingPage() {
                     <span className="text-[16px] text-black w-1/3">
                       MLS® ID
                     </span>
-                    <span className="text-[16px] text-black">2745887</span>
+                    <span className="text-[16px] text-black">
+                      {property.mls_id || "-"}
+                    </span>
                   </div>
                 </div>
 
@@ -785,40 +787,54 @@ export default function ListingPage() {
                       <span className="text-[16px] text-black w-1/3">
                         Total Stories
                       </span>
-                      <span className="text-[16px] text-black">3</span>
+                      <span className="text-[16px] text-black">
+                        {property.total_stories || "-"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Bedrooms
                       </span>
-                      <span className="text-[16px] text-black">6</span>
+                      <span className="text-[16px] text-black">
+                        {property.bedrooms || "-"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Total Bathrooms
                       </span>
-                      <span className="text-[16px] text-black">9</span>
+                      <span className="text-[16px] text-black">
+                        {property.bathrooms || "-"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Full Bathrooms
                       </span>
-                      <span className="text-[16px] text-black">7</span>
+                      <span className="text-[16px] text-black">
+                        {property.full_bathrooms || "-"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Half Bathrooms
                       </span>
-                      <span className="text-[16px] text-black">2</span>
+                      <span className="text-[16px] text-black">
+                        {property.half_bathrooms || "-"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Interior Features
                       </span>
                       <span className="text-[16px] text-black flex-1">
-                        Bookcases, Elevator, Entry Foyer, Extra Closets, High
-                        Ceilings, Storage, Walk-In Closet(s), Wet Bar, Primary
-                        Bedroom Main Floor, Kitchen Island
+                        {property.interior_features &&
+                        property.interior_features.length > 0
+                          ? property.interior_features.join(", ")
+                          : property.indoor_features &&
+                              property.indoor_features.length > 0
+                            ? property.indoor_features.join(", ")
+                            : "-"}
                       </span>
                     </div>
                     <div className="flex">
@@ -826,8 +842,9 @@ export default function ListingPage() {
                         Appliances
                       </span>
                       <span className="text-[16px] text-black flex-1">
-                        Dishwasher, Freezer, Grill, Ice Maker, Microwave,
-                        Refrigerator
+                        {property.appliances && property.appliances.length > 0
+                          ? property.appliances.join(", ")
+                          : "-"}
                       </span>
                     </div>
                     <div className="flex">
@@ -835,56 +852,64 @@ export default function ListingPage() {
                         Floor Description
                       </span>
                       <span className="text-[16px] text-black flex-1">
-                        Finished Wood, Marble, Tile
+                        {property.floor_description || "-"}
                       </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Fireplace
                       </span>
-                      <span className="text-[16px] text-black">Yes</span>
+                      <span className="text-[16px] text-black">
+                        {property.fireplace ? "Yes" : "No"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Fireplace Description
                       </span>
                       <span className="text-[16px] text-black flex-1">
-                        Gas, Wood Burning
+                        {property.fireplace_description || "-"}
                       </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Cooling
                       </span>
-                      <span className="text-[16px] text-black">Yes</span>
+                      <span className="text-[16px] text-black">
+                        {property.cooling ? "Yes" : "No"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Cooling Description
                       </span>
                       <span className="text-[16px] text-black flex-1">
-                        Central Air, Electric
+                        {property.cooling_description || "-"}
                       </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Heating
                       </span>
-                      <span className="text-[16px] text-black">Yes</span>
+                      <span className="text-[16px] text-black">
+                        {property.heating ? "Yes" : "No"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Heating Description
                       </span>
                       <span className="text-[16px] text-black flex-1">
-                        Natural Gas
+                        {property.heating_description || "-"}
                       </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Basement
                       </span>
-                      <span className="text-[16px] text-black">Yes</span>
+                      <span className="text-[16px] text-black">
+                        {property.basement ? "Yes" : "No"}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -899,28 +924,38 @@ export default function ListingPage() {
                       <span className="text-[16px] text-black w-1/3">
                         Lot Size
                       </span>
-                      <span className="text-[16px] text-black">1.15 Acres</span>
+                      <span className="text-[16px] text-black">
+                        {property.lot_size || "-"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Exterior Features
                       </span>
                       <span className="text-[16px] text-black flex-1">
-                        Irrigation System
+                        {property.exterior_features &&
+                        property.exterior_features.length > 0
+                          ? property.exterior_features.join(", ")
+                          : property.outdoor_features &&
+                              property.outdoor_features.length > 0
+                            ? property.outdoor_features.join(", ")
+                            : "-"}
                       </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Lot Features
                       </span>
-                      <span className="text-[16px] text-black">Level</span>
+                      <span className="text-[16px] text-black">
+                        {property.lot_features || "-"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Sewer
                       </span>
                       <span className="text-[16px] text-black">
-                        Public Sewer
+                        {property.sewer || "-"}
                       </span>
                     </div>
                     <div className="flex">
@@ -928,7 +963,7 @@ export default function ListingPage() {
                         Patio And Porch
                       </span>
                       <span className="text-[16px] text-black">
-                        Covered Patio, Covered Porch, Patio
+                        {property.patio_porch || "-"}
                       </span>
                     </div>
                   </div>
@@ -945,7 +980,7 @@ export default function ListingPage() {
                         High School
                       </span>
                       <span className="text-[16px] text-black">
-                        Hillsboro Comp High School
+                        {property.high_school || "-"}
                       </span>
                     </div>
                     <div className="flex">
@@ -953,7 +988,7 @@ export default function ListingPage() {
                         Elementary School
                       </span>
                       <span className="text-[16px] text-black">
-                        Julia Green Elementary
+                        {property.elementary_school || "-"}
                       </span>
                     </div>
                   </div>
@@ -969,93 +1004,118 @@ export default function ListingPage() {
                       <span className="text-[16px] text-black w-1/3">
                         Taxes
                       </span>
-                      <span className="text-[16px] text-black">$15,064</span>
+                      <span className="text-[16px] text-black">
+                        {property.taxes || "-"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Tax Frequency
                       </span>
-                      <span className="text-[16px] text-black">Annually</span>
+                      <span className="text-[16px] text-black">
+                        {property.tax_frequency || "-"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Days on Market
                       </span>
-                      <span className="text-[16px] text-black">1</span>
+                      <span className="text-[16px] text-black">
+                        {property.days_on_market || "-"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Accessibility
                       </span>
                       <span className="text-[16px] text-black">
-                        Accessible Elevator Installed
+                        {property.accessibility || "-"}
                       </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Garage
                       </span>
-                      <span className="text-[16px] text-black">Yes</span>
+                      <span className="text-[16px] text-black">
+                        {property.garage ? "Yes" : "No"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Garage Spaces
                       </span>
-                      <span className="text-[16px] text-black">3</span>
+                      <span className="text-[16px] text-black">
+                        {property.garage_spaces || "-"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Parking
                       </span>
-                      <span className="text-[16px] text-black">Attached</span>
+                      <span className="text-[16px] text-black">
+                        {property.parking || "-"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Parking Total
                       </span>
-                      <span className="text-[16px] text-black">3</span>
+                      <span className="text-[16px] text-black">
+                        {property.parking_total || "-"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">View</span>
-                      <span className="text-[16px] text-black">No</span>
+                      <span className="text-[16px] text-black">
+                        {property.view || "-"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         County
                       </span>
                       <span className="text-[16px] text-black">
-                        Davidson County, TN
+                        {property.county || "-"}
                       </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Water Source
                       </span>
-                      <span className="text-[16px] text-black">Public</span>
+                      <span className="text-[16px] text-black">
+                        {property.water_source || "-"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         New Construction
                       </span>
-                      <span className="text-[16px] text-black">Yes</span>
+                      <span className="text-[16px] text-black">
+                        {property.new_construction ? "Yes" : "No"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">Pool</span>
-                      <span className="text-[16px] text-black">Yes</span>
+                      <span className="text-[16px] text-black">
+                        {property.pool ? "Yes" : "No"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Pool Features
                       </span>
-                      <span className="text-[16px] text-black">In Ground</span>
+                      <span className="text-[16px] text-black">
+                        {property.pool_features || "-"}
+                      </span>
                     </div>
                     <div className="flex">
                       <span className="text-[16px] text-black w-1/3">
                         Utilities
                       </span>
                       <span className="text-[16px] text-black">
-                        Electricity Available, Natural Gas Available, Water
-                        Available
+                        {property.utilities && property.utilities.length > 0
+                          ? property.utilities.join(", ")
+                          : "-"}
                       </span>
                     </div>
                   </div>
@@ -1107,35 +1167,55 @@ export default function ListingPage() {
                       </svg>
                     </button>
                     <div className="flex gap-2">
-                      {/* Date Box 1 */}
+                      {/* Date Box 1 - Today */}
                       <div className="bg-white p-3 rounded border border-[#e5e5e5] min-w-[80px] text-center">
                         <div className="text-[12px] text-[#8c8c8c] mb-1">
-                          Wednesday
+                          {new Date().toLocaleDateString("en-US", {
+                            weekday: "long",
+                          })}
                         </div>
                         <div className="text-[18px] font-bold text-black">
-                          25
+                          {new Date().getDate()}
                         </div>
-                        <div className="text-[12px] text-[#8c8c8c]">Mar</div>
+                        <div className="text-[12px] text-[#8c8c8c]">
+                          {new Date().toLocaleDateString("en-US", {
+                            month: "short",
+                          })}
+                        </div>
                       </div>
-                      {/* Date Box 2 */}
+                      {/* Date Box 2 - Tomorrow */}
                       <div className="bg-white p-3 rounded border border-[#e5e5e5] min-w-[80px] text-center">
                         <div className="text-[12px] text-[#8c8c8c] mb-1">
-                          Thursday
+                          {new Date(
+                            Date.now() + 24 * 60 * 60 * 1000,
+                          ).toLocaleDateString("en-US", { weekday: "long" })}
                         </div>
                         <div className="text-[18px] font-bold text-black">
-                          26
+                          {new Date(Date.now() + 24 * 60 * 60 * 1000).getDate()}
                         </div>
-                        <div className="text-[12px] text-[#8c8c8c]">Mar</div>
+                        <div className="text-[12px] text-[#8c8c8c]">
+                          {new Date(
+                            Date.now() + 24 * 60 * 60 * 1000,
+                          ).toLocaleDateString("en-US", { month: "short" })}
+                        </div>
                       </div>
-                      {/* Date Box 3 */}
+                      {/* Date Box 3 - Day after tomorrow */}
                       <div className="bg-white p-3 rounded border border-[#e5e5e5] min-w-[80px] text-center">
                         <div className="text-[12px] text-[#8c8c8c] mb-1">
-                          Friday
+                          {new Date(
+                            Date.now() + 2 * 24 * 60 * 60 * 1000,
+                          ).toLocaleDateString("en-US", { weekday: "long" })}
                         </div>
                         <div className="text-[18px] font-bold text-black">
-                          27
+                          {new Date(
+                            Date.now() + 2 * 24 * 60 * 60 * 1000,
+                          ).getDate()}
                         </div>
-                        <div className="text-[12px] text-[#8c8c8c]">Mar</div>
+                        <div className="text-[12px] text-[#8c8c8c]">
+                          {new Date(
+                            Date.now() + 2 * 24 * 60 * 60 * 1000,
+                          ).toLocaleDateString("en-US", { month: "short" })}
+                        </div>
                       </div>
                     </div>
                     <button
@@ -1340,198 +1420,40 @@ export default function ListingPage() {
               <span className="text-[#fd2d15]">Location</span>
             </h3>
 
-            {/* Map Component */}
+            {/* Map Component - Based on Figma design specifications */}
             <div className="w-full h-[400px] bg-gray-100 rounded-lg relative overflow-hidden">
-              {/* Map placeholder - this would be replaced with actual map integration */}
-              <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 relative">
-                {/* River */}
-                <div className="absolute top-0 left-0 w-full h-full">
-                  <svg
-                    className="w-full h-full"
-                    viewBox="0 0 800 400"
-                    fill="none"
-                  >
-                    <path
-                      d="M50 50 Q200 100 300 150 T550 200 Q650 250 750 300"
-                      stroke="#87CEEB"
-                      strokeWidth="8"
-                      fill="none"
-                      opacity="0.6"
-                    />
-                  </svg>
+              {/* Map container with exact dimensions from Figma */}
+              <div
+                className="w-full h-full bg-center bg-cover bg-no-repeat relative"
+                style={{
+                  backgroundImage: `url('http://localhost:3845/assets/bddb111f0130e4f6b9858d9de64c7144826178be.png')`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              >
+                {/* Property Location Pin - positioned according to Figma specs */}
+                <div
+                  className="absolute"
+                  style={{
+                    left: "102.55px",
+                    top: "111.41px",
+                    width: "14.342px",
+                    height: "17.416px",
+                  }}
+                >
+                  <img
+                    src="http://localhost:3845/assets/26a2b0516ab00526400fbb296a8b9aa0475d2408.svg"
+                    alt="Property Location Pin"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
 
-                {/* Roads */}
-                <div className="absolute inset-0">
-                  <svg
-                    className="w-full h-full"
-                    viewBox="0 0 800 400"
-                    fill="none"
-                  >
-                    <path
-                      d="M100 50 L700 50"
-                      stroke="white"
-                      strokeWidth="3"
-                      opacity="0.8"
-                    />
-                    <path
-                      d="M100 100 L700 100"
-                      stroke="white"
-                      strokeWidth="3"
-                      opacity="0.8"
-                    />
-                    <path
-                      d="M100 150 L700 150"
-                      stroke="white"
-                      strokeWidth="3"
-                      opacity="0.8"
-                    />
-                    <path
-                      d="M100 200 L700 200"
-                      stroke="white"
-                      strokeWidth="3"
-                      opacity="0.8"
-                    />
-                    <path
-                      d="M100 250 L700 250"
-                      stroke="white"
-                      strokeWidth="3"
-                      opacity="0.8"
-                    />
-                    <path
-                      d="M100 300 L700 300"
-                      stroke="white"
-                      strokeWidth="3"
-                      opacity="0.8"
-                    />
-                    <path
-                      d="M100 350 L700 350"
-                      stroke="white"
-                      strokeWidth="3"
-                      opacity="0.8"
-                    />
-
-                    <path
-                      d="M150 0 L150 400"
-                      stroke="white"
-                      strokeWidth="3"
-                      opacity="0.8"
-                    />
-                    <path
-                      d="M250 0 L250 400"
-                      stroke="white"
-                      strokeWidth="3"
-                      opacity="0.8"
-                    />
-                    <path
-                      d="M350 0 L350 400"
-                      stroke="white"
-                      strokeWidth="3"
-                      opacity="0.8"
-                    />
-                    <path
-                      d="M450 0 L450 400"
-                      stroke="white"
-                      strokeWidth="3"
-                      opacity="0.8"
-                    />
-                    <path
-                      d="M550 0 L550 400"
-                      stroke="white"
-                      strokeWidth="3"
-                      opacity="0.8"
-                    />
-                    <path
-                      d="M650 0 L650 400"
-                      stroke="white"
-                      strokeWidth="3"
-                      opacity="0.8"
-                    />
-
-                    {/* Curved road */}
-                    <path
-                      d="M200 50 Q400 100 600 150"
-                      stroke="white"
-                      strokeWidth="4"
-                      opacity="0.9"
-                    />
-
-                    {/* Roundabout */}
-                    <circle
-                      cx="450"
-                      cy="200"
-                      r="30"
-                      fill="white"
-                      opacity="0.9"
-                    />
-                    <circle
-                      cx="450"
-                      cy="200"
-                      r="25"
-                      fill="gray"
-                      opacity="0.7"
-                    />
-                  </svg>
-                </div>
-
-                {/* Green spaces */}
-                <div className="absolute inset-0">
-                  <svg
-                    className="w-full h-full"
-                    viewBox="0 0 800 400"
-                    fill="none"
-                  >
-                    <ellipse
-                      cx="200"
-                      cy="120"
-                      rx="40"
-                      ry="25"
-                      fill="#90EE90"
-                      opacity="0.6"
-                    />
-                    <ellipse
-                      cx="500"
-                      cy="80"
-                      rx="35"
-                      ry="20"
-                      fill="#90EE90"
-                      opacity="0.6"
-                    />
-                    <ellipse
-                      cx="300"
-                      cy="280"
-                      rx="45"
-                      ry="30"
-                      fill="#90EE90"
-                      opacity="0.6"
-                    />
-                    <ellipse
-                      cx="600"
-                      cy="320"
-                      rx="30"
-                      ry="20"
-                      fill="#90EE90"
-                      opacity="0.6"
-                    />
-                  </svg>
-                </div>
-
-                {/* Property Location Pin */}
-                <div className="absolute left-1/4 top-1/3 transform -translate-x-1/2 -translate-y-1/2">
-                  <div className="relative">
-                    <div className="w-6 h-6 bg-[#fd2d15] rounded-full border-2 border-white shadow-lg flex items-center justify-center">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
-                    </div>
-                    <div className="w-0 h-0 border-l-4 border-r-4 border-t-6 border-l-transparent border-r-transparent border-t-[#fd2d15] absolute top-6 left-1/2 transform -translate-x-1/2"></div>
+                {/* Map overlay text */}
+                <div className="absolute bottom-4 left-4 bg-white bg-opacity-90 px-3 py-2 rounded text-sm text-gray-700">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-[#fd2d15] rounded-full"></div>
+                    <span className="font-medium">Property Location</span>
                   </div>
-                </div>
-              </div>
-
-              {/* Map overlay text */}
-              <div className="absolute bottom-4 left-4 bg-white bg-opacity-90 px-3 py-2 rounded text-sm text-gray-700">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-[#fd2d15] rounded-full"></div>
-                  <span className="font-medium">Property Location</span>
                 </div>
               </div>
             </div>
