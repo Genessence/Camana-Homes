@@ -51,14 +51,20 @@ const Index = () => {
 
   React.useEffect(() => {
     let isMounted = true;
+    console.log("Fetching hero slides...");
     API.heroSlides
       .list()
       .then((data) => {
+        console.log("Hero slides response:", data);
         if (isMounted && Array.isArray(data) && data.length > 0) {
+          console.log("Setting slides:", data);
           setSlides(data);
+        } else {
+          console.log("No slides data or empty array");
         }
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error("Error fetching hero slides:", error);
         // swallow; fallback will be used
       });
     return () => {
@@ -74,12 +80,17 @@ const Index = () => {
     return () => window.clearInterval(intervalId);
   }, []);
 
+  const currentSlide = slides?.[currentHeroIndex];
+  console.log("Current slide:", currentSlide);
+  console.log("Slides state:", slides);
+  console.log("Current hero index:", currentHeroIndex);
+
   const currentHeroImage =
-    slides?.[currentHeroIndex]?.image_url ||
+    currentSlide?.image_url ||
     FALLBACK_HERO_IMAGES[currentHeroIndex % FALLBACK_HERO_IMAGES.length];
-  const heroTitle = slides?.[currentHeroIndex]?.title ?? "Connecting The World";
+  const heroTitle = currentSlide?.title ?? "Connecting The World";
   const heroSubtitle =
-    slides?.[currentHeroIndex]?.subtitle ??
+    currentSlide?.subtitle ??
     "Making cross border real estate investments accessible.";
 
   return (
@@ -99,7 +110,7 @@ const Index = () => {
           {/* Main Navigation */}
           <div className="flex items-center justify-center h-[66px] px-4 lg:px-[70px] border-b border-white/20">
             <div className="flex items-center justify-between w-full max-w-[1466px]">
-              {/* Logo (single image + filter) */}
+              {/* Logo */}
               <div className="flex items-center h-[66px] py-[14px]">
                 <img
                   src="https://api.builder.io/api/v1/image/assets/TEMP/5a19f6126fa6dcda25d289130b048916b16fa621?width=310"
@@ -109,7 +120,7 @@ const Index = () => {
               </div>
 
               {/* Center Navigation - Hidden on mobile */}
-              {/* <div className="hidden lg:flex items-center gap-[15px]">
+              <div className="hidden lg:flex items-center gap-[15px]">
                 {["Buy", "Sell", "Rent", "Mortgage"].map((item) => (
                   <button
                     key={item}
@@ -118,7 +129,7 @@ const Index = () => {
                     {item}
                   </button>
                 ))}
-              </div> */}
+              </div>
 
               {/* Right Navigation */}
               <div className="flex items-center gap-[12px]">
@@ -177,10 +188,10 @@ const Index = () => {
           </div>
 
           {/* Search Bar */}
-          <div className="flex flex-row items-center bg-white rounded-[10px] overflow-hidden p-0 pl-2.5 w-full max-w-[860px] min-h-[55px]">
+          <div className="flex flex-row items-center bg-white rounded-[10px] overflow-hidden p-0 pl-2.5 w-full max-w-[860px] min-h-[55px] shadow-lg">
             <div className="flex flex-row items-center w-full">
               {/* Buy Dropdown */}
-              <div className="flex items-center justify-between border-r border-[#d9d9d9] pr-[15px] w-[116px]">
+              <div className="flex items-center justify-between border-r border-[#d9d9d9] pr-[15px] w-[116px] cursor-pointer hover:bg-gray-50 transition-colors">
                 <span className="font-dm-sans text-[16px] font-normal text-black px-[12px]">
                   Buy
                 </span>
@@ -190,7 +201,7 @@ const Index = () => {
               </div>
 
               {/* Location */}
-              <div className="flex items-center justify-between border-r border-[#d9d9d9] pr-[15px] w-[264px]">
+              <div className="flex items-center justify-between border-r border-[#d9d9d9] pr-[15px] w-[264px] cursor-pointer hover:bg-gray-50 transition-colors">
                 <div className="flex items-center gap-[5px] px-[12px]">
                   <MapPin className="w-[18px] h-[18px] text-black" />
                   <span className="font-dm-sans text-[16px] font-normal text-black">
@@ -203,7 +214,7 @@ const Index = () => {
               </div>
 
               {/* Beds & Bath */}
-              <div className="flex items-center justify-between border-r border-[#d9d9d9] pr-[15px] w-[162px]">
+              <div className="flex items-center justify-between border-r border-[#d9d9d9] pr-[15px] w-[162px] cursor-pointer hover:bg-gray-50 transition-colors">
                 <span className="font-dm-sans text-[16px] font-normal text-black px-[12px]">
                   Beds & Bath
                 </span>
@@ -213,7 +224,7 @@ const Index = () => {
               </div>
 
               {/* Price */}
-              <div className="flex items-center justify-between w-[160px]">
+              <div className="flex items-center justify-between w-[160px] cursor-pointer hover:bg-gray-50 transition-colors">
                 <span className="font-dm-sans text-[16px] font-normal text-black px-[12px]">
                   $500,000
                 </span>
@@ -224,33 +235,44 @@ const Index = () => {
             </div>
 
             {/* Search Button */}
-            <button className="bg-red-accent text-white font-dm-sans text-[16px] font-bold leading-[22.4px] tracking-[-0.48px] px-[15px] h-[55px] w-[126px] hover:bg-red-accent/90 transition-colors mt-0">
+            <button className="bg-red-accent text-white font-dm-sans text-[16px] font-bold leading-[22.4px] tracking-[-0.48px] px-[15px] h-[55px] w-[126px] hover:bg-red-accent/90 transition-colors mt-0 flex items-center justify-center">
               Search
             </button>
           </div>
 
           {/* Featured Property */}
-          <div className="absolute bottom-[50px] left-4 lg:left-[80px] hidden lg:block">
-            <div className="w-[168px]">
-              <h3 className="font-dm-sans text-[17.705px] font-bold text-black leading-[21.246px] tracking-[-0.354px] mb-[5px]">
-                Bugatti Branded Residences
-              </h3>
-              <div className="flex items-center gap-[10px] mb-[6px]">
-                <span className="font-dm-sans text-[18.001px] font-normal text-white leading-[21.618px] tracking-[-0.288px]">
-                  By Binghatti, Dubai
-                </span>
-                <ArrowRight className="w-[11px] h-[6px] text-white transform -rotate-90" />
-              </div>
-              <div className="font-dm-sans text-[21.284px] font-bold text-white leading-[23.857px]">
-                $5,197,386
-              </div>
+          {currentSlide?.property && (
+            <div className="absolute bottom-[50px] left-4 lg:left-[80px] hidden lg:block">
+              <Link
+                to={`/listing/${currentSlide.property.slug}`}
+                className="block"
+              >
+                <div className="w-[168px] cursor-pointer hover:opacity-90 transition-opacity">
+                  <h3 className="font-dm-sans text-[17.705px] font-bold text-white leading-[21.246px] tracking-[-0.354px] mb-[5px]">
+                    {currentSlide.property.title}
+                  </h3>
+                  <div className="flex items-center gap-[10px] mb-[6px]">
+                    <span className="font-dm-sans text-[18.001px] font-normal text-white leading-[21.618px] tracking-[-0.288px]">
+                      By {currentSlide.property.developer || "Developer"},{" "}
+                      {currentSlide.property.location_label}
+                    </span>
+                    <ArrowRight className="w-[11px] h-[6px] text-white transform -rotate-90" />
+                  </div>
+                  <div className="font-dm-sans text-[21.284px] font-bold text-white leading-[23.857px]">
+                    {new Intl.NumberFormat(undefined, {
+                      style: "currency",
+                      currency: currentSlide.property.price_currency,
+                    }).format(currentSlide.property.price_amount)}
+                  </div>
+                </div>
+              </Link>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="pt-[40px] px-4 sm:px-8 lg:px-[70px] max-w-[1466.83px] mx-auto">
+      <div className="pt-[60px] px-4 sm:px-8 lg:px-[70px] max-w-[1466.83px] mx-auto">
         {/* Welcome Section */}
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-[20px] lg:gap-[30px] mb-[40px] lg:mb-[80px] px-0">
           <h2 className="font-dm-sans text-[32px] lg:text-[55px] font-semibold text-black leading-normal">
@@ -264,14 +286,14 @@ const Index = () => {
         </div>
 
         {/* Trending Properties */}
-        <div className="mb-[40px] lg:mb-[80px]">
-          <div className="flex items-center justify-between mb-[20px] lg:mb-[30px]">
+        <div className="mb-[60px] lg:mb-[100px]">
+          <div className="flex items-center justify-between mb-[30px] lg:mb-[40px]">
             <h2 className="font-dm-sans text-[28px] lg:text-[35px] font-semibold text-black leading-normal">
               Trending Properties
             </h2>
             <Link
               to="/properties"
-              className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors font-dm-sans text-[16px] font-medium"
+              className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors font-dm-sans text-[16px] font-medium shadow-lg"
             >
               View All
             </Link>
@@ -290,42 +312,70 @@ const Index = () => {
         </div>
 
         {/* Statistics Section */}
-        <div className="mb-[40px] lg:mb-[80px] py-[40px] lg:py-[60px] bg-[#f8f9fa] rounded-lg">
-          <div className="text-center">
-            <div className="font-dm-sans text-[12px] lg:text-[14px] font-semibold tracking-[2px] uppercase text-black mb-[30px] lg:mb-[40px]">
-              BEYOND BORDERS, SEAMLESS CONNECTIONS
+        <div className="mb-[60px] lg:mb-[100px] py-[50px] lg:py-[80px] bg-white">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-[60px] items-center max-w-[1466px] mx-auto px-4 sm:px-8 lg:px-[70px]">
+            {/* Left Side - Text Content */}
+            <div className="space-y-[40px]">
+              {/* Main Heading */}
+              <div className="font-dm-sans text-[35px] lg:text-[42px] font-semibold text-black leading-[1.2]">
+                BEYOND BORDERS, SEAMLESS CONNECTIONS
+              </div>
+
+              {/* Descriptive Paragraph */}
+              <div className="font-dm-sans text-[16px] lg:text-[18px] font-normal text-[#8c8c8c] leading-[1.6] max-w-[600px]">
+                At Camana Homes, we believe luxury real estate should be
+                borderless—accessible, verified, and effortless. Whether you're
+                investing in a beachfront villa, a city penthouse, or a private
+                island retreat, we connect you to the world's most exclusive
+                properties with trust, transparency, and technology.
+              </div>
+
+              {/* Metrics Boxes */}
+              <div className="flex flex-col sm:flex-row gap-[30px]">
+                <div className="bg-neutral-100 px-8 lg:px-10 py-8 lg:py-10 flex flex-col gap-2.5">
+                  <div className="font-dm-sans text-[36px] lg:text-[42px] font-bold text-red-accent leading-[1]">
+                    $100 M +
+                  </div>
+                  <div className="font-dm-sans text-[16px] lg:text-[18px] font-medium text-black leading-[1.3]">
+                    Verified listings
+                  </div>
+                </div>
+
+                <div className="bg-neutral-100 px-8 lg:px-10 py-8 lg:py-10 flex flex-col gap-2.5">
+                  <div className="font-dm-sans text-[36px] lg:text-[42px] font-bold text-red-accent leading-[1]">
+                    20 +
+                  </div>
+                  <div className="font-dm-sans text-[16px] lg:text-[18px] font-medium text-black leading-[1.3]">
+                    Global Markets
+                  </div>
+                </div>
+
+                <div className="bg-neutral-100 px-8 lg:px-10 py-8 lg:py-10 flex flex-col gap-2.5">
+                  <div className="font-dm-sans text-[36px] lg:text-[42px] font-bold text-red-accent leading-[1]">
+                    5000 +
+                  </div>
+                  <div className="font-dm-sans text-[16px] lg:text-[18px] font-medium text-black leading-[1.3]">
+                    Elite agents
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="flex flex-col md:flex-row justify-center gap-[40px] lg:gap-[80px]">
-              <div className="text-center">
-                <div className="font-dm-sans text-[36px] lg:text-[48px] font-bold leading-[1] text-red-accent mb-[10px]">
-                  $100 M +
-                </div>
-                <div className="font-dm-sans text-[14px] lg:text-[16px] font-normal text-[#666]">
-                  Verified listings
-                </div>
-              </div>
-              <div className="text-center">
-                <div className="font-dm-sans text-[36px] lg:text-[48px] font-bold leading-[1] text-red-accent mb-[10px]">
-                  20 +
-                </div>
-                <div className="font-dm-sans text-[14px] lg:text-[16px] font-normal text-[#666]">
-                  Global Markets
-                </div>
-              </div>
-              <div className="text-center">
-                <div className="font-dm-sans text-[36px] lg:text-[48px] font-bold leading-[1] text-red-accent mb-[10px]">
-                  5000 +
-                </div>
-                <div className="font-dm-sans text-[14px] lg:text-[16px] font-normal text-[#666]">
-                  Elite agents
-                </div>
+
+            {/* Right Side - Abstract Graphic */}
+            <div className="relative flex justify-center lg:justify-end">
+              <div className="relative w-full max-w-[592px] h-[565px] opacity-20">
+                <img
+                  src="http://localhost:3845/assets/4f03645bb59d539b30b7bd1bb7c19239af5f0b5b.svg"
+                  alt="Abstract geometric pattern"
+                  className="w-full h-full object-contain"
+                />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Trusted Partners */}
-        <div className="mb-[80px]">
+        {/*         
+         <div className="mb-[80px]">
           <div className="text-center">
             <h2 className="font-dm-sans text-[35px] font-semibold text-black mb-[30px]">
               Trusted Partners
@@ -341,7 +391,7 @@ const Index = () => {
               ))}
             </div>
           </div>
-        </div>
+        </div>  */}
 
         {/* Recently Viewed */}
         <div className="mb-[80px]">
@@ -351,193 +401,30 @@ const Index = () => {
 
           <RecentlyViewedGrid />
         </div>
+      </div>
 
-        {/* Featured Section (carousel of featured properties with left/right buttons) */}
-        <FeaturedSection />
+      {/* Featured Section - Full Width */}
+      <FeaturedSection />
 
-        {/* The Boldest New Developments */}
-        <div className="mb-[80px]">
-          <h2 className="font-dm-sans text-[35px] font-semibold text-black leading-normal mb-[30px]">
-            The Boldest New Developments
-          </h2>
-
-          <div className="grid grid-cols-5 gap-[20px] justify-start">
-            {[
-              {
-                image:
-                  "https://api.builder.io/api/v1/image/assets/TEMP/1c586a2bf796f43887671486f52e771a180c6321?width=1032",
-                label: "Closing May",
-              },
-              {
-                image:
-                  "https://api.builder.io/api/v1/image/assets/TEMP/b2aaf4ab7fe943123c831e8c3b0baabf8cb2f86e?width=1032",
-                label: "New York",
-              },
-              {
-                image:
-                  "https://api.builder.io/api/v1/image/assets/TEMP/56cbf0ba5ca3f6afb6d89b14b20678c2c6f63047?width=1032",
-                label: "Waterfront LA",
-              },
-              {
-                image:
-                  "https://api.builder.io/api/v1/image/assets/TEMP/0ce93c9c3de7d61f7409992098980621d89f14ce?width=1032",
-                label: "Prospect Point",
-              },
-              {
-                image:
-                  "https://api.builder.io/api/v1/image/assets/TEMP/1c586a2bf796f43887671486f52e771a180c6321?width=1032",
-                label: "Residential LA",
-              },
-            ].map((item, index) => (
-              <div
-                key={index}
-                className="relative overflow-hidden group cursor-pointer transition duration-300 ease-out transform-gpu will-change-transform hover:scale-[1.02] hover:shadow-lg"
-                style={{ height: "566px" }}
-              >
-                <img
-                  src={item.image}
-                  alt={item.label}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-                <div className="absolute bottom-[20px] left-[20px] right-[20px] text-center">
-                  <div
-                    className="font-dm-sans text-[16px] font-semibold text-white"
-                    style={{ textShadow: "0 2px 4px rgba(0,0,0,0.5)" }}
-                  >
-                    {item.label}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Top Agents */}
-        <div className="mb-[80px]">
-          <h2 className="font-dm-sans text-[35px] font-semibold text-black leading-normal mb-[30px]">
-            Top Agents
-          </h2>
-
-          <div className="grid grid-cols-4 gap-[20px]">
-            {[
-              {
-                name: "Shopie Dsouza",
-                company: "Camana Technologies LLC",
-                rating: "4.9",
-              },
-              {
-                name: "Michael Johnson",
-                company: "Global Properties Inc",
-                rating: "4.8",
-              },
-              {
-                name: "Sarah Williams",
-                company: "Elite Realty Group",
-                rating: "4.9",
-              },
-              {
-                name: "David Chen",
-                company: "International Properties",
-                rating: "4.7",
-              },
-            ].map((agent, index) => {
-              // Make Camana Technologies LLC clickable to agency profile
-              const isAgentProfile =
-                agent.company === "Camana Technologies LLC";
-
-              const content = (
-                <div
-                  className={`border border-gray-light bg-white p-[20px] text-center ${isAgentProfile ? "hover:shadow-lg transition-shadow cursor-pointer" : ""}`}
-                >
-                  <img
-                    src="https://api.builder.io/api/v1/image/assets/TEMP/21584c4a5fb695a4f53c9f609c46424507f3b08c?width=98"
-                    alt={agent.name}
-                    className="w-[80px] h-[80px] rounded-full mx-auto mb-[15px]"
-                  />
-                  <div className="font-dm-sans text-[16px] font-semibold italic text-black mb-[5px]">
-                    {agent.name}
-                  </div>
-                  <div className="font-dm-sans text-[12px] font-normal italic text-[#666] mb-[5px]">
-                    {agent.company}
-                  </div>
-                  <div className="font-dm-sans text-[14px] font-medium text-red-accent">
-                    ★★★★★ {agent.rating}
-                  </div>
-                  {isAgentProfile && (
-                    <div className="mt-[10px] text-sm text-blue-600 hover:text-blue-800">
-                      View Agent Profile →
-                    </div>
-                  )}
-                </div>
-              );
-
-              if (isAgentProfile) {
-                return (
-                  <Link key={index} to="/AgentProfile" className="block">
-                    {content}
-                  </Link>
-                );
-              }
-
-              return <div key={index}>{content}</div>;
-            })}
-          </div>
-        </div>
-
+      {/* Main Content Continued */}
+      <div className="pt-[60px] px-4 sm:px-8 lg:px-[70px] max-w-[1466.83px] mx-auto">
         {/* Latest Journal */}
         <div className="mb-[80px]">
-          <h2 className="font-dm-sans text-[35px] font-semibold text-black leading-normal mb-[30px]">
-            Latest Journal
-          </h2>
-
-          <div className="grid grid-cols-3 gap-[20px]">
-            {[
-              {
-                image:
-                  "https://api.builder.io/api/v1/image/assets/TEMP/1c586a2bf796f43887671486f52e771a180c6321?width=1032",
-                title: "MEET TYLER MOORE'S $100 MILLION COMPOUND IN LA",
-                description:
-                  "An exclusive look inside one of Los Angeles' most spectacular luxury estates.",
-              },
-              {
-                image:
-                  "https://api.builder.io/api/v1/image/assets/TEMP/b2aaf4ab7fe943123c831e8c3b0baabf8cb2f86e?width=1032",
-                title: "THIS $115 MILLION WILLIAM HAINES ESTATE IS A MONUMENT",
-                description:
-                  "Discover the architectural masterpiece that defines luxury living in Beverly Hills.",
-              },
-              {
-                image:
-                  "https://api.builder.io/api/v1/image/assets/TEMP/56cbf0ba5ca3f6afb6d89b14b20678c2c6f63047?width=1032",
-                title: "PEEK YOUR MIND INTO A MODERN MANSION",
-                description:
-                  "Contemporary design meets timeless elegance in this stunning modern estate.",
-              },
-            ].map((article, index) => (
-              <Link
-                key={index}
-                to="/journal"
-                className="overflow-hidden bg-white hover:shadow-lg transition-shadow"
-              >
-                <div className="h-[220px] overflow-hidden">
-                  <img
-                    src={article.image}
-                    alt="Article"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="p-[20px]">
-                  <h3 className="font-dm-sans text-[18px] font-bold leading-[24px] text-black uppercase mb-[10px]">
-                    {article.title}
-                  </h3>
-                  <p className="font-dm-sans text-[14px] font-normal leading-[20px] text-[#666]">
-                    {article.description}
-                  </p>
-                </div>
-              </Link>
-            ))}
+          {/* Header with View All button */}
+          <div className="flex items-center justify-between mb-[30px]">
+            <h2 className="font-dm-sans text-[35px] font-semibold text-black leading-normal">
+              Latest Journal
+            </h2>
+            <Link
+              to="/journal"
+              className="bg-black text-white px-[35px] py-2 rounded hover:bg-gray-800 transition-colors font-dm-sans text-[16px] font-medium tracking-[-0.32px]"
+            >
+              View all
+            </Link>
           </div>
+
+          {/* Journal Articles Carousel */}
+          <JournalCarousel />
         </div>
 
         {/* Newsletter Signup (CTA) */}
@@ -678,7 +565,6 @@ const Index = () => {
 
         {/* Stay in the Know (completed via MCP 3072:6983) */}
         <StayInTheKnow />
-
       </div>
 
       {/* Footer removed (global Footer renders from App.tsx) */}
@@ -707,7 +593,7 @@ function TrendingPropertiesGrid() {
         <Link
           key={p.id}
           to={`/listing/${p.slug}`}
-          className="w-full border border-gray-light bg-white p-[10px] block hover:shadow-lg transition-shadow"
+          className="w-full border border-gray-light bg-white p-[10px] block hover:shadow-xl transition-all duration-300 hover:scale-[1.02] rounded-lg overflow-hidden group"
         >
           <div className="relative h-[316px] mb-[10px]">
             <img
@@ -852,11 +738,11 @@ function TrendingPropertiesCarousel() {
             to={`/listing/${p.slug}`}
             className="w-full border border-gray-light bg-white p-[10px] block hover:shadow-lg transition-shadow"
           >
-            <div className="relative h-[316px] mb-[10px]">
+            <div className="relative h-[316px] mb-[10px] overflow-hidden rounded-lg">
               <img
                 src={p.primary_image_url}
                 alt={p.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
               />
               <div className="absolute top-[10px] left-[9px] flex gap-[10px]">
                 <div className="flex items-center gap-[6px] px-[9.681px] py-[8.471px] border border-white bg-black/10 backdrop-blur-[8px]">
@@ -951,27 +837,29 @@ function TrendingPropertiesCarousel() {
 
       {/* Navigation Arrows */}
       {totalSlides > 1 && (
-        <div className="flex justify-between items-center mt-6">
+        <div className="flex justify-between items-center mt-8">
           <button
             onClick={goToPrevious}
             disabled={!canGoLeft}
-            className={`flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all ${
+            className={`flex items-center justify-center w-14 h-14 rounded-full border-2 transition-all ${
               canGoLeft
-                ? "border-black text-black hover:bg-black hover:text-white"
+                ? "border-black text-black hover:bg-black hover:text-white shadow-lg"
                 : "border-gray-300 text-gray-300 cursor-not-allowed"
             }`}
             aria-label="Previous properties"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-6 h-6" />
           </button>
 
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             {Array.from({ length: totalSlides }, (_, i) => (
               <button
                 key={i}
                 onClick={() => setCurrentIndex(i)}
-                className={`w-3 h-3 rounded-full transition-all ${
-                  i === currentIndex ? "bg-black" : "bg-gray-300"
+                className={`w-4 h-4 rounded-full transition-all ${
+                  i === currentIndex
+                    ? "bg-black scale-110"
+                    : "bg-gray-300 hover:bg-gray-400"
                 }`}
                 aria-label={`Go to slide ${i + 1}`}
               />
@@ -981,14 +869,14 @@ function TrendingPropertiesCarousel() {
           <button
             onClick={goToNext}
             disabled={!canGoRight}
-            className={`flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all ${
+            className={`flex items-center justify-center w-14 h-14 rounded-full border-2 transition-all ${
               canGoRight
-                ? "border-black text-black hover:bg-black hover:text-white"
+                ? "border-black text-black hover:bg-black hover:text-white shadow-lg"
                 : "border-gray-300 text-gray-300 cursor-not-allowed"
             }`}
             aria-label="Next properties"
           >
-            <ArrowRight className="w-5 h-5" />
+            <ArrowRight className="w-6 h-6" />
           </button>
         </div>
       )}
@@ -1100,35 +988,35 @@ function TrendingPropertiesPlaceholder() {
       {[0, 1, 2].map((i) => (
         <div
           key={i}
-          className="w-full border border-gray-light bg-white p-[10px]"
+          className="w-full border border-gray-light bg-white p-[10px] rounded-lg"
         >
-          <div className="relative h-[316px] mb-[10px]">
-            <div className="w-full h-full animate-pulse bg-gray-200" />
+          <div className="relative h-[316px] mb-[10px] rounded-lg overflow-hidden">
+            <div className="w-full h-full animate-pulse bg-gradient-to-br from-gray-200 to-gray-300" />
           </div>
           <div className="flex flex-col gap-[11px]">
             <div className="flex items-center justify-between">
-              <div className="h-[24px] w-[130px] animate-pulse bg-gray-200" />
-              <div className="h-[18px] w-[110px] animate-pulse bg-gray-200" />
+              <div className="h-[24px] w-[130px] animate-pulse bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
+              <div className="h-[18px] w-[110px] animate-pulse bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
             </div>
-            <div className="h-[18px] w-3/4 animate-pulse bg-gray-200" />
+            <div className="h-[18px] w-3/4 animate-pulse bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
             <div className="flex items-center gap-[10px] text-[12.8px] text-black">
-              <div className="h-[18px] w-[70px] animate-pulse bg-gray-200" />
+              <div className="h-[18px] w-[70px] animate-pulse bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
               <span>|</span>
-              <div className="h-[18px] w-[30px] animate-pulse bg-gray-200" />
-              <div className="h-[18px] w-[30px] animate-pulse bg-gray-200" />
+              <div className="h-[18px] w-[30px] animate-pulse bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
+              <div className="h-[18px] w-[30px] animate-pulse bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
               <span>|</span>
-              <div className="h-[18px] w-[90px] animate-pulse bg-gray-200" />
+              <div className="h-[18px] w-[90px] animate-pulse bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
             </div>
             <div className="h-[1px] bg-gray-light"></div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-[5px]">
-                <div className="w-[49px] h-[49px] rounded-full animate-pulse bg-gray-200" />
+                <div className="w-[49px] h-[49px] rounded-full animate-pulse bg-gradient-to-br from-gray-200 to-gray-300" />
                 <div>
-                  <div className="h-[16px] w-[120px] animate-pulse bg-gray-200" />
-                  <div className="h-[12px] w-[160px] mt-1 animate-pulse bg-gray-200" />
+                  <div className="h-[16px] w-[120px] animate-pulse bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
+                  <div className="h-[12px] w-[160px] mt-1 animate-pulse bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
                 </div>
               </div>
-              <div className="h-[26px] w-[73px] animate-pulse bg-gray-200" />
+              <div className="h-[26px] w-[73px] animate-pulse bg-gradient-to-r from-gray-200 to-gray-300 rounded" />
             </div>
           </div>
         </div>
@@ -1232,44 +1120,58 @@ function FeaturedSection() {
       .catch((e) => setError(String(e)));
   }, []);
 
-  const renderFallback = (
-    <div className="relative mb-[100px] overflow-hidden">
-      <img
-        src={imgDivElementorElement1}
-        alt="Featured"
-        className="w-full h-auto block"
-      />
+  // Skeleton placeholder for featured section
+  const renderSkeleton = (
+    <div className="relative w-full h-[80vh] overflow-hidden bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse">
+      {/* Skeleton for glass morphism pill */}
+      <div className="absolute left-8 lg:left-16 bottom-[140px]">
+        <div className="w-40 h-10 animate-pulse bg-white/20 rounded-md" />
+      </div>
+      {/* Skeleton for title and price */}
+      <div className="absolute left-8 lg:left-16 bottom-8 right-32">
+        <div className="w-96 h-12 animate-pulse bg-white/20 rounded mb-3" />
+        <div className="w-80 h-8 animate-pulse bg-white/20 rounded" />
+      </div>
+      {/* Skeleton for navigation buttons */}
+      <div className="absolute right-8 lg:right-16 bottom-8 flex gap-3">
+        <div className="w-12 h-12 animate-pulse bg-white/20 rounded-full" />
+        <div className="w-12 h-12 animate-pulse bg-white/20 rounded-full" />
+      </div>
     </div>
   );
 
-  if (error) return renderFallback;
-  if (!items || items.length === 0) return renderFallback;
+  if (error) return renderSkeleton;
+  if (!items || items.length === 0) return renderSkeleton;
 
   const current = items[idx];
 
   return (
-    <div className="relative mb-[100px] overflow-hidden">
+    <div className="relative w-full h-[80vh] overflow-hidden">
       <img
         src={current.primary_image_url}
         alt={current.title}
-        className="w-full h-auto block"
+        className="w-full h-full object-cover"
       />
+      {/* Dark overlay for better text readability */}
+      <div className="absolute inset-0 bg-black/30" />
+
       {/* glass morphism pill */}
-      <div className="absolute left-4 bottom-[110px]">
-        <div className="backdrop-blur-md bg-white/15 border border-white/20 text-white px-4 py-2 inline-flex items-center rounded-md">
-          <span className="font-dm-sans text-[14px] font-semibold">
+      <div className="absolute left-8 lg:left-16 bottom-[140px] z-10">
+        <div className="backdrop-blur-md bg-white/15 border border-white/20 text-white px-6 py-3 inline-flex items-center rounded-md">
+          <span className="font-dm-sans text-[16px] font-semibold">
             Featured listings
           </span>
         </div>
       </div>
+
       {/* title + price */}
-      <div className="absolute left-4 bottom-6 right-24 text-white">
+      <div className="absolute left-8 lg:left-16 bottom-8 right-32 text-white z-10">
         <Link to={`/listing/${current.slug}`} className="block">
-          <div className="font-dm-sans text-[22px] sm:text-[26px] font-bold mb-2 hover:underline">
+          <div className="font-dm-sans text-[28px] sm:text-[32px] lg:text-[36px] font-bold mb-3 hover:underline">
             {current.title}
           </div>
         </Link>
-        <div className="flex items-center gap-4 text-[14px]">
+        <div className="flex items-center gap-4 text-[16px] lg:text-[18px]">
           <span className="opacity-90">
             {new Intl.NumberFormat(undefined, {
               style: "currency",
@@ -1279,23 +1181,194 @@ function FeaturedSection() {
         </div>
       </div>
       {/* nav buttons bottom-right */}
-      <div className="absolute right-4 bottom-6 flex gap-2">
+      <div className="absolute right-8 lg:right-16 bottom-8 flex gap-3 z-10">
         <button
           aria-label="Previous"
           onClick={() =>
             setIdx((i) => (items ? (i - 1 + items.length) % items.length : 0))
           }
-          className="size-10 grid place-items-center rounded-md backdrop-blur-md bg-black/25 border border-white/20 text-white"
+          className="size-12 grid place-items-center rounded-full backdrop-blur-md bg-white/20 border border-white/20 text-white hover:bg-white/30 transition-colors"
         >
-          ‹
+          <ArrowLeft className="w-6 h-6" />
         </button>
         <button
           aria-label="Next"
           onClick={() => setIdx((i) => (items ? (i + 1) % items.length : 0))}
-          className="size-10 grid place-items-center rounded-md backdrop-blur-md bg-black/25 border border-white/20 text-white"
+          className="size-12 grid place-items-center rounded-full backdrop-blur-md bg-white/20 border border-white/20 text-white hover:bg-white/30 transition-colors"
         >
-          ›
+          <ArrowRight className="w-6 h-6" />
         </button>
+      </div>
+    </div>
+  );
+}
+
+function JournalCarousel() {
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+
+  const journalArticles = [
+    {
+      image:
+        "https://api.builder.io/api/v1/image/assets/TEMP/1c586a2bf796f43887671486f52e771a180c6321?width=1032",
+      category: "Celebrity Homes",
+      title: "MARY TYLER MOORE'S SELLS FOR A REDUCED $16.9..",
+      author: "By Tori Latham",
+      time: "12 hours ago",
+    },
+    {
+      image:
+        "https://api.builder.io/api/v1/image/assets/TEMP/b2aaf4ab7fe943123c831e8c3b0baabf8cb2f86e?width=1032",
+      category: "Homes for Sale",
+      title: "THIS $1.9 MILLION WILLIAM KESLING HOME IN PASADENA",
+      author: "By Tori Latham",
+      time: "12 hours ago",
+    },
+    {
+      image:
+        "https://api.builder.io/api/v1/image/assets/TEMP/56cbf0ba5ca3f6afb6d89b14b20678c2c6f63047?width=1032",
+      category: "Product Recommendations",
+      title: "FROM YOUR OWN SO TO A CUSTOM PO",
+      author: "By Tori Latham",
+      time: "12 hours ago",
+    },
+    {
+      image:
+        "https://api.builder.io/api/v1/image/assets/TEMP/1c586a2bf796f43887671486f52e771a180c6321?width=1032",
+      category: "Luxury Living",
+      title: "INSIDE THE MOST EXPENSIVE PENTHOUSE IN DUBAI",
+      author: "By Sarah Johnson",
+      time: "2 days ago",
+    },
+    {
+      image:
+        "https://api.builder.io/api/v1/image/assets/TEMP/b2aaf4ab7fe943123c831e8c3b0baabf8cb2f86e?width=1032",
+      category: "Investment Tips",
+      title: "HOW TO INVEST IN INTERNATIONAL REAL ESTATE",
+      author: "By Michael Chen",
+      time: "3 days ago",
+    },
+    {
+      image:
+        "https://api.builder.io/api/v1/image/assets/TEMP/56cbf0ba5ca3f6afb6d89b14b20678c2c6f63047?width=1032",
+      category: "Architecture",
+      title: "MODERN ARCHITECTURE TRENDS FOR 2024",
+      author: "By Emma Rodriguez",
+      time: "4 days ago",
+    },
+  ];
+
+  const totalSlides = Math.ceil(journalArticles.length / 3);
+  const canGoLeft = currentIndex > 0;
+  const canGoRight = currentIndex < totalSlides - 1;
+
+  const goToPrevious = () => {
+    if (canGoLeft) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
+  const goToNext = () => {
+    if (canGoRight) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
+
+  // Calculate the transform offset for smooth sliding
+  const slideOffset = currentIndex * -100; // Each slide moves 100% to the left
+
+  return (
+    <div className="relative">
+      {/* Carousel Container with overflow hidden */}
+      <div className="overflow-hidden">
+        {/* Sliding Container */}
+        <div
+          className="flex gap-[30px] transition-transform duration-500 ease-in-out"
+          style={{ transform: `translateX(${slideOffset}%)` }}
+        >
+          {/* Render all articles in groups of 3 */}
+          {Array.from({ length: totalSlides }, (_, slideIndex) => (
+            <div
+              key={slideIndex}
+              className="flex gap-[30px] flex-shrink-0 w-full"
+            >
+              {journalArticles
+                .slice(slideIndex * 3, slideIndex * 3 + 3)
+                .map((article, index) => (
+                  <div
+                    key={slideIndex * 3 + index}
+                    className="w-[537px] bg-white border border-[#e9e9e9] flex-shrink-0"
+                  >
+                    <Link to="/journal" className="block">
+                      <div className="flex flex-col">
+                        {/* Image */}
+                        <div className="h-[286px] overflow-hidden">
+                          <img
+                            src={article.image}
+                            alt="Article"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+
+                        {/* Content */}
+                        <div className="p-5 flex flex-col items-center gap-[23px]">
+                          {/* Category Tag */}
+                          <div className="bg-[#fd2d15] px-[10px] py-[5px]">
+                            <span className="font-dm-sans text-[18px] font-extrabold text-white">
+                              {article.category}
+                            </span>
+                          </div>
+
+                          {/* Title */}
+                          <h3 className="font-dm-sans text-[30px] font-black text-black text-center uppercase leading-[35px]">
+                            {article.title}
+                          </h3>
+
+                          {/* Author and Time */}
+                          <div className="font-dm-sans text-[16px] font-normal text-black text-center">
+                            <span className="font-bold italic">
+                              {article.author}
+                            </span>
+                            <span> - {article.time}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Navigation Arrows */}
+      <div className="flex justify-between items-center mt-[30px]">
+        <div></div> {/* Empty div for spacing */}
+        <div className="flex gap-2.5">
+          <button
+            onClick={goToPrevious}
+            disabled={!canGoLeft}
+            aria-label="Previous journal articles"
+            className={`w-[36.5px] h-10 flex items-center justify-center bg-white border border-gray-300 rounded transition-colors ${
+              canGoLeft
+                ? "hover:bg-gray-50 cursor-pointer"
+                : "opacity-50 cursor-not-allowed"
+            }`}
+          >
+            <ArrowLeft className="w-5 h-5 text-black" />
+          </button>
+          <button
+            onClick={goToNext}
+            disabled={!canGoRight}
+            aria-label="Next journal articles"
+            className={`w-[36.5px] h-10 flex items-center justify-center bg-white border border-gray-300 rounded transition-colors ${
+              canGoRight
+                ? "hover:bg-gray-50 cursor-pointer"
+                : "opacity-50 cursor-not-allowed"
+            }`}
+          >
+            <ArrowRight className="w-5 h-5 text-black" />
+          </button>
+        </div>
       </div>
     </div>
   );

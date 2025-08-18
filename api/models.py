@@ -19,8 +19,11 @@ class HeroSlide(Base):
     image_url: Mapped[str] = mapped_column(String(1024))
     title: Mapped[Optional[str]] = mapped_column(String(255), default=None)
     subtitle: Mapped[Optional[str]] = mapped_column(String(512), default=None)
+    property_id: Mapped[Optional[int]] = mapped_column(ForeignKey("properties.id"), default=None)
     sort_order: Mapped[int] = mapped_column(Integer, default=0)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+
+    property: Mapped[Optional["Property"]] = relationship("Property")
 
 
 class Agency(Base):

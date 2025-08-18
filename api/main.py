@@ -15,6 +15,7 @@ from schemas import (
     HeroSlideCreate,
     HeroSlideOut,
     HeroSlideUpdate,
+    HeroSlideWithPropertyOut,
     PropertyCardOut,
     PropertyDetailOut,
     ArticleCardOut,
@@ -223,8 +224,8 @@ async def on_startup() -> None:
     # All data must be imported via import scripts
 
 
-@app.get("/api/hero-slides", response_model=List[HeroSlideOut])
-async def list_hero_slides(db: AsyncSession = Depends(get_db)) -> List[HeroSlideOut]:
+@app.get("/api/hero-slides", response_model=List[HeroSlideWithPropertyOut])
+async def list_hero_slides(db: AsyncSession = Depends(get_db)) -> List[HeroSlideWithPropertyOut]:
     rows = (
         await db.execute(
             select(HeroSlide)
@@ -232,7 +233,35 @@ async def list_hero_slides(db: AsyncSession = Depends(get_db)) -> List[HeroSlide
             .order_by(HeroSlide.sort_order.asc(), HeroSlide.id.asc())
         )
     ).scalars().all()
-    return [HeroSlideOut.model_validate(row) for row in rows]
+    
+    result: List[HeroSlideWithPropertyOut] = []
+    for slide in rows:
+        property_data = None
+        if slide.property_id:
+            # Get property details
+            prop = await db.get(Property, slide.property_id)
+            if prop:
+                images = (
+                    await db.execute(
+                        select(PropertyImage).where(PropertyImage.property_id == prop.id).order_by(PropertyImage.sort_order.asc())
+                    )
+                ).scalars().all()
+                agent = await db.get(Agent, prop.agent_id) if prop.agent_id else None
+                agency = await db.get(Agency, agent.agency_id) if agent and agent.agency_id else None
+                property_data = build_property_card_out(prop, list(images), agent, agency)
+        
+        result.append(HeroSlideWithPropertyOut(
+            id=slide.id,
+            image_url=slide.image_url,
+            title=slide.title,
+            subtitle=slide.subtitle,
+            property_id=slide.property_id,
+            sort_order=slide.sort_order,
+            is_active=slide.is_active,
+            property=property_data
+        ))
+    
+    return result
 
 
 @app.get("/api/properties/trending", response_model=List[PropertyCardOut])
@@ -259,6 +288,68 @@ async def trending_properties(limit: int = 3, db: AsyncSession = Depends(get_db)
 
         result.append(build_property_card_out(p, list(images), agent, agency))
     return result
+
+
+# Featured Properties
+@app.get("/api/properties/featured", response_model=List[PropertyCardOut])
+async def get_featured_properties(
+    limit: int = 5,
+    db: AsyncSession = Depends(get_db)
+) -> List[PropertyCardOut]:
+    """
+    Get featured properties
+    """
+    try:
+        # Build query for featured properties
+        query = select(Property).where(Property.is_featured == True).limit(limit)
+        
+        # If no featured properties, fall back to trending properties
+        properties = (await db.execute(query)).scalars().all()
+        
+        if not properties:
+            # Fallback to trending properties
+            query = select(Property).order_by(Property.trending_score.desc()).limit(limit)
+            properties = (await db.execute(query)).scalars().all()
+        
+        print(f"Found {len(properties)} properties for featured endpoint")
+        
+        # Build response with property details
+        property_cards = []
+        for prop in properties:
+            print(f"Processing property: {prop.title} (ID: {prop.id})")
+            
+            # Get images for this property
+            images = (await db.execute(
+                select(PropertyImage)
+                .where(PropertyImage.property_id == prop.id)
+                .order_by(PropertyImage.sort_order.asc())
+            )).scalars().all()
+            
+            print(f"Found {len(images)} images for property {prop.id}")
+            
+            # Get agent and agency info
+            agent = None
+            agency = None
+            if prop.agent_id:
+                agent = (await db.execute(
+                    select(Agent).where(Agent.id == prop.agent_id)
+                )).scalars().first()
+                if agent and agent.agency_id:
+                    agency = (await db.execute(
+                        select(Agency).where(Agency.id == agent.agency_id)
+                    )).scalars().first()
+            
+            property_card = build_property_card_out(prop, list(images), agent, agency)
+            property_cards.append(property_card)
+        
+        print(f"Returning {len(property_cards)} property cards")
+        return property_cards
+        
+    except Exception as e:
+        print(f"Error in featured properties endpoint: {e}")
+        import traceback
+        traceback.print_exc()
+        raise
 
 
 @app.get("/api/properties/{slug}", response_model=PropertyDetailOut)

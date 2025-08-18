@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Union
 from pydantic import BaseModel
 from datetime import date, datetime
 
@@ -9,6 +9,7 @@ class HeroSlideBase(BaseModel):
     image_url: str
     title: Optional[str] = None
     subtitle: Optional[str] = None
+    property_id: Optional[int] = None
     sort_order: int = 0
     is_active: bool = True
 
@@ -21,6 +22,7 @@ class HeroSlideUpdate(BaseModel):
     image_url: Optional[str] = None
     title: Optional[str] = None
     subtitle: Optional[str] = None
+    property_id: Optional[int] = None
     sort_order: Optional[int] = None
     is_active: Optional[bool] = None
 
@@ -30,6 +32,9 @@ class HeroSlideOut(HeroSlideBase):
 
     class Config:
         from_attributes = True
+
+
+
 
 
 # Properties
@@ -246,6 +251,20 @@ class PropertyStats(BaseModel):
     views_count: int
     saves_count: int
     days_on_market: Optional[int] = None
+
+    class Config:
+        from_attributes = True
+
+
+class HeroSlideWithPropertyOut(BaseModel):
+    id: int
+    image_url: str
+    title: Optional[str] = None
+    subtitle: Optional[str] = None
+    property_id: Optional[int] = None
+    sort_order: int = 0
+    is_active: bool = True
+    property: Optional[PropertyCardOut] = None
 
     class Config:
         from_attributes = True

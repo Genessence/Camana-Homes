@@ -128,6 +128,7 @@ const Article = () => {
             >
               Semi Detached Villas | Dubai
             </a>
+            
           </div>
         </div>
       </div>

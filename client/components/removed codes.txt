@@ -1,0 +1,136 @@
+{/* The Boldest New Developments */}
+        <div className="mb-[80px]">
+          <h2 className="font-dm-sans text-[35px] font-semibold text-black leading-normal mb-[30px]">
+            The Boldest New Developments
+          </h2>
+
+          <div className="grid grid-cols-5 gap-[20px] justify-start">
+            {[
+              {
+                image:
+                  "https://api.builder.io/api/v1/image/assets/TEMP/1c586a2bf796f43887671486f52e771a180c6321?width=1032",
+                label: "Closing May",
+              },
+              {
+                image:
+                  "https://api.builder.io/api/v1/image/assets/TEMP/b2aaf4ab7fe943123c831e8c3b0baabf8cb2f86e?width=1032",
+                label: "New York",
+              },
+              {
+                image:
+                  "https://api.builder.io/api/v1/image/assets/TEMP/56cbf0ba5ca3f6afb6d89b14b20678c2c6f63047?width=1032",
+                label: "Waterfront LA",
+              },
+              {
+                image:
+                  "https://api.builder.io/api/v1/image/assets/TEMP/0ce93c9c3de7d61f7409992098980621d89f14ce?width=1032",
+                label: "Prospect Point",
+              },
+              {
+                image:
+                  "https://api.builder.io/api/v1/image/assets/TEMP/1c586a2bf796f43887671486f52e771a180c6321?width=1032",
+                label: "Residential LA",
+              },
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="relative overflow-hidden group cursor-pointer transition duration-300 ease-out transform-gpu will-change-transform hover:scale-[1.02] hover:shadow-lg"
+                style={{ height: "566px" }}
+              >
+                <img
+                  src={item.image}
+                  alt={item.label}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+                <div className="absolute bottom-[20px] left-[20px] right-[20px] text-center">
+                  <div
+                    className="font-dm-sans text-[16px] font-semibold text-white"
+                    style={{ textShadow: "0 2px 4px rgba(0,0,0,0.5)" }}
+                  >
+                    {item.label}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+
+
+
+
+
+
+
+{/* Top Agents */}
+        <div className="mb-[80px]">
+          <h2 className="font-dm-sans text-[35px] font-semibold text-black leading-normal mb-[30px]">
+            Top Agents
+          </h2>
+
+          <div className="grid grid-cols-4 gap-[20px]">
+            {[
+              {
+                name: "Shopie Dsouza",
+                company: "Camana Technologies LLC",
+                rating: "4.9",
+              },
+              {
+                name: "Michael Johnson",
+                company: "Global Properties Inc",
+                rating: "4.8",
+              },
+              {
+                name: "Sarah Williams",
+                company: "Elite Realty Group",
+                rating: "4.9",
+              },
+              {
+                name: "David Chen",
+                company: "International Properties",
+                rating: "4.7",
+              },
+            ].map((agent, index) => {
+              // Make Camana Technologies LLC clickable to agency profile
+              const isAgentProfile =
+                agent.company === "Camana Technologies LLC";
+
+              const content = (
+                <div
+                  className={`border border-gray-light bg-white p-[20px] text-center ${isAgentProfile ? "hover:shadow-lg transition-shadow cursor-pointer" : ""}`}
+                >
+                  <img
+                    src="https://api.builder.io/api/v1/image/assets/TEMP/21584c4a5fb695a4f53c9f609c46424507f3b08c?width=98"
+                    alt={agent.name}
+                    className="w-[80px] h-[80px] rounded-full mx-auto mb-[15px]"
+                  />
+                  <div className="font-dm-sans text-[16px] font-semibold italic text-black mb-[5px]">
+                    {agent.name}
+                  </div>
+                  <div className="font-dm-sans text-[12px] font-normal italic text-[#666] mb-[5px]">
+                    {agent.company}
+                  </div>
+                  <div className="font-dm-sans text-[14px] font-medium text-red-accent">
+                    ★★★★★ {agent.rating}
+                  </div>
+                  {isAgentProfile && (
+                    <div className="mt-[10px] text-sm text-blue-600 hover:text-blue-800">
+                      View Agent Profile →
+                    </div>
+                  )}
+                </div>
+              );
+
+              if (isAgentProfile) {
+                return (
+                  <Link key={index} to="/AgentProfile" className="block">
+                    {content}
+                  </Link>
+                );
+              }
+
+              return <div key={index}>{content}</div>;
+            })}
+          </div>
+        </div>

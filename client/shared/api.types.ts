@@ -3,8 +3,10 @@ export type HeroSlide = {
   image_url: string;
   title?: string | null;
   subtitle?: string | null;
+  property_id?: number | null;
   sort_order: number;
   is_active: boolean;
+  property?: PropertyCard | null;
 };
 
 export type Agency = {

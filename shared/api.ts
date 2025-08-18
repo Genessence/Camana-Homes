@@ -16,14 +16,18 @@ export type FetchOptions = {
 };
 
 export async function apiGet<T>(path: string, opts: FetchOptions = {}): Promise<T> {
-  const res = await fetch(path, {
+  // Use the backend URL for API requests
+  const baseUrl = "http://localhost:8000";
+  const fullPath = path.startsWith("http") ? path : `${baseUrl}${path}`;
+  
+  const res = await fetch(fullPath, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       ...(opts.headers || {}),
     },
   });
-  if (!res.ok) throw new Error(`GET ${path} -> ${res.status}`);
+  if (!res.ok) throw new Error(`GET ${fullPath} -> ${res.status}`);
   return (await res.json()) as T;
 }
 
@@ -36,7 +40,7 @@ export const API = {
     bySlug: (slug: string) => apiGet<import("@/shared/api.types").PropertyCard>(`/api/properties/${slug}`),
     featured: (limit = 5) => apiGet<import("@/shared/api.types").PropertyCard[]>(`/api/properties/featured?limit=${limit}`),
     recentlyViewed: (limit = 3, visitorId?: string) =>
-      fetch(`/api/recently-viewed?limit=${limit}`, {
+      fetch(`http://localhost:8000/api/recently-viewed?limit=${limit}`, {
         method: "GET",
         headers: visitorId ? { "X-Visitor-Id": visitorId } : undefined,
       }).then(async (r) => {
@@ -44,7 +48,7 @@ export const API = {
         return (await r.json()) as import("@/shared/api.types").PropertyCard[];
       }),
     trackView: (slug: string, visitorId?: string) =>
-      fetch(`/api/activity/view-property`, {
+      fetch(`http://localhost:8000/api/activity/view-property`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
