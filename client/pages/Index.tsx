@@ -118,7 +118,7 @@ const Index = () => {
                   src={logoWhite}
                   alt="Camana Homes"
                   className="object-contain drop-shadow"
-                  style={{width: '155px'}}
+                  style={{ width: "155px" }}
                 />
               </div>
 
@@ -275,7 +275,10 @@ const Index = () => {
       </div>
 
       {/* Main Content */}
-      <div className="pt-[60px] px-4 sm:px-8 lg:px-[70px] max-w-[1466.83px] mx-auto" style={{marginBottom: "50px"}}>
+      <div
+        className="pt-[60px] px-4 sm:px-8 lg:px-[70px] max-w-[1466.83px] mx-auto"
+        style={{ marginBottom: "50px" }}
+      >
         {/* Welcome Section */}
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-[20px] lg:gap-[30px] mb-[40px] lg:mb-[80px] px-0">
           <h2 className="font-dm-sans text-[32px] lg:text-[55px] font-semibold text-black leading-normal">
@@ -304,7 +307,6 @@ const Index = () => {
 
           <TrendingPropertiesCarousel />
         </div>
-
 
         {/* Statistics Section */}
         <div className="mb-[60px] lg:mb-[100px] bg-white">
@@ -401,8 +403,6 @@ const Index = () => {
       {/* Featured Section - Full Width */}
       <FeaturedSection />
 
-     
-
       {/* Main Content Continued */}
       <div className="pt-[60px] px-4 sm:px-8 lg:px-[70px] max-w-[1466.83px] mx-auto">
         {/* Latest Journal */}
@@ -423,8 +423,8 @@ const Index = () => {
           {/* Journal Articles Carousel */}
           <JournalCarousel />
         </div>
-        </div>
-           {/* Newsletter Signup (CTA) - Full Width */}
+      </div>
+      {/* Newsletter Signup (CTA) - Full Width */}
       <div className="overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2 bg-black px-[70px] py-[50px]">
           {/* Left: Image with overlay text */}
@@ -519,8 +519,7 @@ const Index = () => {
         </div>
       </div>
 
-        <div className="pt-[60px] px-4 sm:px-8 lg:px-[70px] max-w-[1466.83px] mx-auto">
-          
+      <div className="pt-[60px] px-4 sm:px-8 lg:px-[70px] max-w-[1466.83px] mx-auto">
         {/* Agent Testimonials */}
         {/* <div className="mb-[80px]">
           <h2 className="font-dm-sans text-[35px] font-semibold text-black leading-normal mb-[30px]">
@@ -1269,20 +1268,17 @@ function JournalCarousel() {
     },
   ];
 
-  const totalSlides = Math.ceil(journalArticles.length / 3);
+  const articlesPerPage = 3;
+  const totalSlides = Math.ceil(journalArticles.length / articlesPerPage);
   const canGoLeft = currentIndex > 0;
   const canGoRight = currentIndex < totalSlides - 1;
 
   const goToPrevious = () => {
-    if (canGoLeft) {
-      setCurrentIndex(currentIndex - 1);
-    }
+    setCurrentIndex((prevIndex) => Math.max(0, prevIndex - 1));
   };
 
   const goToNext = () => {
-    if (canGoRight) {
-      setCurrentIndex(currentIndex + 1);
-    }
+    setCurrentIndex((prevIndex) => Math.min(totalSlides - 1, prevIndex + 1));
   };
 
   // Calculate the transform offset for smooth sliding
@@ -1294,21 +1290,25 @@ function JournalCarousel() {
       <div className="overflow-hidden">
         {/* Sliding Container */}
         <div
-          className="flex gap-[30px] transition-transform duration-500 ease-in-out"
+          className="flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(${slideOffset}%)` }}
         >
           {/* Render all articles in groups of 3 */}
           {Array.from({ length: totalSlides }, (_, slideIndex) => (
             <div
               key={slideIndex}
-              className="flex gap-[30px] flex-shrink-0 w-full"
+              className="flex gap-[30px] flex-shrink-0"
+              style={{ width: "100%", minWidth: "100%" }}
             >
               {journalArticles
-                .slice(slideIndex * 3, slideIndex * 3 + 3)
+                .slice(
+                  slideIndex * articlesPerPage,
+                  slideIndex * articlesPerPage + articlesPerPage,
+                )
                 .map((article, index) => (
                   <div
                     key={slideIndex * 3 + index}
-                    className="w-[537px] bg-white border border-[#e9e9e9] flex-shrink-0"
+                    className="w-[537px] bg-white border border-[#e9e9e9] flex-shrink-0 overflow-hidden"
                   >
                     <Link to="/journal" className="block">
                       <div className="flex flex-col">
@@ -1322,25 +1322,28 @@ function JournalCarousel() {
                         </div>
 
                         {/* Content */}
-                        <div className="p-5 flex flex-col items-center gap-[23px]">
+                        <div className="p-5 flex flex-col items-center gap-[23px] min-h-0">
                           {/* Category Tag */}
                           <div className="bg-[#fd2d15] px-[10px] py-[5px]">
-                            <span className="font-dm-sans text-[18px] font-extrabold text-white">
+                            <span className="font-dm-sans text-[18px] font-extrabold text-white truncate block max-w-full">
                               {article.category}
                             </span>
                           </div>
 
                           {/* Title */}
-                          <h3 className="font-dm-sans text-[30px] font-black text-black text-center uppercase leading-[35px]">
+                          <h3 className="font-dm-sans text-[30px] font-black text-black text-center uppercase leading-[35px] line-clamp-3">
                             {article.title}
                           </h3>
 
                           {/* Author and Time */}
                           <div className="font-dm-sans text-[16px] font-normal text-black text-center">
-                            <span className="font-bold italic">
+                            <span className="font-bold italic truncate block">
                               {article.author}
                             </span>
-                            <span> - {article.time}</span>
+                            <span className="truncate block">
+                              {" "}
+                              - {article.time}
+                            </span>
                           </div>
                         </div>
                       </div>

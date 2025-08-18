@@ -303,22 +303,18 @@ export default function Footer() {
       </div>
 
       {/* Copy detail */}
-      <div className="max-w-[1460px] mx-auto px-[63px] py-6 text-[16px] leading-[24px] text-[#000]">
-        <p className="mb-3">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book. It has survived not only
-          five centuries, but also the leap into electronic typesetting,
-          remaining essentially unchanged.
-        </p>
-        <p>
-          It was popularised in the 1960s with the release of Letraset sheets
-          containing Lorem Ipsum passages, and more recently with desktop
-          publishing software like Aldus PageMaker including versions of Lorem
-          Ipsum.
-        </p>
-      </div>
+      <div className="container mx-auto px-4 lg:px-16 pb-8">
+          <div className="pt-6">
+            <h4 className="text-black text-lg font-semibold mb-4">Your Privacy & Trust</h4>
+            <p className="text-gray-700 text-base leading-relaxed">
+              At Camana Homes, your privacy and trust are our top priority. We are committed to protecting your personal information and ensuring a secure experience on our platform. Any data you share with us—whether for property listings, inquiries, or partnerships—is kept confidential and used only to enhance your experience.
+            </p>
+            <br />
+            <p className="text-gray-700 text-base leading-relaxed">
+              We do not sell or misuse your information. Our systems follow strict security protocols to safeguard your data, and we work only with verified partners to ensure transparency and trust.
+            </p>
+          </div>
+        </div>
     </footer>
   );
 }
