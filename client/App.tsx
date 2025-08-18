@@ -18,36 +18,50 @@ import Properties from "./pages/Properties";
 import MembersClub from "./pages/MembersClub";
 import NotFound from "./pages/NotFound";
 import Footer from "./components/Footer";
+import Header from "./components/Header";
+import About from "./pages/About";
+import ScrollToTop from "./utils/ScrollToTop";
 // import Footer from "./components/Footer";
 
 const queryClient = new QueryClient();
 
+const AppRoutes = () => {
+  const location = useLocation();
+  const hideHeaderOnPaths = ["/", "/members-club", "/about-us"];
+  const shouldHideHeader = hideHeaderOnPaths.includes(location.pathname);
+
+  return (
+    <>
+      {shouldHideHeader ? null : <Header />}
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="/article" element={<Article />} />
+        <Route path="/journal" element={<Journal />} />
+        <Route path="/new-development" element={<NewDevelopment />} />
+        <Route path="/property/:slug" element={<PropertyDetail />} />
+        <Route path="/news/:slug" element={<ArticleDetail />} />
+        <Route path="/AgentProfile" element={<AgentProfile />} />
+        <Route path="/listing/:slug" element={<ListingPage />} />
+        <Route path="/properties" element={<Properties />} />
+        <Route path="/members-club" element={<MembersClub />} />
+        <Route path="/about-us" element={<About />} />
+        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      {location.pathname.includes('/members-club') ? null : <Footer />}
+    </>
+  );
+};
+
 const App = () => {
-  
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/article" element={<Article />} />
-            <Route path="/journal" element={<Journal />} />
-            <Route path="/new-development" element={<NewDevelopment />} />
-            <Route path="/property/:slug" element={<PropertyDetail />} />
-            <Route path="/news/:slug" element={<ArticleDetail />} />
-            <Route path="/AgentProfile" element={<AgentProfile />} />
-            <Route path="/listing/:slug" element={<ListingPage />} />
-            <Route path="/properties" element={<Properties />} />
-            <Route path="/members-club" element={<MembersClub />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          {
-            window.location.pathname !== '/members-club' ? <Footer />:null 
-          }
-          
+          <AppRoutes />
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>

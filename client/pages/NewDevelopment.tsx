@@ -1,4 +1,4 @@
-import Header from '../components/NewDevlopment/Header';
+import Header from '../components/Header';
 import Hero from '../components/NewDevlopment/Hero';
 import Stats from '../components/NewDevlopment/Stats';
 import PropertyGrid from '../components/NewDevlopment/PropertyGrid';
@@ -10,7 +10,6 @@ import CamanaFooter from '../components/NewDevlopment/CamanaFooter';
 export default function NewDevelopment() {
   return (
     <div className="min-h-screen bg-white font-dm-sans">
-      <Header />
       <main>
         <Hero />
         <Stats />

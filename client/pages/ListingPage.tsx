@@ -91,133 +91,12 @@ export default function ListingPage() {
   return (
     <div className="bg-white min-h-screen">
       {/* Header Section - Figma node 3072:11462 */}
-      <header className="border-b border-gray-200 bg-white">
-        {/* Secondary Navigation - Country/Region Links */}
-        <div className="backdrop-blur-[8.5px] bg-[rgba(186,186,186,0.15)] h-[46px] border-b border-gray-200">
-          <div className="max-w-[1600px] mx-auto px-4 lg:px-[70px]">
-            <div className="flex items-center justify-center gap-6 py-3 overflow-x-auto">
-              <a
-                href="#"
-                className="text-black text-[17px] font-medium whitespace-nowrap hover:text-gray-600"
-              >
-                Spain
-              </a>
-              <a
-                href="#"
-                className="text-black text-[17px] font-medium whitespace-nowrap hover:text-gray-600"
-              >
-                Italy
-              </a>
-              <a
-                href="#"
-                className="text-black text-[17px] font-medium whitespace-nowrap hover:text-gray-600"
-              >
-                Switerland
-              </a>
-              <a
-                href="#"
-                className="text-black text-[17px] font-medium whitespace-nowrap hover:text-gray-600"
-              >
-                Mexico
-              </a>
-              <a
-                href="#"
-                className="text-black text-[17px] font-medium whitespace-nowrap hover:text-gray-600"
-              >
-                Australia
-              </a>
-              <a
-                href="#"
-                className="text-black text-[17px] font-medium whitespace-nowrap hover:text-gray-600"
-              >
-                South Africa
-              </a>
-              <a
-                href="#"
-                className="text-black text-[17px] font-medium whitespace-nowrap hover:text-gray-600"
-              >
-                Germany
-              </a>
-              <a
-                href="#"
-                className="text-black text-[17px] font-medium whitespace-nowrap hover:text-gray-600"
-              >
-                Greece
-              </a>
-              <a
-                href="#"
-                className="text-black text-[17px] font-medium whitespace-nowrap hover:text-gray-600"
-              >
-                United States
-              </a>
-              <div className="flex items-center gap-2">
-                <a
-                  href="#"
-                  className="text-black text-[17px] font-medium whitespace-nowrap hover:text-gray-600"
-                >
-                  More
-                </a>
-                <img src={img} alt="Dropdown" className="w-[11px] h-[6px]" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Header Bar */}
-        <div className="max-w-[1600px] mx-auto px-4 lg:px-[70px] h-[66px] flex items-center justify-between">
-          {/* Logo and Navigation Buttons */}
-          <div className="flex items-center gap-8">
-            {/* Logo */}
-            <div className="h-[66px] w-[170px] flex items-center">
-              <div className="h-[42.531px] w-[155px]">
-                <div
-                  className="w-full h-full bg-cover bg-center"
-                  style={{ backgroundImage: `url('${imgNewProject91}')` }}
-                />
-              </div>
-            </div>
-
-            {/* Navigation Buttons */}
-            <div className="hidden lg:flex items-center">
-              <button className="h-[50px] px-[21px] py-2 border border-black text-black font-medium text-[17px]">
-                Buy
-              </button>
-              <button className="h-[50px] px-[21px] py-2 border border-black border-l-0 text-black font-medium text-[17px]">
-                Sell
-              </button>
-              <button className="h-[50px] px-[21px] py-2 border border-black border-l-0 text-black font-medium text-[17px]">
-                Rent
-              </button>
-              <button className="h-[50px] px-[21px] py-2 border border-black border-l-0 text-black font-medium text-[17px]">
-                Mortgage
-              </button>
-            </div>
-          </div>
-
-          {/* User Actions */}
-          <div className="hidden md:flex items-center gap-3">
-            <button className="h-[50px] px-[21px] py-2 border border-black bg-[rgba(217,217,217,0.14)] text-black text-[14px] font-medium tracking-[-0.48px]">
-              Get Connected
-            </button>
-            <button className="h-[50px] px-5 py-2 bg-black text-white text-[14px] font-medium">
-              Agent Login
-            </button>
-            <button
-              className="p-2 mt-[15px]"
-              title="Menu"
-              aria-label="Open menu"
-            >
-              <img src={img2} alt="Menu" className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-      </header>
 
       {/* Property ID/Reference Section */}
       <section className="max-w-[1600px] mx-auto px-4 lg:px-[70px] py-4">
-        <div className="inline-block bg-blue-50 border border-blue-200 px-3 py-2 rounded">
+        {/* <div className="inline-block bg-blue-50 border border-blue-200 px-3 py-2 rounded">
           <span className="text-blue-800 text-sm font-medium">#{slug}</span>
-        </div>
+        </div> */}
       </section>
 
       {/* Main Content Container */}
@@ -324,14 +203,13 @@ export default function ListingPage() {
                   }}
                 />
                 {/* "View All Photos" overlay */}
-                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                  <div className="text-center text-white">
-                    <div className="text-[24px] font-semibold mb-2">
-                      View All
-                    </div>
+                <div className="absolute inset-0 bg-white/10 backdrop-blur-sm flex items-center justify-center rounded-lg">
+                  <div className="text-center text-white drop-shadow-lg">
+                    <div className="text-[24px] font-semibold mb-2">View All</div>
                     <div className="text-[18px]">Photos</div>
                   </div>
                 </div>
+
               </div>
             </div>
           </div>
@@ -1421,7 +1299,7 @@ export default function ListingPage() {
             </h3>
 
             {/* Map Component - Based on Figma design specifications */}
-            <div className="w-full h-[400px] bg-gray-100 rounded-lg relative overflow-hidden">
+            <div className="w-[900px] h-[400px] bg-gray-100 rounded-lg relative overflow-hidden">
               {/* Map container with exact dimensions from Figma */}
               <div
                 className="w-full h-full bg-center bg-cover bg-no-repeat relative"

@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 const footerLogo =
   "https://api.builder.io/api/v1/image/assets/TEMP/5a19f6126fa6dcda25d289130b048916b16fa621?width=310";
 const icInstagram =
@@ -17,6 +18,7 @@ const icYoutube =
   "http://localhost:3845/assets/54794c8882b11e8892e9c033eabccec9a7fef134.svg";
 
 export default function Footer() {
+  const navigate = useNavigate();
   return (
     <footer className="bg-[#EDEDED] text-black" data-name="Footer">
       {/* Top columns */}
@@ -91,8 +93,8 @@ export default function Footer() {
             About Camana
           </h4>
           <ul className="space-y-3 text-[16px]">
-            <li>
-              <a href="#" className="hover:underline">
+            <li onClick={() => navigate('/about-us')} style={{cursor: "pointer"}}>
+              <a className="hover:underline">
                 About us
               </a>
             </li>

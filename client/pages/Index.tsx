@@ -17,6 +17,8 @@ import { Link } from "react-router-dom";
 import StayInTheKnow from "@/components/StayInTheKnow";
 import beyond from "../assets/beyond.png";
 import logoWhite from "../assets/Camana-white.png";
+import palm from "../assets/palm.jpg";
+import HeaderTransparent from "@/components/HeaderTransparent";
 
 // 5-image hero carousel (using existing assets as placeholders). Later we can fetch these from FastAPI.
 const FALLBACK_HERO_IMAGES: string[] = [
@@ -96,7 +98,7 @@ const Index = () => {
     "Making cross border real estate investments accessible.";
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" style={{position: 'relative'}}>
       {/* Hero Section with Header */}
       <div className="relative w-full h-[640px] md:h-[700px] lg:h-[760px]">
         {/* Background Image with Overlay */}
@@ -108,85 +110,17 @@ const Index = () => {
         />
 
         {/* Header */}
-        <div className="absolute top-0 left-0 right-0 z-10">
-          {/* Main Navigation */}
-          <div className="flex items-center justify-center h-[66px] px-4 lg:px-[70px] border-b border-white/20">
-            <div className="flex items-center justify-between w-full max-w-[1466px]">
-              {/* Logo */}
-              <div className="flex items-center h-[66px] py-[14px]">
-                <img
-                  src={logoWhite}
-                  alt="Camana Homes"
-                  className="object-contain drop-shadow"
-                  style={{ width: "155px" }}
-                />
-              </div>
-
-              {/* Center Navigation - Hidden on mobile */}
-              {/* <div className="hidden lg:flex items-center gap-[15px]">
-                {["Buy", "Sell", "Rent", "Mortgage"].map((item) => (
-                  <button
-                    key={item}
-                    className="flex items-center justify-center h-[50px] px-[21px] py-[8px] border border-white bg-transparent text-white font-dm-sans text-[17px] font-medium hover:bg-white/10 transition-colors"
-                  >
-                    {item}
-                  </button>
-                ))}
-              </div> */}
-
-              {/* Right Navigation */}
-              <div className="flex items-center gap-[12px]">
-                <button className="hidden md:flex items-center justify-center h-[50px] px-[21px] py-[8px] border border-white bg-white/14 text-white font-dm-sans text-[14px] font-medium tracking-[-0.48px] hover:bg-white/20 transition-colors backdrop-blur-sm">
-                  Get Connected
-                </button>
-                <button className="hidden sm:flex items-center justify-center h-[50px] px-[20px] py-[8px] bg-white text-black font-dm-sans text-[14px] font-medium hover:bg-gray-100 transition-colors">
-                  Agent Login
-                </button>
-                <Menu className="w-5 h-5 text-white cursor-pointer" />
-              </div>
-            </div>
-          </div>
-
-          {/* Country Navigation - Hidden on mobile */}
-          <div className="hidden lg:flex items-center justify-center h-[46px] px-4 xl:px-[315px] border-t border-white/20 border-b border-white/20 bg-white/15 backdrop-blur-[8.5px]">
-            <div className="flex items-center gap-[24px] py-[12px] overflow-x-auto">
-              {[
-                "Spain",
-                "Italy",
-                "Switzerland",
-                "Mexico",
-                "Australia",
-                "South Africa",
-                "Germany",
-                "Greece",
-                "United States",
-              ].map((country) => (
-                <span
-                  key={country}
-                  className="text-white text-center font-inter text-[17px] font-medium leading-[19.2px] hover:text-white/80 cursor-pointer transition-colors whitespace-nowrap"
-                >
-                  {country}
-                </span>
-              ))}
-              <div className="flex items-center gap-[10px]">
-                <span className="text-white text-center font-inter text-[17px] font-medium leading-[19.2px]">
-                  More
-                </span>
-                <ChevronDown className="w-[11px] h-[6px] text-white" />
-              </div>
-            </div>
-          </div>
-        </div>
+       <HeaderTransparent />
 
         {/* Hero Content */}
-        <div className="absolute inset-0 flex flex-col justify-center items-center px-4 sm:px-8 lg:px-[80px] pt-[200px] lg:pt-[300px] pb-[50px] gap-[10px]">
+        <div className="absolute inset-0 flex flex-col justify-center items-center px-4 sm:px-8 lg:px-[80px] gap-[10px]">
           {/* Hero Text */}
-          <div className="text-center mb-[30px] lg:mb-[54px]">
+          <div className="text-center mb-[20px]">
             <h1 className="font-plus-jakarta text-[32px] sm:text-[48px] lg:text-[64px] font-semibold leading-[1.2] lg:leading-[76.8px] text-white mb-[2px]">
-              {heroTitle}
+              Connecting The World
             </h1>
-            <p className="font-dm-sans text-[16px] sm:text-[20px] lg:text-[24px] font-normal leading-normal text-white tracking-[-0.32px] max-w-[600px]">
-              {heroSubtitle}
+            <p className="font-dm-sans text-[16px] sm:text-[20px] lg:text-[24px] font-normal leading-normal text-white tracking-[-0.32px] max-w-[800px]">
+              Making cross border real estate investments accessible.
             </p>
           </div>
 
@@ -218,7 +152,7 @@ const Index = () => {
 
               {/* Beds & Bath */}
               <div className="flex items-center justify-between border-r border-[#d9d9d9] pr-[15px] w-[162px] cursor-pointer hover:bg-gray-50 transition-colors">
-                <span className="font-dm-sans text-[16px] font-normal text-black px-[12px]">
+                <span className="font-dm-sans text-[16px] font-normal text-black px-[8px]">
                   Beds & Bath
                 </span>
                 <div className="w-[38px] h-[55px] flex items-center justify-center">
@@ -250,12 +184,12 @@ const Index = () => {
                 to={`/listing/${currentSlide.property.slug}`}
                 className="block"
               >
-                <div className="w-[168px] cursor-pointer hover:opacity-90 transition-opacity">
-                  <h3 className="font-dm-sans text-[17.705px] font-bold text-white leading-[21.246px] tracking-[-0.354px] mb-[5px]">
+                <div className="w-[350px] cursor-pointer hover:opacity-90 transition-opacity">
+                  <h3 className="font-dm-sans text-[20px] font-bold text-white leading-[21.246px] tracking-[0.02em] mb-2" style={{lineHeight: "1.1"}}>
                     {currentSlide.property.title}
                   </h3>
-                  <div className="flex items-center gap-[10px] mb-[6px]">
-                    <span className="font-dm-sans text-[18.001px] font-normal text-white leading-[21.618px] tracking-[-0.288px]">
+                  <div className="flex items-center gap-[10px] mb-[8px] w-[300px]">
+                    <span className="font-dm-sans text-[18.001px] font-normal text-white leading-[21.618px] tracking-[-0.288px] whitespace-normal">
                       By {currentSlide.property.developer || "Developer"},{" "}
                       {currentSlide.property.location_label}
                     </span>
@@ -430,7 +364,7 @@ const Index = () => {
           {/* Left: Image with overlay text */}
           <div className="relative h-[494px]">
             <img
-              src={imgGroup12FigureGallery1Jpg}
+              src={palm}
               alt="Development"
               className="absolute inset-0 w-full h-full object-cover"
             />
@@ -440,7 +374,7 @@ const Index = () => {
                 Coming in April
               </div>
               <h3 className="font-dm-sans text-[28px] sm:text-[32px] lg:text-[35px] font-bold leading-[1.2] max-w-[520px]">
-                New luxury Development on palm Jumeirah
+                New luxury Development on Palm Jumeirah
               </h3>
               <p className="font-dm-sans text-[16px] lg:text-[23px] text-white/85 max-w-[520px]">
                 The last new high-end project on the palm!
@@ -460,7 +394,7 @@ const Index = () => {
                   Secure you unit before it hits the market
                 </h3>
                 <p className="font-dm-sans text-[14px] lg:text-[23px] text-white/80">
-                  don't miss this unique opportunity
+                  Don't miss this unique opportunity
                 </p>
               </div>
 

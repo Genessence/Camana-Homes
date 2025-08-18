@@ -1,40 +1,10 @@
+import Header from "@/components/Header";
 import React from "react";
 
 export default function Journal() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header strip (matches site chrome spacing) */}
-      <header className="border-b border-gray-200 bg-white">
-        <div className="max-w-[1600px] mx-auto px-4 lg:px-[70px] h-[66px] flex items-center justify-between">
-          <img
-            src="https://api.builder.io/api/v1/image/assets/TEMP/5a19f6126fa6dcda25d289130b048916b16fa621?width=310"
-            alt="Camana Homes"
-            className="h-10 w-auto"
-          />
-          <div className="hidden lg:flex items-center gap-3">
-            <button className="px-5 py-2 border border-black text-black">
-              Buy
-            </button>
-            <button className="px-5 py-2 border border-black border-l-0 text-black">
-              Sell
-            </button>
-            <button className="px-5 py-2 border border-black border-l-0 text-black">
-              Rent
-            </button>
-            <button className="px-5 py-2 border border-black border-l-0 text-black">
-              Mortgage
-            </button>
-          </div>
-          <div className="hidden md:flex items-center gap-3">
-            <button className="px-5 py-2 border border-black bg-gray-100 text-black text-sm">
-              Get Connected
-            </button>
-            <button className="px-5 py-2 bg-black text-white text-sm">
-              Agent Login
-            </button>
-          </div>
-        </div>
-      </header>
 
       {/* Featured article block */}
       <section className="max-w-[1600px] mx-auto px-4 lg:px-[70px] py-10">

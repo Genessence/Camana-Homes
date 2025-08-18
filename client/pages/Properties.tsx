@@ -13,11 +13,8 @@ import {
   Filter,
   Search,
 } from "lucide-react";
-import {
-  propertiesApiService,
-  PropertyCard,
-  PropertyListingFilters,
-} from "../services/propertiesApi";
+import { propertiesApiService, PropertyListingFilters } from "../services/propertiesApi";
+import type { PropertyCard } from "../services/propertiesApi";
 
 // Types for the component
 interface PaginationInfo {
@@ -101,47 +98,6 @@ const Properties = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="border-b border-gray-200">
-        <div className="max-w-[1600px] mx-auto px-4 lg:px-[70px]">
-          <div className="flex items-center justify-between h-[66px]">
-            {/* Logo */}
-            <div className="flex items-center">
-              <img
-                src="https://api.builder.io/api/v1/image/assets/TEMP/5a19f6126fa6dcda25d289130b048916b16fa621?width=310"
-                alt="Camana Homes"
-                className="h-[43px] w-[155px] object-contain"
-              />
-            </div>
-
-            {/* Center Navigation */}
-            <div className="hidden lg:flex items-center gap-[15px]">
-              {["Buy", "Sell", "Rent", "Mortgage"].map((item) => (
-                <button
-                  key={item}
-                  className={`flex items-center justify-center h-[50px] px-[21px] py-[8px] border font-dm-sans text-[17px] font-medium transition-colors ${
-                    item === "Buy"
-                      ? "border-black bg-black text-white"
-                      : "border-black bg-transparent text-black hover:bg-black hover:text-white"
-                  }`}
-                >
-                  {item}
-                </button>
-              ))}
-            </div>
-
-            {/* Right Navigation */}
-            <div className="flex items-center gap-[12px]">
-              <button className="hidden md:flex items-center justify-center h-[50px] px-[21px] py-[8px] border border-black bg-transparent text-black font-dm-sans text-[14px] font-medium hover:bg-black hover:text-white transition-colors">
-                Get Connected
-              </button>
-              <button className="hidden sm:flex items-center justify-center h-[50px] px-[20px] py-[8px] bg-black text-white font-dm-sans text-[14px] font-medium hover:bg-gray-800 transition-colors">
-                Agent Login
-              </button>
-              <Menu className="w-5 h-5 text-black cursor-pointer" />
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Main Content */}
       <div className="max-w-[1600px] mx-auto px-4 lg:px-[70px] py-[30px]">
@@ -162,50 +118,59 @@ const Properties = () => {
           </div>
 
           {/* Filter Buttons */}
-          <div className="grid grid-cols-7 gap-[15px] w-full">
-            {/* Buy/Rent Toggle */}
-            <div className="flex">
-              <button
-                className={`h-[50px] px-[21px] py-[8px] font-dm-sans text-[17px] font-medium transition-colors border ${
-                  propertyType === "Buy"
-                    ? "bg-black text-white border-black"
-                    : "bg-transparent text-black border-black hover:bg-black hover:text-white"
-                }`}
-                onClick={() => setPropertyType("Buy")}
-              >
-                Buy
-              </button>
-              <button
-                className={`h-[50px] px-[21px] py-[8px] font-dm-sans text-[17px] font-medium transition-colors border ${
-                  propertyType === "Rent"
-                    ? "bg-black text-white border-black"
-                    : "bg-transparent text-black border-black hover:bg-black hover:text-white"
-                }`}
-                onClick={() => setPropertyType("Rent")}
-              >
-                Rent
-              </button>
+          <div className="w-full">
+            <div className="w-full flex justify-center items-center">
+              
+              {/* Buy/Rent Toggle */}
+              <div className="flex mr-[10px] flex-[1]">
+                <button
+                  className={`h-[50px] w-1/2 px-[21px] py-[8px] font-dm-sans text-[17px] font-medium transition-colors border border-black rounded-l ${
+                    propertyType === "Buy"
+                      ? "bg-black text-white"
+                      : "bg-transparent text-black hover:bg-black hover:text-white"
+                  }`}
+                  onClick={() => setPropertyType("Buy")}
+                  style={{ borderRight: "none" }}
+                >
+                  Buy
+                </button>
+                <button
+                  className={`h-[50px] w-1/2 px-[21px] py-[8px] font-dm-sans text-[17px] font-medium transition-colors border border-black rounded-r ${
+                    propertyType === "Rent"
+                      ? "bg-black text-white"
+                      : "bg-transparent text-black hover:bg-black hover:text-white"
+                  }`}
+                  onClick={() => setPropertyType("Rent")}
+                >
+                  Rent
+                </button>
+              </div>
+
+              {/* Individual Filter Buttons */}
+              <div className="flex mr-[10px] flex-[2]">
+                {["Type", "Price", "Beds", "Filters"].map((filter) => (
+                  <button
+                    key={filter}
+                    className="h-[50px] w-full px-[21px] py-[8px] bg-transparent text-black border border-black font-dm-sans text-[17px] font-medium hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2"
+                  >
+                    {filter}
+                    {filter === "Filters" && <Filter className="w-4 h-4" />}
+                  </button>
+                ))}
+              </div>
+
+              {/* Search Button */}
+              <div className="flex flex-[1]">
+                <button
+                  onClick={handleSearch}
+                  className="h-[50px] w-full px-[21px] py-[8px] bg-black text-white font-dm-sans text-[17px] font-medium hover:bg-gray-800 transition-colors"
+                >
+                  Search
+                </button>
+              </div>
             </div>
-
-            {/* Individual Filter Buttons */}
-            {["Type", "Price", "Beds", "Filters"].map((filter) => (
-              <button
-                key={filter}
-                className="h-[50px] px-[21px] py-[8px] bg-transparent text-black border border-black font-dm-sans text-[17px] font-medium hover:bg-black hover:text-white transition-colors flex items-center justify-center gap-2"
-              >
-                {filter}
-                {filter === "Filters" && <Filter className="w-4 h-4" />}
-              </button>
-            ))}
-
-            {/* Search Button */}
-            <button
-              onClick={handleSearch}
-              className="h-[50px] px-[21px] py-[8px] bg-black text-white font-dm-sans text-[17px] font-medium hover:bg-gray-800 transition-colors"
-            >
-              Search
-            </button>
           </div>
+
         </div>
 
         {/* Breadcrumb and Title */}
@@ -291,7 +256,7 @@ const Properties = () => {
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-[18px]">
               {properties.map((property) => (
-                <PropertyCard key={property.id} property={property} />
+                <PropertyCardItem key={property.id} property={property} />
               ))}
             </div>
           )}
@@ -313,7 +278,7 @@ const Properties = () => {
 };
 
 // Property Card Component
-const PropertyCard = ({ property }: { property: PropertyCard }) => {
+const PropertyCardItem = ({ property }: { property: PropertyCard }) => {
   return (
     <Link
       to={`/listing/${property.slug}`}
