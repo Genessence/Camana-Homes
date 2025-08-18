@@ -134,3 +134,20 @@
             })}
           </div>
         </div>
+
+
+
+
+
+
+
+        {/* New to the Market */}
+        <div className="mb-[40px] lg:mb-[80px]">
+          <h2 className="font-dm-sans text-[35px] font-semibold text-black leading-normal mb-[30px]">
+            New to the Market
+          </h2>
+
+          <NewToMarketGrid />
+        </div>
+
+
