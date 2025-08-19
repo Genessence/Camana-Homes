@@ -1,5 +1,5 @@
 // API service for Listing Page
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = "/api";
 
 export interface PropertyDetail {
   id: number;
