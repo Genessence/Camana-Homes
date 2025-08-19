@@ -38,18 +38,35 @@ export default function Gallery() {
           <h1 className="text-[24px] lg:text-[32px] font-bold">{title} — Gallery</h1>
           <Link to={`/listing/${slug}`} className="text-black underline">Back to listing</Link>
         </div>
-        <div className="grid grid-cols-1 gap-8 place-items-center">
-          {images.map((url, idx) => (
+        {/* Top row: 2 big images side-by-side (or fewer if not enough) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 place-items-center mb-8">
+          {images.slice(0, 2).map((url, idx) => (
             <div key={idx} className="w-full flex justify-center">
               <img
                 src={url}
                 alt={`Image ${idx + 1}`}
-                className="max-w-[90vw] max-h-[85vh] h-auto object-contain"
+                className="w-full h-auto object-contain max-h-[65vh]"
                 loading="lazy"
               />
             </div>
           ))}
         </div>
+
+        {/* Remaining images: 3-column grid that continues for all additional photos */}
+        {images.length > 2 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 place-items-center">
+            {images.slice(2).map((url, idx) => (
+              <div key={idx + 2} className="w-full flex justify-center">
+                <img
+                  src={url}
+                  alt={`Image ${idx + 3}`}
+                  className="w-full h-auto object-contain max-h-[50vh]"
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
