@@ -199,6 +199,7 @@ app = FastAPI(title="Camana Homes API")
 origins = [
     "http://localhost:8080",
     "http://127.0.0.1:8080",
+    "http://13.203.215.197"
 ]
 app.add_middleware(
     CORSMiddleware,
