@@ -29,6 +29,27 @@ export default function ListingPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const handleScrollToStats = () => {
+    const target = document.getElementById("property-stats");
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const handleScrollToInterior = () => {
+    const target = document.getElementById("interior-features");
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const handleScrollToOtherDetails = () => {
+    const target = document.getElementById("other-property-details");
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   useEffect(() => {
     const fetchPropertyData = async () => {
       if (!slug) return;
@@ -222,17 +243,17 @@ export default function ListingPage() {
             </button>
 
             {/* Area & lot Button */}
-            <button className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors">
+            <button onClick={handleScrollToStats} className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors">
               Area & lot
             </button>
 
             {/* Features and amenities Button */}
-            <button className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors">
+            <button onClick={handleScrollToInterior} className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors">
               Features and amenities
             </button>
 
             {/* Financials Button */}
-            <button className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors">
+            <button onClick={handleScrollToOtherDetails} className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors">
               Financials
             </button>
 
@@ -287,7 +308,7 @@ export default function ListingPage() {
               </div>
 
               {/* Property Statistics Grid */}
-              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4" id="property-stats">
                 {/* Price per sqft */}
                 <div className="bg-white border border-[#e5e5e5] p-4 rounded-lg">
                   <div className="flex items-center justify-center mb-2">
@@ -656,7 +677,7 @@ export default function ListingPage() {
                 </div>
 
                 {/* Interior Features Section */}
-                <div className="space-y-4">
+                <div className="space-y-4" id="interior-features">
                   <h3 className="text-[20px] font-bold text-black">
                     Interior features
                   </h3>
@@ -873,7 +894,7 @@ export default function ListingPage() {
                 </div>
 
                 {/* Other Property Details Section */}
-                <div className="space-y-4">
+                <div className="space-y-4" id="other-property-details">
                   <h3 className="text-[20px] font-bold text-black">
                     Other property details
                   </h3>

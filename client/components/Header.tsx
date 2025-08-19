@@ -22,7 +22,8 @@ const Header = (props: Props) => {
             </div>
             <div className='header-rightbox' style={{display: 'flex', alignItems: 'center'}}>
                 <button style={{padding: "14px 20px", border: "1px solid #000", borderRadius: "0px", marginRight:"20px"}}>Get Connected</button>
-                <button style={{padding: "16px 20px", backgroundColor: "#000", color: "#fff", borderRadius: "0px", marginRight: '20px'}}>Agent Login</button>
+                <button style={{padding: "16px 20px", backgroundColor: "#000", color: "#fff", borderRadius: "0px", marginRight: '20px'}}>Agent Login</button>   
+                
                 <GiHamburgerMenu style={{fontSize: '20px'}}/>
             </div>
         </div>
