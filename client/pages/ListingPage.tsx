@@ -28,6 +28,10 @@ export default function ListingPage() {
   const [stats, setStats] = useState<PropertyStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxImages, setLightboxImages] = useState<string[]>([]);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [galleryOpen, setGalleryOpen] = useState(false);
 
   const handleScrollToStats = () => {
     const target = document.getElementById("property-stats");
@@ -49,6 +53,24 @@ export default function ListingPage() {
       target.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
+
+  const openSingleImage = (url: string) => {
+    setLightboxImages([url]);
+    setLightboxIndex(0);
+    setLightboxOpen(true);
+  };
+
+  const openAllImages = () => {
+    const urls = ((property?.images || []).map((i) => i?.url).filter(Boolean) as string[]) || [];
+    const withPrimary = urls.length > 0 ? urls : (property?.primary_image_url ? [property.primary_image_url] : []);
+    setLightboxImages(withPrimary);
+    setLightboxIndex(0);
+    setGalleryOpen(true);
+  };
+
+  const closeLightbox = () => setLightboxOpen(false);
+  const goPrev = () => setLightboxIndex((i) => (i - 1 + lightboxImages.length) % lightboxImages.length);
+  const goNext = () => setLightboxIndex((i) => (i + 1) % lightboxImages.length);
 
   useEffect(() => {
     const fetchPropertyData = async () => {
@@ -138,7 +160,9 @@ export default function ListingPage() {
           {/* Image Gallery Section */}
           <div className="grid grid-cols-1 lg:grid-cols-[808px_1fr] gap-[25px]">
             {/* Main Large Image */}
-            <div className="relative w-full h-[600px] bg-gray-200">
+            <div className="relative w-full h-[600px] bg-gray-200 cursor-zoom-in" onClick={() => openSingleImage(
+              property.images[0]?.url || property.primary_image_url || "https://via.placeholder.com/808x600/f3f4f6/9ca3af?text=Property+Image"
+            )}>
               <img
                 src={
                   property.images[0]?.url ||
@@ -162,7 +186,7 @@ export default function ListingPage() {
             {/* Small Images Grid */}
             <div className="grid grid-cols-2 gap-[25px]">
               {/* Small Image 1 */}
-              <div className="relative w-full h-[287px] bg-gray-200">
+              <div className="relative w-full h-[287px] bg-gray-200 cursor-zoom-in" onClick={() => property.images[1]?.url && openSingleImage(property.images[1].url)}>
                 <img
                   src={
                     property.images[1]?.url ||
@@ -178,7 +202,7 @@ export default function ListingPage() {
               </div>
 
               {/* Small Image 2 */}
-              <div className="relative w-full h-[287px] bg-gray-200">
+              <div className="relative w-full h-[287px] bg-gray-200 cursor-zoom-in" onClick={() => property.images[2]?.url && openSingleImage(property.images[2].url)}>
                 <img
                   src={
                     property.images[2]?.url ||
@@ -194,7 +218,7 @@ export default function ListingPage() {
               </div>
 
               {/* Small Image 3 */}
-              <div className="relative w-full h-[287px] bg-gray-200">
+              <div className="relative w-full h-[287px] bg-gray-200 cursor-zoom-in" onClick={() => property.images[3]?.url && openSingleImage(property.images[3].url)}>
                 <img
                   src={
                     property.images[3]?.url ||
@@ -224,12 +248,12 @@ export default function ListingPage() {
                   }}
                 />
                 {/* "View All Photos" overlay */}
-                <div className="absolute inset-0 bg-white/10 backdrop-blur-sm flex items-center justify-center rounded-lg">
-                  <div className="text-center text-white drop-shadow-lg">
+                <button type="button" onClick={() => window.location.href = `/listing/${slug}/gallery`} className="absolute inset-0 bg-white/10 backdrop-blur-sm flex items-center justify-center rounded-lg text-center text-white drop-shadow-lg hover:bg-white/20 transition-colors">
+                  <div>
                     <div className="text-[24px] font-semibold mb-2">View All</div>
                     <div className="text-[18px]">Photos</div>
                   </div>
-                </div>
+                </button>
 
               </div>
             </div>
@@ -1359,6 +1383,57 @@ export default function ListingPage() {
           </div>
         </div>
       </main>
+
+      {/* Lightbox Modal (single image or next/prev) */}
+      {lightboxOpen && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center" onClick={closeLightbox}>
+          <div className="relative max-w-[90vw] max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={lightboxImages[lightboxIndex]}
+              alt="Property"
+              style={{ width: "auto", height: "auto", maxWidth: "90vw", maxHeight: "90vh" }}
+              className="object-contain"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
+            <button aria-label="Close" className="absolute -top-10 right-0 text-white text-2xl" onClick={closeLightbox}>×</button>
+            {lightboxImages.length > 1 && (
+              <>
+                <button aria-label="Previous" className="absolute left-[-48px] top-1/2 -translate-y-1/2 text-white text-3xl" onClick={goPrev}>‹</button>
+                <button aria-label="Next" className="absolute right-[-48px] top-1/2 -translate-y-1/2 text-white text-3xl" onClick={goNext}>›</button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Gallery Modal (grid of all images) */}
+      {galleryOpen && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center" onClick={() => setGalleryOpen(false)}>
+          <div className="relative w-[92vw] max-w-[1200px] max-h-[90vh] bg-black/0" onClick={(e) => e.stopPropagation()}>
+            <button aria-label="Close" className="absolute -top-10 right-0 text-white text-2xl" onClick={() => setGalleryOpen(false)}>×</button>
+            <div className="overflow-y-auto max-h-[90vh] p-2">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                {lightboxImages.map((url, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    className="bg-black/20"
+                    onClick={() => { setGalleryOpen(false); openSingleImage(url); }}
+                    aria-label={`Open image ${idx + 1}`}
+                  >
+                    <img
+                      src={url}
+                      alt={`Property ${idx + 1}`}
+                      className="w-full h-auto object-contain"
+                      loading="lazy"
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

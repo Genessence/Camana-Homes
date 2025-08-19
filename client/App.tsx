@@ -11,6 +11,7 @@ import Article from "./pages/Article";
 import Journal from "./pages/Journal";
 import NewDevelopment from "./pages/NewDevelopment";
 import PropertyDetail from "./pages/PropertyDetail";
+import Gallery from "./pages/Gallery";
 import ArticleDetail from "./pages/ArticleDetail";
 import AgentProfile from "./pages/AgentProfile";
 import ListingPage from "./pages/ListingPage";
@@ -43,6 +44,7 @@ const AppRoutes = () => {
         <Route path="/news/:slug" element={<ArticleDetail />} />
         <Route path="/AgentProfile" element={<AgentProfile />} />
         <Route path="/listing/:slug" element={<ListingPage />} />
+        <Route path="/listing/:slug/gallery" element={<Gallery />} />
         <Route path="/properties" element={<Properties />} />
         <Route path="/members-club" element={<MembersClub />} />
         <Route path="/about-us" element={<About />} />
