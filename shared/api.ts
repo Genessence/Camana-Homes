@@ -14,7 +14,8 @@ export interface DemoResponse {
 export type FetchOptions = {
   headers?: Record<string, string>;
 };
-const baseUrl = import.meta.env.VITE_API_BASE_URL || "/api";
+// const baseUrl = import.meta.env.VITE_API_BASE_URL || "/api";
+const baseUrl = "http://localhost:8000";
 export async function apiGet<T>(path: string, opts: FetchOptions = {}): Promise<T> {
   // Use the backend URL for API requests
   const fullPath = path.startsWith("http") ? path : `${baseUrl}${path}`;

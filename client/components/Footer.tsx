@@ -311,7 +311,6 @@ export default function Footer() {
             <p className="text-gray-700 text-base leading-relaxed">
               At Camana Homes, your privacy and trust are our top priority. We are committed to protecting your personal information and ensuring a secure experience on our platform. Any data you share with us—whether for property listings, inquiries, or partnerships—is kept confidential and used only to enhance your experience.
             </p>
-            <br />
             <p className="text-gray-700 text-base leading-relaxed">
               We do not sell or misuse your information. Our systems follow strict security protocols to safeguard your data, and we work only with verified partners to ensure transparency and trust.
             </p>

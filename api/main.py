@@ -355,6 +355,7 @@ async def get_featured_properties(
 
 @app.get("/api/properties/{slug}", response_model=PropertyDetailOut)
 async def property_detail(slug: str, db: AsyncSession = Depends(get_db)) -> PropertyDetailOut:
+    print(f"Getting property detail for slug: {slug}")
     prop = (
         await db.execute(select(Property).where(Property.slug == slug).limit(1))
     ).scalars().first()

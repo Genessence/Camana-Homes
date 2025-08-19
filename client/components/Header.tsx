@@ -28,7 +28,7 @@ const Header = (props: Props) => {
         </div>
         <div className="sub-container" style={{backgroundColor: "rgba(186, 186, 186, 0.15)", padding: "12px", display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
             <ul style={{display: 'flex', alignItems: 'center', justifyContent: 'center', listStyle: 'none'}}>
-                <li style={{marginRight: '20px'}}>Spain</li>
+                <li style={{marginRight: '20px'}}>Dubai</li>
                 <li style={{marginRight: '20px'}}>Italy</li>
                 <li style={{marginRight: '20px'}}>Switerland</li>
                 <li style={{marginRight: '20px'}}>Mexico</li>

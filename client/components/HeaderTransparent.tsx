@@ -41,9 +41,9 @@ const HeaderTransparent = (props: Props) => {
                 <button className="hidden md:flex items-center justify-center h-[50px] px-[21px] py-[8px] border border-white bg-white/14 text-white font-dm-sans text-[14px] font-medium tracking-[-0.48px] hover:bg-white/20 transition-colors backdrop-blur-sm">
                   Get Connected
                 </button>
-                <button className="hidden sm:flex items-center justify-center h-[50px] px-[20px] py-[8px] bg-white text-black font-dm-sans text-[14px] font-medium hover:bg-gray-100 transition-colors">
+                {/* <button className="hidden sm:flex items-center justify-center h-[50px] px-[20px] py-[8px] bg-white text-black font-dm-sans text-[14px] font-medium hover:bg-gray-100 transition-colors">
                   Agent Login
-                </button>
+                </button> */}
                 <Menu className="w-5 h-5 text-white cursor-pointer" />
               </div>
             </div>
@@ -53,7 +53,7 @@ const HeaderTransparent = (props: Props) => {
           <div className="hidden lg:flex items-center justify-center h-[46px] px-4 xl:px-[315px] border-t border-white/20 border-b border-white/20 bg-white/15 backdrop-blur-[8.5px]">
             <div className="flex items-center gap-[24px] py-[12px] overflow-x-auto">
               {[
-                "Spain",
+                "Dubai",
                 "Italy",
                 "Switzerland",
                 "Mexico",
