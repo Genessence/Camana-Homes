@@ -110,14 +110,14 @@ export default function Journal() {
                   "url('http://localhost:3845/assets/bc51edd598080ad9d7582562e1fd4c4b65414b9f.png')",
               }}
             />
-            <div className="px-6 py-6 text-center">
+            <div className="px-6 py-6 text-left">
               <span className="inline-block bg-red-accent text-white px-2.5 py-[5px] text-[16px] font-extrabold">
                 Celebrity Homes
               </span>
               <h1 className="mt-5 text-[35px] lg:text-[40px] font-black uppercase text-black leading-[1.15]">
                 Mary Tyler Moore's Sells for a Reduced $16.9 Million
               </h1>
-              <p className="mt-4 mx-auto max-w-[852px] text-[16px] leading-[24px] text-black">
+              <p className="mt-4 max-w-[852px] text-[16px] leading-[24px] text-black">
                 Lorem Ipsum is simply dummy text of the printing and typesetting
                 industry. It has survived not only five centuries, but also the
                 leap into electronic typesetting.
@@ -137,7 +137,7 @@ export default function Journal() {
                       "url('http://localhost:3845/assets/bc51edd598080ad9d7582562e1fd4c4b65414b9f.png')",
                   }}
                 />
-                <div className="px-5 py-5 text-center">
+                <div className="px-5 py-5 text-left">
                   <span className="inline-block bg-red-accent text-white px-2 py-[5px] text-[14px] font-extrabold">
                     Homes for Sale
                   </span>
@@ -151,6 +151,12 @@ export default function Journal() {
               </article>
             ))}
           </div>
+        </div>
+        {/* Bottom-left View all button */}
+        <div className="mt-[20px]">
+          <button className="bg-black text-white px-[35px] py-2 text-[16px] font-medium tracking-[-0.32px] rounded-none">
+            View all
+          </button>
         </div>
       </section>
 
@@ -187,7 +193,7 @@ export default function Journal() {
                         "url('http://localhost:3845/assets/08b9d36d8a14579b37ac7b47913bd04e73ddfd23.png')",
                     }}
                   />
-                  <div className="px-5 py-5 text-center">
+                  <div className="px-5 py-5 text-left">
                     <span className="inline-block bg-red-accent text-white px-2 py-[5px] text-[16px] font-extrabold">
                       Homes for Sale
                     </span>
@@ -210,7 +216,7 @@ export default function Journal() {
                         "url('http://localhost:3845/assets/ef30f4718043896d312186b2989f3d7d7f3352a1.png')",
                     }}
                   />
-                  <div className="px-5 py-5 text-center">
+                  <div className="px-5 py-5 text-left">
                     <span className="inline-block bg-red-accent text-white px-2 py-[5px] text-[16px] font-extrabold">
                       Product Recommendations
                     </span>
@@ -233,7 +239,7 @@ export default function Journal() {
                         "url('http://localhost:3845/assets/ef30f4718043896d312186b2989f3d7d7f3352a1.png')",
                     }}
                   />
-                  <div className="px-5 py-5 text-center">
+                  <div className="px-5 py-5 text-left">
                     <span className="inline-block bg-red-accent text-white px-2 py-[5px] text-[16px] font-extrabold">
                       Product Recommendations
                     </span>
@@ -256,7 +262,7 @@ export default function Journal() {
                         "url('http://localhost:3845/assets/08b9d36d8a14579b37ac7b47913bd04e73ddfd23.png')",
                     }}
                   />
-                  <div className="px-5 py-5 text-center">
+                  <div className="px-5 py-5 text-left">
                     <span className="inline-block bg-red-accent text-white px-2 py-[5px] text-[16px] font-extrabold">
                       Homes for Sale
                     </span>
@@ -275,7 +281,7 @@ export default function Journal() {
 
           {/* View all button */}
           <div className="mt-[30px]">
-            <button className="bg-black text-white px-[35px] py-2 text-[16px] font-medium tracking-[-0.32px]">
+            <button className="bg-black text-white px-[35px] py-2 text-[16px] font-medium tracking-[-0.32px] rounded-none">
               View all
             </button>
           </div>
@@ -298,7 +304,7 @@ export default function Journal() {
                     "url('http://localhost:3845/assets/bc51edd598080ad9d7582562e1fd4c4b65414b9f.png')",
                 }}
               />
-              <div className="px-5 py-5 text-center">
+              <div className="px-5 py-5 text-left">
                 <span className="inline-block bg-red-accent text-white px-2 py-[5px] text-[18px] font-extrabold">
                   Celebrity Homes
                 </span>
@@ -321,7 +327,7 @@ export default function Journal() {
                     "url('http://localhost:3845/assets/08b9d36d8a14579b37ac7b47913bd04e73ddfd23.png')",
                 }}
               />
-              <div className="px-5 py-5 text-center">
+              <div className="px-5 py-5 text-left">
                 <span className="inline-block bg-red-accent text-white px-2 py-[5px] text-[18px] font-extrabold">
                   Homes for Sale
                 </span>
@@ -344,7 +350,7 @@ export default function Journal() {
                     "url('http://localhost:3845/assets/ef30f4718043896d312186b2989f3d7d7f3352a1.png')",
                 }}
               />
-              <div className="px-5 py-5 text-center">
+              <div className="px-5 py-5 text-left">
                 <span className="inline-block bg-red-accent text-white px-2 py-[5px] text-[18px] font-extrabold">
                   Product Recommendations
                 </span>

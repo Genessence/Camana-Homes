@@ -28,7 +28,7 @@ const queryClient = new QueryClient();
 
 const AppRoutes = () => {
   const location = useLocation();
-  const hideHeaderOnPaths = ["/", "/members-club", "/about-us", "/journal"];
+  const hideHeaderOnPaths = ["/", "/members-club", "/about-us", "/journal", "/article"];
   const shouldHideHeader = hideHeaderOnPaths.includes(location.pathname);
 
   return (

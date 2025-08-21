@@ -1,4 +1,5 @@
 import React from "react";
+import JournalHeader from "@/components/JournalHeader";
 import {
   ChevronDown,
   Menu,
@@ -15,6 +16,7 @@ import { Link } from "react-router-dom";
 const Article = () => {
   return (
     <div className="min-h-screen bg-background">
+      <JournalHeader />
 
       {/* Article Content */}
       <div className="flex flex-col items-center w-full px-4 lg:px-[70px] py-[40px] gap-[20px]">
