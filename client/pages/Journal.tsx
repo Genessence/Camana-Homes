@@ -1,10 +1,102 @@
-import Header from "@/components/Header";
 import React from "react";
+import StayInTheKnow from "@/components/StayInTheKnow";
+import JoinClubForm from "@/components/JoinClubForm";
+import logo from "../assets/logo-black.png";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { useNavigate } from "react-router-dom";
 
 export default function Journal() {
+  const navigate = useNavigate();
+  const [isMoreOpen, setIsMoreOpen] = React.useState(false);
   return (
     <div className="min-h-screen bg-white">
-      {/* Header strip (matches site chrome spacing) */}
+      {/* Hardcoded Header for Journal */}
+      <div className='header' style={{borderBottom: '1px solid #E0E0E0'}}>
+        <div className='header-container' style={{display: 'flex', alignItems: 'center', padding: '14px 70px', justifyContent: 'space-between'}}>
+          <div style={{display: 'flex', alignItems: 'center'}}>
+            <img src={logo} onClick={() => navigate('/')} alt="logo" style={{width: '155px', marginRight: "90px", cursor: 'pointer'}}/>
+          </div>
+          <div className='header-rightbox' style={{display: 'flex', alignItems: 'center'}}>
+            <button style={{padding: "14px 20px", border: "1px solid #000", borderRadius: "0px", marginRight:"20px"}}>Get Connected</button>
+            <button style={{padding: "16px 20px", backgroundColor: "#000", color: "#fff", borderRadius: "0px", marginRight: '20px'}}>Agent Login</button>
+            <GiHamburgerMenu style={{fontSize: '20px'}}/>
+          </div>
+        </div>
+        <div className="sub-container" style={{backgroundColor: "rgba(186, 186, 186, 0.15)", padding: "12px", display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+          <ul style={{display: 'flex', alignItems: 'center', justifyContent: 'center', listStyle: 'none', position: 'relative'}}>
+            <li
+              style={{marginRight: '20px', cursor: 'pointer'}}
+              onClick={() => navigate('/properties')}
+            >
+              Luxury Homes
+            </li>
+            <li
+              style={{marginRight: '20px', cursor: 'pointer'}}
+              onClick={() => navigate('/properties')}
+            >
+              Branded Residences
+            </li>
+            <li
+              style={{marginRight: '20px', cursor: 'pointer'}}
+              onClick={() => navigate('/new-development')}
+            >
+              New Developments
+            </li>
+            <li
+              style={{marginRight: '20px', cursor: 'pointer'}}
+              onClick={() => navigate('/members-club')}
+            >
+              Camana Trips
+            </li>
+            <li
+              style={{marginRight: '20px', position: 'relative', cursor: 'pointer'}}
+              onClick={() => setIsMoreOpen((o) => !o)}
+            >
+              More
+              {isMoreOpen && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 8px)',
+                    left: 0,
+                    backgroundColor: '#fff',
+                    border: '1px solid #E5E7EB',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                    padding: '8px 0',
+                    zIndex: 20,
+                    minWidth: '180px',
+                  }}
+                >
+                  <div
+                    onClick={() => { setIsMoreOpen(false); navigate('/about-us'); }}
+                    style={{ padding: '8px 12px', whiteSpace: 'nowrap' }}
+                  >
+                    About Us
+                  </div>
+                  <div
+                    onClick={() => { setIsMoreOpen(false); navigate('/journal'); }}
+                    style={{ padding: '8px 12px', whiteSpace: 'nowrap' }}
+                  >
+                    Journal
+                  </div>
+                  <div
+                    onClick={() => { setIsMoreOpen(false); navigate('/members-club'); }}
+                    style={{ padding: '8px 12px', whiteSpace: 'nowrap' }}
+                  >
+                    Members Club
+                  </div>
+                  <div
+                    onClick={() => { setIsMoreOpen(false); navigate('/properties'); }}
+                    style={{ padding: '8px 12px', whiteSpace: 'nowrap' }}
+                  >
+                    All Properties
+                  </div>
+                </div>
+              )}
+            </li>
+          </ul>
+        </div>
+      </div>
 
       {/* Featured article block */}
       <section className="max-w-[1600px] mx-auto px-4 lg:px-[70px] py-10">
@@ -192,15 +284,7 @@ export default function Journal() {
 
       {/* Latest Journal Section */}
       <section className="max-w-[1600px] mx-auto px-4 lg:px-[70px] py-10">
-        {/* Section header */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-[30px] mb-[30px]">
-          <h2 className="text-[35px] font-semibold text-black">
-            Latest Journal
-          </h2>
-          <button className="bg-black text-white px-[35px] py-2 text-[16px] font-medium tracking-[-0.32px] h-[50px]">
-            View all
-          </button>
-        </div>
+      
 
         {/* Horizontal carousel container */}
         <div className="relative overflow-hidden">
@@ -579,10 +663,7 @@ export default function Journal() {
 
       {/* Luxury Homes Section */}
       <section className="max-w-[1600px] mx-auto px-4 lg:px-[70px] py-10">
-        {/* Section header */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-[30px] mb-[30px]">
-          <h2 className="text-[35px] font-bold text-black">Luxury Homes</h2>
-        </div>
+       
 
         {/* Main content */}
         <div className="flex flex-col lg:flex-row gap-[15px] items-start">
@@ -683,11 +764,7 @@ export default function Journal() {
       {/* Videos Section */}
       <section className="bg-black py-10">
         <div className="max-w-[1600px] mx-auto px-4 lg:px-[70px]">
-          {/* Section header */}
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-[30px] mb-[30px]">
-            <h2 className="text-[35px] font-semibold text-white">Videos</h2>
-          </div>
-
+         
           {/* Main content */}
           <div className="flex flex-col lg:flex-row gap-[10px] items-start">
             {/* Main video thumbnail */}
@@ -828,207 +905,18 @@ export default function Journal() {
               </div>
             </div>
 
-            {/* Right side - Secure your unit form */}
+            {/* Right side - Secure your unit form (reused component) */}
             <div className="w-full lg:w-[713px]">
-              <div className="mb-[30px]">
-                <h2 className="text-white text-[35px] font-semibold mb-4">
-                  Secure you unit before it hits the market
-                </h2>
-                <p className="text-white text-[23px] font-normal">
-                  don't miss this unique opportunity
-                </p>
-              </div>
-
-              <div className="space-y-8">
-                {/* Input fields */}
-                <div className="space-y-8">
-                  {/* Two name fields side by side */}
-                  <div className="flex flex-col lg:flex-row gap-4">
-                    <input
-                      type="text"
-                      placeholder="Your Name"
-                      className="flex-1 p-[10px] border border-[#cacaca] bg-transparent text-[#848484] text-[18px] font-medium leading-[36px]"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Your Name"
-                      className="flex-1 p-[10px] border border-[#cacaca] bg-transparent text-[#848484] text-[18px] font-medium leading-[36px]"
-                    />
-                  </div>
-
-                  {/* Phone number field */}
-                  <input
-                    type="tel"
-                    placeholder="Phone Number"
-                    className="w-full p-[10px] border border-[#cacaca] bg-transparent text-[#848484] text-[18px] font-medium leading-[36px]"
-                  />
-
-                  {/* Checkboxes */}
-                  <div className="space-y-2">
-                    <div className="flex items-start gap-3">
-                      <div className="bg-[#fd2d15] w-5 h-5 flex items-center justify-center mt-1">
-                        <svg
-                          width="17"
-                          height="17"
-                          viewBox="0 0 17 17"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M13.8542 4.14583L6.5 11.5L3.14583 8.14583L4.35417 6.9375L6.5 9.08333L12.6458 2.9375L13.8542 4.14583Z"
-                            fill="white"
-                          />
-                        </svg>
-                      </div>
-                      <p className="text-white text-[14px] font-normal tracking-[-0.32px] leading-[24px]">
-                        Lorem Ipsum is simply dummy text of the printing and
-                      </p>
-                    </div>
-
-                    <div className="flex items-start gap-3">
-                      <div className="border border-white w-5 h-5 mt-1"></div>
-                      <p className="text-white text-[14px] font-normal tracking-[-0.32px] leading-[24px]">
-                        Lorem Ipsum is simply dummy text of the printing and
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Join our Club button */}
-                <button className="w-full bg-[#fd2d15] text-white px-5 py-[18px] h-[50px] flex items-center justify-center gap-[5px] text-[20px] font-extrabold">
-                  <svg
-                    width="25"
-                    height="26"
-                    viewBox="0 0 25 26"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M12.5 0L25 13L12.5 26L0 13L12.5 0Z" fill="white" />
-                  </svg>
-                  Join our Club
-                </button>
-              </div>
+              <JoinClubForm />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stay in the Know Section */}
+      {/* Stay in the Know Section (reused component) */}
       <section className="py-10">
         <div className="max-w-[1600px] mx-auto px-4 lg:px-[70px]">
-          {/* Section title */}
-          <h2 className="text-[35px] font-semibold text-black mb-[30px]">
-            Stay in the know
-          </h2>
-
-          {/* Main content - Using exact homepage layout */}
-          <div className="grid grid-cols-2 gap-[20px] items-start">
-            {/* Left column: gallery on top, followers + video on bottom */}
-            <div className="flex flex-col gap-[20px]">
-              <div className="relative overflow-hidden h-[334.5px]">
-                <img
-                  src="http://localhost:3845/assets/c357de5cce6baf6e4fd62c7ea0c3c0eb1bcc724d.png"
-                  alt="Gallery"
-                  className="w-full h-full object-cover"
-                />
-                <button
-                  aria-label="Previous"
-                  className="absolute left-2.5 top-1/2 -translate-y-1/2 h-[46px] w-[70px] rounded-[50px] backdrop-blur-[25px] bg-[rgba(26,26,26,0.2)] grid place-items-center border border-white/10"
-                >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10 12L6 8L10 4"
-                      stroke="white"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-                <button
-                  aria-label="Next"
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 h-[46px] w-[70px] rounded-[50px] backdrop-blur-[25px] bg-[rgba(26,26,26,0.2)] grid place-items-center border border-white/10"
-                >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M6 4L10 8L6 12"
-                      stroke="white"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              </div>
-
-              <div className="grid grid-cols-2 gap-[20px]">
-                <div className="bg-black text-white p-[24px] h-[268px] relative">
-                  <div className="text-[40px] font-serif leading-[52px]">
-                    280k +
-                  </div>
-                  <div className="text-[19px] mt-1">Followers</div>
-                  <div className="text-[15px] mt-4 max-w-[247px]">
-                    Join us at Our Social handles to get updated soon.
-                  </div>
-                  <div className="flex items-center gap-3 mt-4 text-[15px]">
-                    <span className="text-white/90">Follow Us:</span>
-                    <span className="text-white">📘</span>
-                    <span className="text-[#fd2d15]">🐦</span>
-                    <span className="text-white">📷</span>
-                    <span className="text-white">💼</span>
-                  </div>
-                </div>
-                <div className="relative h-[268px] overflow-hidden">
-                  <img
-                    src="http://localhost:3845/assets/b452397dd79f21d383175dd81978fa658d189b03.png"
-                    alt="Video"
-                    className="w-full h-full object-cover"
-                  />
-                  <button
-                    aria-label="Play"
-                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[56.6px] h-[56.6px] rounded-[35px] bg-black/20 border border-white/10 grid place-items-center"
-                  >
-                    <svg
-                      width="22"
-                      height="22"
-                      viewBox="0 0 22 22"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M8.25 5.5L15.125 11L8.25 16.5V5.5Z"
-                        fill="white"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Right column: single large promo image */}
-            <div
-              className="relative overflow-hidden"
-              style={{ height: "622.5px" }}
-            >
-              <img
-                src="http://localhost:3845/assets/e0644fcd9e29f44547287311e630a76b9d3682f8.png"
-                alt="Promo"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
+          <StayInTheKnow />
         </div>
       </section>
     </div>
