@@ -8,3 +8,5 @@ python-dotenv
 pandas
 openpyxl
 requests    
+alembic
+psycopg2-binary 

@@ -1,0 +1,1 @@
+import { createApp } from './app';\nconst port = Number(process.env.PORT ?? 8080);\nconst app = createApp();\napp.listen(port, () => {\n  console.log(`API listening on :${port}`);\n});\n

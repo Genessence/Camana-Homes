@@ -200,6 +200,12 @@ class Article(Base):
     author_name: Mapped[Optional[str]] = mapped_column(String(255), default=None)
     author_avatar_url: Mapped[Optional[str]] = mapped_column(String(1024), default=None)
     published_at: Mapped[dt.datetime] = mapped_column(DateTime(timezone=True), default=dt.datetime.utcnow, index=True)
+    # Extended author fields for bio + social
+    author_bio: Mapped[Optional[str]] = mapped_column(Text, default=None)
+    author_website_url: Mapped[Optional[str]] = mapped_column(String(1024), default=None)
+    author_instagram_url: Mapped[Optional[str]] = mapped_column(String(1024), default=None)
+    author_linkedin_url: Mapped[Optional[str]] = mapped_column(String(1024), default=None)
+    author_youtube_url: Mapped[Optional[str]] = mapped_column(String(1024), default=None)
 
 
 class RecentlyViewed(Base):

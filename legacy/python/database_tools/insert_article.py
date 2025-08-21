@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-"""
-Insert or update a single Article in the database.
+# """
+# Insert or update a single Article in the database.
 
-Usage (from repo root):
-  pip install -r requirements.txt  # first time only
-  python -m database_tools.insert_article
+# Usage (from repo root):
+#   pip install -r requirements.txt  # first time only
+#   python -m database_tools.insert_article
 
-This script upserts on slug.
-Replace the placeholder image URLs before running in production.
-"""
+# This script upserts on slug.
+# Replace the placeholder image URLs before running in production.
+# """
 
 import asyncio
 from datetime import datetime, timezone
@@ -65,11 +65,20 @@ async def main() -> None:
             "world-class brand collaborations to shape Dubai's skyline."
         ),
         # Title image (e.g., handshake/mercedes image)
-        "image_url": "https://example.com/media/binghatti/title.jpg",
+        "image_url": "https://picsum.photos/seed/binghatti-title/1920/1080",
         "category": "Luxury",
         "author_name": "Camana Luxury",
         # Editor/avatar image (Camana Luxury)
-        "author_avatar_url": "https://example.com/media/camana-luxury/avatar.png",
+        "author_avatar_url": "https://picsum.photos/seed/camana-avatar/400/400",
+        # New extended fields – replace with real links
+        "author_bio": (
+            "Camana Luxury is the luxury vertical of Camana Homes, offering an exclusive "
+            "front-row seat to elite real estate, hospitality, and lifestyle."
+        ),
+        "author_website_url": "https://camana.homes",
+        "author_instagram_url": "https://instagram.com/camana",
+        "author_linkedin_url": "https://linkedin.com/company/camana",
+        "author_youtube_url": "https://youtube.com/@camana",
         # Optional: set a fixed published_at (UTC ISO)
         "published_at": datetime(2025, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
     }

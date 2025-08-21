@@ -231,7 +231,13 @@ class ArticleCardOut(BaseModel):
     category: Optional[str] = None
     author_name: Optional[str] = None
     author_avatar_url: Optional[str] = None
-    published_at: str
+    published_at: datetime
+    # Extended author fields
+    author_bio: Optional[str] = None
+    author_website_url: Optional[str] = None
+    author_instagram_url: Optional[str] = None
+    author_linkedin_url: Optional[str] = None
+    author_youtube_url: Optional[str] = None
 
     class Config:
         from_attributes = True
