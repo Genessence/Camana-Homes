@@ -116,54 +116,54 @@ const Index = () => {
           </div>
 
           {/* Search Bar */}
-          <div className="flex flex-row items-center bg-white rounded-[10px] overflow-hidden p-0 pl-2.5 w-full max-w-[860px] min-h-[55px] shadow-lg">
-            <div className="flex flex-row items-center w-full">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-white rounded-[10px] overflow-hidden p-0 sm:pl-2.5 w-full max-w-[860px] min-h-[55px] shadow-lg">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center w-full divide-y sm:divide-y-0">
               {/* Buy Dropdown */}
-              <div className="flex items-center justify-between border-r border-[#d9d9d9] pr-[15px] w-[116px] cursor-pointer hover:bg-gray-50 transition-colors">
-                <span className="font-dm-sans text-[16px] font-normal text-black px-[12px]">
+              <div className="flex items-center justify-between border-[#d9d9d9] sm:border-r pr-[15px] w-full sm:w-[116px] cursor-pointer hover:bg-gray-50 transition-colors">
+                <span className="font-dm-sans text-[16px] font-normal text-black px-[12px] py-[12px] sm:py-0">
                   Buy
                 </span>
-                <div className="w-[38px] h-[55px] flex items-center justify-center">
+                <div className="w-[38px] h-[55px] hidden sm:flex items-center justify-center">
                   <ChevronDown className="w-4 h-4 text-[#999999]" />
                 </div>
               </div>
 
               {/* Location */}
-              <div className="flex items-center justify-between border-r border-[#d9d9d9] pr-[15px] w-[264px] cursor-pointer hover:bg-gray-50 transition-colors">
-                <div className="flex items-center gap-[5px] px-[12px]">
+              <div className="flex items-center justify-between border-[#d9d9d9] sm:border-r pr-[15px] w-full sm:w-[264px] cursor-pointer hover:bg-gray-50 transition-colors">
+                <div className="flex items-center gap-[5px] px-[12px] py-[12px] sm:py-0">
                   <MapPin className="w-[18px] h-[18px] text-black" />
                   <span className="font-dm-sans text-[16px] font-normal text-black">
                     Los Angeles
                   </span>
                 </div>
-                <div className="w-[38px] h-[55px] flex items-center justify-center">
+                <div className="w-[38px] h-[55px] hidden sm:flex items-center justify-center">
                   <ChevronDown className="w-4 h-4 text-[#999999]" />
                 </div>
               </div>
 
               {/* Beds & Bath */}
-              <div className="flex items-center justify-between border-r border-[#d9d9d9] pr-[15px] w-[162px] cursor-pointer hover:bg-gray-50 transition-colors">
-                <span className="font-dm-sans text-[16px] font-normal text-black px-[8px]">
+              <div className="flex items-center justify-between border-[#d9d9d9] sm:border-r pr-[15px] w-full sm:w-[162px] cursor-pointer hover:bg-gray-50 transition-colors">
+                <span className="font-dm-sans text-[16px] font-normal text-black px-[12px] py-[12px] sm:px-[8px] sm:py-0">
                   Beds & Bath
                 </span>
-                <div className="w-[38px] h-[55px] flex items-center justify-center">
+                <div className="w-[38px] h-[55px] hidden sm:flex items-center justify-center">
                   <ChevronDown className="w-4 h-4 text-[#999999]" />
                 </div>
               </div>
 
               {/* Price */}
-              <div className="flex items-center justify-between w-[160px] cursor-pointer hover:bg-gray-50 transition-colors">
-                <span className="font-dm-sans text-[16px] font-normal text-black px-[12px]">
+              <div className="flex items-center justify-between w-full sm:w-[160px] cursor-pointer hover:bg-gray-50 transition-colors">
+                <span className="font-dm-sans text-[16px] font-normal text-black px-[12px] py-[12px] sm:py-0">
                   $500,000
                 </span>
-                <div className="w-[38px] h-[55px] flex items-center justify-center">
+                <div className="w-[38px] h-[55px] hidden sm:flex items-center justify-center">
                   <ChevronDown className="w-4 h-4 text-[#999999]" />
                 </div>
               </div>
             </div>
 
             {/* Search Button */}
-            <button className="bg-red-accent text-white font-dm-sans text-[16px] font-bold leading-[22.4px] tracking-[-0.48px] px-[15px] h-[55px] w-[126px] hover:bg-red-accent/90 transition-colors mt-0 flex items-center justify-center">
+            <button className="bg-red-accent text-white font-dm-sans text-[16px] font-bold leading-[22.4px] tracking-[-0.48px] px-[15px] h-[55px] w-full sm:w-[126px] hover:bg-red-accent/90 transition-colors mt-0 flex items-center justify-center">
               Search
             </button>
           </div>
@@ -235,7 +235,7 @@ const Index = () => {
 
         {/* Statistics Section */}
         <div className="mb-[60px] lg:mb-[100px] bg-white">
-          <div className="flex items-center">
+          <div className="flex flex-col-reverse lg:flex-row items-center lg:items-start gap-8">
             {/* Left Side - Text Content */}
             <div className="space-y-[40px]">
               {/* Main Heading */}
@@ -284,8 +284,8 @@ const Index = () => {
             </div>
 
             {/* Right Side - Abstract Graphic */}
-            <div className="relative flex justify-center lg:justify-end">
-              <div className="relative w-full max-w-[592px] h-[565px]">
+            <div className="relative hidden sm:flex justify-center lg:justify-end">
+              <div className="relative w-full max-w-[592px] h-[320px] sm:h-[420px] lg:h-[565px]">
                 <img
                   src={beyond}
                   alt="Abstract geometric pattern"
@@ -321,7 +321,7 @@ const Index = () => {
             Recently Viewed
           </h2>
 
-          <RecentlyViewedGrid />
+          <RecentlyViewedCarousel />
         </div>
       </div>
 
@@ -351,9 +351,9 @@ const Index = () => {
       </div>
       {/* Newsletter Signup (CTA) - Full Width */}
       <div className="overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-2 bg-black px-[70px] py-[50px]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 bg-black px-4 sm:px-8 lg:px-[70px] py-[50px]">
           {/* Left: Image with overlay text */}
-          <div className="relative h-[494px]">
+          <div className="relative h-[320px] sm:h-[420px] lg:h-[494px]">
             <img
               src={palm}
               alt="Development"
@@ -464,7 +464,7 @@ function TrendingPropertiesGrid() {
   if (!items) return <TrendingPropertiesPlaceholder />;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-[18px]">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
       {items.map((p) => (
         <Link
           key={p.id}
@@ -594,6 +594,7 @@ function TrendingPropertiesCarousel() {
   const [items, setItems] = React.useState<PropertyCard[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [itemsPerSlide, setItemsPerSlide] = React.useState(3);
 
   React.useEffect(() => {
     API.properties
@@ -602,10 +603,23 @@ function TrendingPropertiesCarousel() {
       .catch((e) => setError(String(e)));
   }, []);
 
+  React.useEffect(() => {
+    const computeItemsPerSlide = () => {
+      const width = window.innerWidth;
+      if (width < 640) return 1; // < sm
+      if (width < 1024) return 2; // < lg
+      return 3;
+    };
+    const update = () => setItemsPerSlide(computeItemsPerSlide());
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
   if (error) return <TrendingPropertiesPlaceholder />;
   if (!items) return <TrendingPropertiesPlaceholder />;
 
-  const totalSlides = Math.ceil(items.length / 3);
+  const totalSlides = Math.ceil(items.length / itemsPerSlide);
   const canGoLeft = currentIndex > 0;
   const canGoRight = currentIndex < totalSlides - 1;
 
@@ -621,13 +635,13 @@ function TrendingPropertiesCarousel() {
     }
   };
 
-  const startIndex = currentIndex * 3;
-  const visibleItems = items.slice(startIndex, startIndex + 3);
+  const startIndex = currentIndex * itemsPerSlide;
+  const visibleItems = items.slice(startIndex, startIndex + itemsPerSlide);
 
   return (
     <div className="relative">
       {/* Carousel Container */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-[18px]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
         {visibleItems.map((p) => (
           <Link
             key={p.id}
@@ -988,7 +1002,7 @@ function RecentlyViewedGrid() {
     return <div className="text-[#666]">No recent views yet.</div>;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-[18px]">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
       {items.map((p) => (
         <Link
           key={p.id}
@@ -1118,6 +1132,233 @@ function RecentlyViewedGrid() {
   );
 }
 
+function RecentlyViewedCarousel() {
+  const visitorId = useVisitorId();
+  const [items, setItems] = React.useState<PropertyCard[] | null>(null);
+  const [error, setError] = React.useState<string | null>(null);
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [itemsPerSlide, setItemsPerSlide] = React.useState(3);
+
+  React.useEffect(() => {
+    if (!visitorId) return;
+    API.properties
+      .recentlyViewed(12, visitorId)
+      .then(setItems)
+      .catch((e) => setError(String(e)));
+  }, [visitorId]);
+
+  React.useEffect(() => {
+    const computeItemsPerSlide = () => {
+      const width = window.innerWidth;
+      if (width < 640) return 1; // < sm
+      if (width < 1024) return 2; // < lg
+      return 3;
+    };
+    const update = () => setItemsPerSlide(computeItemsPerSlide());
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
+  if (error) return <TrendingPropertiesPlaceholder />;
+  if (!items) return <TrendingPropertiesPlaceholder />;
+  if (items.length === 0)
+    return <div className="text-[#666]">No recent views yet.</div>;
+
+  const totalSlides = Math.ceil(items.length / itemsPerSlide);
+  const canGoLeft = currentIndex > 0;
+  const canGoRight = currentIndex < totalSlides - 1;
+
+  const goToPrevious = () => {
+    if (canGoLeft) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
+  const goToNext = () => {
+    if (canGoRight) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
+
+  const startIndex = currentIndex * itemsPerSlide;
+  const visibleItems = items.slice(startIndex, startIndex + itemsPerSlide);
+
+  return (
+    <div className="relative">
+      {/* Carousel Container */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
+        {visibleItems.map((p) => (
+          <Link
+            key={p.id}
+            to={`/listing/${p.slug}`}
+            className="w-full bg-white p-[10px] block rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow"
+          >
+            <div className="relative h-[316px] mb-[10px] overflow-hidden rounded-lg">
+              <img
+                src={p.primary_image_url}
+                alt={p.title}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              <div className="absolute top-[10px] left-[9px] flex gap-[10px]">
+                <div className="flex items-center gap-[6px] px-[9.681px] py-[8.471px] border border-white bg-black/10 backdrop-blur-[8px]">
+                  <Eye className="w-[18px] h-[18px] text-white" />
+                  <span className="text-white font-dm-sans text-[13.391px] font-medium leading-[17.14px]">
+                    {new Intl.NumberFormat().format(p.views_count)}
+                  </span>
+                </div>
+                {p.has_virtual_tour && (
+                  <div className="px-[9.681px] py-[8.471px] border border-white bg-black/10 backdrop-blur-[8px] text-white font-dm-sans text-[13.391px] font-medium leading-[17.14px]">
+                    Virtual Tours
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="flex flex-col gap-[11px]">
+              <div className="flex items-center justify-between">
+                <div className="font-dm-sans text-[23.607px] font-semibold text-black leading-[28.328px] tracking-[-0.472px]">
+                  {(() => {
+                    const amount = p.price_amount ?? 0;
+                    const currency = p.price_currency || 'USD';
+                    try { return new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(amount); }
+                    catch { return `${currency} ${amount.toLocaleString()}`; }
+                  })()}
+                </div>
+                <div className="flex items-center gap-[5px]">
+                  <span className="font-dm-sans text-[14px] font-semibold text-black">
+                    {/* Contact Agent */}
+                  </span>
+                  <ArrowRight className="w-[10px] h-[5px] text-[#999] transform -rotate-90" />
+                </div>
+              </div>
+              <h3 className="font-dm-sans text-[17.705px] font-normal text-black leading-[21.246px] tracking-[-0.354px]">
+                {p.title}
+              </h3>
+              <div className="flex items-center gap-[10px] text-[12.8px] font-normal text-black">
+                <span>{p.property_type}</span>
+                <span>|</span>
+                <div className="flex items-center gap-[2px]">
+                  <Bed className="w-[17.705px] h-[17.705px]" />
+                  <span className="font-plus-jakarta text-[11.803px] leading-[17.705px] tracking-[-0.236px]">
+                    {p.bedrooms}
+                  </span>
+                </div>
+                <div className="flex items-center gap-[2px]">
+                  <Bath className="w-[17.705px] h-[17.705px]" />
+                  <span className="font-plus-jakarta text-[11.803px] leading-[17.705px] tracking-[-0.236px]">
+                    {p.bathrooms}
+                  </span>
+                </div>
+                <span>|</span>
+                <span>
+                  Area : {p.area_value} {p.area_unit}
+                </span>
+              </div>
+              <div className="h-[1px] bg-gray-light"></div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-[5px]">
+                  {p.agent ? (
+                    <>
+                      <img
+                        src={
+                          p.agent?.avatar_url ||
+                          "https://api.builder.io/api/v1/image/assets/TEMP/21584c4a5fb695a4f53c9f609c46424507f3b08c?width=98"
+                        }
+                        alt={p.agent?.name || "Agent"}
+                        className="w-[49px] h-[49px] rounded-full"
+                      />
+                      <div>
+                        <div className="font-dm-sans text-[16px] font-semibold italic text-black">
+                          {p.agent?.name}
+                        </div>
+                        <div className="font-dm-sans text-[12px] font-normal italic text-[#666]">
+                          {p.agent?.agency?.name}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <img
+                        src={
+                          p.developer_logo_url ||
+                          "https://via.placeholder.com/98x98/f3f4f6/9ca3af?text=Dev"
+                        }
+                        alt={p.developer || "Developer"}
+                        className="w-[49px] h-[49px] rounded-full object-contain bg-white"
+                      />
+                      <div>
+                        <div className="font-dm-sans text-[16px] font-semibold italic text-black">
+                          Direct from Developer
+                        </div>
+                        <div className="font-dm-sans text-[12px] font-normal italic text-[#666]">
+                          {p.developer || ""}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+                {p.agent?.agency?.logo_url ? (
+                  <img
+                    src={p.agent.agency.logo_url}
+                    alt="Company Logo"
+                    className="w-[73px] h-[26px]"
+                  />
+                ) : null}
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* Navigation Arrows */}
+      {totalSlides > 1 && (
+        <div className="flex justify-between items-center mt-8">
+          <button
+            onClick={goToPrevious}
+            disabled={!canGoLeft}
+            className={`flex items-center justify-center w-14 h-14 rounded-full border-2 transition-all ${
+              canGoLeft
+                ? "border-black text-black hover:bg-black hover:text-white shadow-lg"
+                : "border-gray-300 text-gray-300 cursor-not-allowed"
+            }`}
+            aria-label="Previous recently viewed"
+          >
+            <ArrowLeft className="w-6 h-6" />
+          </button>
+
+          <div className="flex gap-3">
+            {Array.from({ length: totalSlides }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentIndex(i)}
+                className={`w-4 h-4 rounded-full transition-all ${
+                  i === currentIndex
+                    ? "bg-black scale-110"
+                    : "bg-gray-300 hover:bg-gray-400"
+                }`}
+                aria-label={`Go to recently slide ${i + 1}`}
+              />
+            ))}
+          </div>
+
+          <button
+            onClick={goToNext}
+            disabled={!canGoRight}
+            className={`flex items-center justify-center w-14 h-14 rounded-full border-2 transition-all ${
+              canGoRight
+                ? "border-black text-black hover:bg-black hover:text-white shadow-lg"
+                : "border-gray-300 text-gray-300 cursor-not-allowed"
+            }`}
+            aria-label="Next recently viewed"
+          >
+            <ArrowRight className="w-6 h-6" />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function FeaturedSection() {
   const [items, setItems] = React.useState<PropertyCard[] | null>(null);
   const [idx, setIdx] = React.useState(0);
@@ -1135,18 +1376,17 @@ function FeaturedSection() {
 
   // Skeleton placeholder for featured section
   const renderSkeleton = (
-    <div className="relative w-full h-[80vh] overflow-hidden bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse">
-      {/* Skeleton for glass morphism pill */}
-      <div className="absolute left-8 lg:left-16 bottom-[140px]">
-        <div className="w-40 h-10 animate-pulse bg-white/20 rounded-md" />
-      </div>
-      {/* Skeleton for title and price */}
-      <div className="absolute left-8 lg:left-16 bottom-8 right-32">
+    <div className="relative w-full h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-hidden bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse">
+      {/* Skeleton for title and pill container */}
+      <div className="absolute left-4 sm:left-8 lg:left-16 bottom-6 sm:bottom-8 right-4 sm:right-16 lg:right-32">
+        <div className="mb-[30px]">
+          <div className="w-40 h-10 animate-pulse bg-white/20 rounded-md" />
+        </div>
         <div className="w-96 h-12 animate-pulse bg-white/20 rounded mb-3" />
         <div className="w-80 h-8 animate-pulse bg-white/20 rounded" />
       </div>
       {/* Skeleton for navigation buttons */}
-      <div className="absolute right-8 lg:right-16 bottom-8 flex gap-3">
+      <div className="absolute right-4 sm:right-8 lg:right-16 bottom-6 sm:bottom-8 flex gap-3">
         <div className="w-12 h-12 animate-pulse bg-white/20 rounded-full" />
         <div className="w-12 h-12 animate-pulse bg-white/20 rounded-full" />
       </div>
@@ -1159,7 +1399,7 @@ function FeaturedSection() {
   const current = items[idx];
 
   return (
-    <div className="relative w-full h-[80vh] overflow-hidden">
+    <div className="relative w-full h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-hidden">
       <img
         src={current.primary_image_url}
         alt={current.title}
@@ -1168,17 +1408,16 @@ function FeaturedSection() {
       {/* Dark overlay for better text readability */}
       <div className="absolute inset-0 bg-black/30" />
 
-      {/* glass morphism pill */}
-      <div className="absolute left-8 lg:left-16 bottom-[140px] z-10">
-        <div className="backdrop-blur-md bg-white/15 border border-white/20 text-white px-6 py-3 inline-flex items-center rounded-md">
-          <span className="font-dm-sans text-[16px] font-semibold">
-            Featured listings
-          </span>
+      {/* title + pill + price container */}
+      <div className="absolute left-4 sm:left-8 lg:left-16 bottom-6 sm:bottom-8 right-4 sm:right-16 lg:right-32 text-white z-10">
+        {/* glass morphism pill 30px above title */}
+        <div className="mb-[30px]">
+          <div className="backdrop-blur-md bg-white/15 border border-white/20 text-white px-6 py-3 inline-flex items-center rounded-md">
+            <span className="font-dm-sans text-[16px] font-semibold">
+              Featured listings
+            </span>
+          </div>
         </div>
-      </div>
-
-      {/* title + price */}
-      <div className="absolute left-8 lg:left-16 bottom-8 right-32 text-white z-10">
         <Link to={`/listing/${current.slug}`} className="block">
           <div className="font-dm-sans text-[28px] sm:text-[32px] lg:text-[36px] font-bold mb-3 hover:underline">
             {current.title}
@@ -1194,7 +1433,7 @@ function FeaturedSection() {
         </div>
       </div>
       {/* nav buttons bottom-right */}
-      <div className="absolute right-8 lg:right-16 bottom-8 flex gap-3 z-10">
+      <div className="absolute right-4 sm:right-8 lg:right-16 bottom-6 sm:bottom-8 flex gap-3 z-10">
         <button
           aria-label="Previous"
           onClick={() =>
@@ -1220,6 +1459,7 @@ function JournalCarousel() {
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const [articles, setArticles] = React.useState<ArticleCard[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
+  const [articlesPerPage, setArticlesPerPage] = React.useState(3);
 
   React.useEffect(() => {
     API.articles
@@ -1228,7 +1468,19 @@ function JournalCarousel() {
       .catch((e) => setError(String(e)));
   }, []);
 
-  const articlesPerPage = 3;
+  React.useEffect(() => {
+    const computePerPage = () => {
+      const width = window.innerWidth;
+      if (width < 640) return 1; // < sm
+      if (width < 1024) return 2; // < lg
+      return 3;
+    };
+    const update = () => setArticlesPerPage(computePerPage());
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
   const totalSlides = Math.ceil(((articles?.length) || 0) / articlesPerPage);
   const canGoLeft = currentIndex > 0;
   const canGoRight = currentIndex < Math.max(totalSlides - 1, 0);
@@ -1271,7 +1523,7 @@ function JournalCarousel() {
                   <div
                     key={slideIndex * 3 + index}
                     className="bg-white border border-[#e9e9e9] flex-shrink-0 overflow-hidden"
-                    style={{ width: "calc((100% - 60px)/3)" }}
+                    style={{ width: `calc((100% - ${30 * (articlesPerPage - 1)}px)/${articlesPerPage})` }}
                   >
                     <Link to={`/article-v2/${a.slug}`} className="block">
                       <div className="flex flex-col">

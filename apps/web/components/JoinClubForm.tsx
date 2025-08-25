@@ -2,11 +2,11 @@ import React from "react";
 
 export default function JoinClubForm() {
   return (
-    <div className="flex flex-col gap-[30px] p-[50px] lg:px-[70px] text-white h-[494px] justify-center">
+    <div className="flex flex-col gap-[24px] p-6 sm:p-8 lg:px-[70px] lg:py-[50px] text-white lg:h-[494px] justify-start lg:justify-center relative z-10">
       <div className="space-y-[30px]">
         <div>
           <h3 className="font-dm-sans text-[24px] sm:text-[28px] lg:text-[35px] font-semibold mb-[30px]">
-            Secure you unit before it hits the market
+            Secure your unit before it hits the market
           </h3>
           <p className="font-dm-sans text-[14px] lg:text-[23px] text-white/80">
             Don't miss this unique opportunity
@@ -14,7 +14,7 @@ export default function JoinClubForm() {
         </div>
 
         <div className="space-y-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
             <input
               type="text"
               placeholder="Your Name"
@@ -23,8 +23,8 @@ export default function JoinClubForm() {
             />
             <input
               type="text"
-              placeholder="Your Name"
-              aria-label="Your Name"
+              placeholder="Email"
+              aria-label="Email"
               className="px-4 py-3 bg-transparent border border-white/25 text-white placeholder-white/60 focus:outline-none font-dm-sans text-[18px]"
             />
           </div>
@@ -60,7 +60,7 @@ export default function JoinClubForm() {
           </div>
         </div>
 
-        <button className="w-full bg-[#fd2d15] hover:bg-[#fd2d15]/90 text-white font-dm-sans font-extrabold text-[20px] h-[50px]">
+        <button className="w-full bg-[#fd2d15] hover:bg-[#fd2d15]/90 text-white font-dm-sans font-extrabold text-[20px] h-[50px] mt-2">
           Join our Club
         </button>
       </div>
