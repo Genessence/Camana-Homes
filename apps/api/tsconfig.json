@@ -1,2 +1,14 @@
 {
-  "extends": "../../tsconfig.json",\n  "compilerOptions": {\n    "outDir": "dist",\n    "rootDir": "src",\n    "moduleResolution": "node",\n    "resolveJsonModule": true,\n    "noEmit": false\n  },\n  "include": ["src/**/*"],\n  "exclude": ["node_modules"]\n}\n
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "noEmit": false,
+    "allowImportingTsExtensions": false,
+    "isolatedModules": false
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}

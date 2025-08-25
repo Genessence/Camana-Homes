@@ -1,1 +1,31 @@
-import express from 'express';\nimport cors from 'cors';\nimport helmet from 'helmet';\nimport morgan from 'morgan';\nimport cookieParser from 'cookie-parser';\n\nexport function createApp() {\n  const app = express();\n  app.use(helmet());\n  app.use(cors());\n  app.use(express.json());\n  app.use(cookieParser());\n\n  app.get('/api/ping', (_req, res) => res.json({ message: 'pong' }));\n  return app;\n}\n
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { router } from './routes';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export function createApp() {
+  const app = express();
+  app.use(helmet());
+  app.use(cors({
+    origin: ['http://localhost:8081', 'http://localhost:8083', 'http://127.0.0.1:8081', 'http://127.0.0.1:8083'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Visitor-Id']
+  }));
+  app.use(express.json());
+  app.use(cookieParser());
+  
+  // Serve static images from the img folder
+  app.use('/images', express.static(path.join(__dirname, '../../../img')));
+  app.use(morgan('combined'));
+
+  app.use('/api', router);
+  return app;
+}

@@ -2,7 +2,7 @@ import React from "react";
 import JournalHeader from "@/components/JournalHeader";
 import { Mail, Facebook, Instagram, Linkedin, Youtube, ArrowLeft, ArrowRight } from "lucide-react";
 import { API } from "@shared/api";
-import type { ArticleCard } from "@/shared/api.types";
+import type { ArticleCard } from "@shared/api.types";
 
 const Article = () => {
   const [article, setArticle] = React.useState<ArticleCard | null>(null);
@@ -23,6 +23,8 @@ const Article = () => {
       mounted = false;
     };
   }, []);
+
+  console.log(article);
 
   const renderHeader = () => {
     if (loading || !article) {
@@ -78,6 +80,9 @@ const Article = () => {
         src={article.image_url}
         alt={article.title}
         className="w-full max-w-[1460px] h-[400px] lg:h-[725px] object-cover"
+        onError={(e) => {
+          (e.currentTarget as HTMLImageElement).src = "https://camana-homes.s3.ap-south-1.amazonaws.com/properties/dubai-marina/2200xxs%20(1).webp";
+        }}
       />
     );
   };
@@ -123,40 +128,65 @@ const Article = () => {
             </div>
           </div>
 
-          {/* Skeleton body blocks instead of static article */}
-          <div className="flex-1 flex flex-col gap-[20px]">
-            <div className="h-[120px] bg-gray-100 animate-pulse" />
-            <div className="h-[240px] bg-gray-100 animate-pulse" />
-            <div className="h-[18px] bg-gray-100 animate-pulse w-4/5" />
-            <div className="h-[18px] bg-gray-100 animate-pulse w-3/5" />
-            <div className="h-[18px] bg-gray-100 animate-pulse w-2/5" />
-            {/* Property Card and Sidebar (hidden placeholder for now) */}
-            <div className="flex flex-col lg:flex-row gap-[20px]">
-              {/* Property Card */}
-              <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-[10px]">
-                <div className="border border-gray-light bg-white p-[10px]">
-                  <div className="relative h-[316px] mb-[10px] bg-gray-100 animate-pulse" />
-                  <div className="h-[18px] w-1/2 bg-gray-100 animate-pulse mb-2" />
-                  <div className="h-[14px] w-3/5 bg-gray-100 animate-pulse" />
+          {/* Body */}
+          {loading ? (
+            <div className="flex-1 flex flex-col gap-[20px]">
+              <div className="h-[120px] bg-gray-100 animate-pulse" />
+              <div className="h-[240px] bg-gray-100 animate-pulse" />
+              <div className="h-[18px] bg-gray-100 animate-pulse w-4/5" />
+              <div className="h-[18px] bg-gray-100 animate-pulse w-3/5" />
+              <div className="h-[18px] bg-gray-100 animate-pulse w-2/5" />
+            </div>
+          ) : (
+            <div className="flex-1 flex flex-col gap-[20px]">
+              {/* Simple article body using available fields */}
+              {article?.excerpt && (
+                <p className="text-[#333] font-dm-sans text-[18px] leading-[28px]">
+                  {article.excerpt}
+                </p>
+              )}
+
+              <div className="flex flex-col lg:flex-row gap-[20px]">
+                {/* Left: image + title again for layout balance */}
+                <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-[10px]">
+                  <div className="bg-white p-[10px]">
+                    <img
+                      src={article?.image_url || ''}
+                      alt={article?.title || 'Article'}
+                      className="w-full h-[316px] object-cover mb-[10px]"
+                    />
+                    <div className="text-[16px] text-[#666]">
+                      {article?.title}
+                    </div>
+                  </div>
+
+                  {/* Secondary visual */}
+                  <div className="bg-white">
+                    <img
+                      src={article?.image_url || ''}
+                      alt={article?.title || 'Article'}
+                      className="w-full h-[316px] lg:h-[475px] object-cover"
+                    />
+                  </div>
                 </div>
 
-                {/* Second Property Image */}
-                <div className="border border-gray-light">
-                  <div className="w-full h-[475px] bg-gray-100 animate-pulse" />
-                </div>
-              </div>
-
-              {/* Reading Time Sidebar */}
-              <div className="w-full lg:w-[247px] flex flex-col gap-[17px]">
-                <div className="bg-[#F5F5F5] p-[20px] h-[60px]" />
-                <div className="px-[10px] space-y-3">
-                  <div className="h-[16px] bg-gray-100 animate-pulse w-full" />
-                  <div className="h-[16px] bg-gray-100 animate-pulse w-5/6" />
-                  <div className="h-[16px] bg-gray-100 animate-pulse w-3/4" />
+                {/* Right: Info sidebar */}
+                <div className="w-full lg:w-[247px] flex flex-col gap-[12px] bg-[#F5F5F5] p-[16px]">
+                  <div className="font-dm-sans text-[14px] text-[#666]">
+                    {article?.category || 'Journal'}
+                  </div>
+                  <div className="font-dm-sans text-[16px] font-semibold text-black">
+                    {article?.author_name || 'Camana Homes'}
+                  </div>
+                  <div className="text-[12px] text-[#777]">
+                    {article?.published_at
+                      ? new Date(article.published_at).toLocaleDateString()
+                      : ''}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 

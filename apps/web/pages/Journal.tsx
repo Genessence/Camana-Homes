@@ -1,13 +1,33 @@
 import React from "react";
+import { API } from "@shared/api";
+import type { ArticleCard } from "@shared/api.types";
 import StayInTheKnow from "@/components/StayInTheKnow";
 import JoinClubForm from "@/components/JoinClubForm";
 import logo from "../assets/logo-black.png";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+
+const PUBLIC_IMAGE_FALLBACK = "https://camana-homes.s3.ap-south-1.amazonaws.com/properties/dubai-marina/2200xxs%20(1).webp";
+const onImgError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+  const img = e.currentTarget as HTMLImageElement;
+  if (!img || img.src === PUBLIC_IMAGE_FALLBACK) return;
+  img.src = PUBLIC_IMAGE_FALLBACK;
+};
 
 export default function Journal() {
   const navigate = useNavigate();
   const [isMoreOpen, setIsMoreOpen] = React.useState(false);
+  const [articles, setArticles] = React.useState<ArticleCard[] | null>(null);
+  const [loading, setLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    setLoading(true);
+    API.articles
+      .list(12)
+      .then(setArticles)
+      .catch(() => setArticles([]))
+      .finally(() => setLoading(false));
+  }, []);
   return (
     <div className="min-h-screen bg-white">
       {/* Hardcoded Header for Journal */}
@@ -98,60 +118,60 @@ export default function Journal() {
         </div>
       </div>
 
-      {/* Featured article block */}
+      {/* Featured article block (dynamic) */}
       <section className="max-w-[1600px] mx-auto px-4 lg:px-[70px] py-10">
-        <div className="flex flex-col lg:flex-row gap-[15px] lg:gap-[30px] items-start">
-          {/* Main article */}
-          <article className="bg-white w-full lg:w-[931px] border border-gray-200">
-            <div
-              className="h-[575px] bg-cover bg-center"
-              style={{
-                backgroundImage:
-                  "url('http://localhost:3845/assets/bc51edd598080ad9d7582562e1fd4c4b65414b9f.png')",
-              }}
-            />
-            <div className="px-6 py-6 text-left">
-              <span className="inline-block bg-red-accent text-white px-2.5 py-[5px] text-[16px] font-extrabold">
-                Celebrity Homes
-              </span>
-              <h1 className="mt-5 text-[35px] lg:text-[40px] font-black uppercase text-black leading-[1.15]">
-                Mary Tyler Moore's Sells for a Reduced $16.9 Million
-              </h1>
-              <p className="mt-4 max-w-[852px] text-[16px] leading-[24px] text-black">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. It has survived not only five centuries, but also the
-                leap into electronic typesetting.
-              </p>
-              <p className="mt-3 text-[18px]">By Tori Latham - 12 hours ago</p>
-            </div>
-          </article>
-
-          {/* Sidebar cards */}
-          <div className="grid grid-cols-1 gap-[15px] w-full lg:w-[499px]">
-            {[1, 2].map((i) => (
-              <article key={i} className="border border-gray-200 bg-white">
-                <div
-                  className="h-[266px] bg-cover bg-center"
-                  style={{
-                    backgroundImage:
-                      "url('http://localhost:3845/assets/bc51edd598080ad9d7582562e1fd4c4b65414b9f.png')",
-                  }}
-                />
-                <div className="px-5 py-5 text-left">
-                  <span className="inline-block bg-red-accent text-white px-2 py-[5px] text-[14px] font-extrabold">
-                    Homes for Sale
-                  </span>
-                  <h3 className="mt-3 text-[24px] font-black uppercase text-black leading-[1.2]">
-                    This $1.9 Million William Kesling Home in Pasadena
-                  </h3>
-                  <p className="mt-2 text-[15px]">
-                    By Tori Latham - 12 hours ago
-                  </p>
+        {(() => {
+          const list = articles || [];
+          const a0 = list[0];
+          const side = list.slice(1, 3);
+          if (!a0) return null;
+          const mainImg = a0.image_url || "https://via.placeholder.com/931x575/f3f4f6/9ca3af?text=Article";
+          return (
+            <div className="flex flex-col lg:flex-row gap-[15px] lg:gap-[30px] items-start">
+              {/* Main article */}
+              <article className="bg-white w-full lg:w-[931px] border border-gray-200">
+                <Link to={`/article-v2/${a0.slug}`}>
+                  <div className="h-[575px] overflow-hidden">
+                    <img src={mainImg} alt={a0.title} className="w-full h-full object-cover" onError={onImgError} />
+                  </div>
+                </Link>
+                <div className="px-6 py-6 text-left">
+                  {a0.category && (
+                    <span className="inline-block bg-red-accent text-white px-2.5 py-[5px] text-[16px] font-extrabold">{a0.category}</span>
+                  )}
+                  <h1 className="mt-5 text-[35px] lg:text-[40px] font-black uppercase text-black leading-[1.15]">{a0.title}</h1>
+                  {a0.excerpt && (
+                    <p className="mt-4 max-w-[852px] text-[16px] leading-[24px] text-black">{a0.excerpt}</p>
+                  )}
+                  <p className="mt-3 text-[18px]">{a0.author_name ? `By ${a0.author_name}` : ''} {a0.published_at ? `- ${new Date(a0.published_at).toLocaleDateString()}` : ''}</p>
                 </div>
               </article>
-            ))}
-          </div>
-        </div>
+
+              {/* Sidebar cards */}
+              <div className="grid grid-cols-1 gap-[15px] w-full lg:w-[499px]">
+                {side.map((a) => {
+                  const img = a.image_url || "https://via.placeholder.com/499x266/f3f4f6/9ca3af?text=Article";
+                  return (
+                    <article key={a.id} className="border border-gray-200 bg-white">
+                      <Link to={`/article-v2/${a.slug}`}>
+                        <div className="h-[266px] overflow-hidden">
+                          <img src={img} alt={a.title} className="w-full h-full object-cover" onError={onImgError} />
+                        </div>
+                      </Link>
+                      <div className="px-5 py-5 text-left">
+                        {a.category && (
+                          <span className="inline-block bg-red-accent text-white px-2 py-[5px] text-[14px] font-extrabold">{a.category}</span>
+                        )}
+                        <h3 className="mt-3 text-[24px] font-black uppercase text-black leading-[1.2]">{a.title}</h3>
+                        <p className="mt-2 text-[15px]">{a.author_name ? `By ${a.author_name}` : ''} {a.published_at ? `- ${new Date(a.published_at).toLocaleDateString()}` : ''}</p>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })()}
         {/* Bottom-left View all button */}
         <div className="mt-[20px]">
           <button className="bg-black text-white px-[35px] py-2 text-[16px] font-medium tracking-[-0.32px] rounded-none">
@@ -160,7 +180,8 @@ export default function Journal() {
         </div>
       </section>
 
-      {/* Top News Section */}
+      {/* Top News Section - temporarily disabled */}
+      {false && (
       <section className="bg-neutral-100 py-[30px]">
         <div className="max-w-[1600px] mx-auto px-4 lg:px-[70px]">
           <div className="flex flex-col lg:flex-row gap-[30px] items-start">
@@ -287,121 +308,42 @@ export default function Journal() {
           </div>
         </div>
       </section>
+      )}
 
-      {/* Latest Journal Section */}
+      {/* Latest Journal Section (dynamic) - temporarily disabled */}
+      {false && (
       <section className="max-w-[1600px] mx-auto px-4 lg:px-[70px] py-10">
-      
-
-        {/* Horizontal carousel container */}
+        {/* Horizontal list */}
         <div className="relative overflow-hidden">
           <div className="flex gap-[30px] overflow-x-auto pb-4">
-            {/* Card 1 - Celebrity Homes */}
-            <article className="bg-white border border-gray-200 w-full lg:w-[537px] flex-shrink-0">
-              <div
-                className="h-[286px] bg-cover bg-center"
-                style={{
-                  backgroundImage:
-                    "url('http://localhost:3845/assets/bc51edd598080ad9d7582562e1fd4c4b65414b9f.png')",
-                }}
-              />
-              <div className="px-5 py-5 text-left">
-                <span className="inline-block bg-red-accent text-white px-2 py-[5px] text-[18px] font-extrabold">
-                  Celebrity Homes
-                </span>
-                <h3 className="mt-3 text-[30px] font-black uppercase text-black leading-[35px]">
-                  Mary Tyler Moore's Sells for a Reduced $16.9..
-                </h3>
-                <p className="mt-2 text-[16px]">
-                  <span className="font-bold italic">By Tori Latham</span> - 12
-                  hours ago
-                </p>
-              </div>
-            </article>
-
-            {/* Card 2 - Homes for Sale */}
-            <article className="bg-white border border-gray-200 w-full lg:w-[537px] flex-shrink-0">
-              <div
-                className="h-[286px] bg-cover bg-center"
-                style={{
-                  backgroundImage:
-                    "url('http://localhost:3845/assets/08b9d36d8a14579b37ac7b47913bd04e73ddfd23.png')",
-                }}
-              />
-              <div className="px-5 py-5 text-left">
-                <span className="inline-block bg-red-accent text-white px-2 py-[5px] text-[18px] font-extrabold">
-                  Homes for Sale
-                </span>
-                <h3 className="mt-3 text-[30px] font-black uppercase text-black leading-[35px]">
-                  This $1.9 Million William Kesling Home in Pasadena
-                </h3>
-                <p className="mt-2 text-[16px]">
-                  <span className="font-bold italic">By Tori Latham</span> - 12
-                  hours ago
-                </p>
-              </div>
-            </article>
-
-            {/* Card 3 - Product Recommendations */}
-            <article className="bg-white border border-gray-200 w-full lg:w-[537px] flex-shrink-0">
-              <div
-                className="h-[286px] bg-cover bg-center"
-                style={{
-                  backgroundImage:
-                    "url('http://localhost:3845/assets/ef30f4718043896d312186b2989f3d7d7f3352a1.png')",
-                }}
-              />
-              <div className="px-5 py-5 text-left">
-                <span className="inline-block bg-red-accent text-white px-2 py-[5px] text-[18px] font-extrabold">
-                  Product Recommendations
-                </span>
-                <h3 className="mt-3 text-[30px] font-black uppercase text-black leading-[35px]">
-                  From Your Own Sonoma Wine to a Custom Portrait
-                </h3>
-                <p className="mt-2 text-[16px]">
-                  <span className="font-bold italic">By Tori Latham</span> - 12
-                  hours ago
-                </p>
-              </div>
-            </article>
-          </div>
-
-          {/* Navigation arrows */}
-          <div className="flex justify-end gap-2 mt-[30px]">
-            <button
-              className="w-[36.5px] h-10 flex items-center justify-center rotate-180"
-              title="Previous articles"
-              aria-label="Navigate to previous articles"
-            >
-              <svg
-                width="37"
-                height="40"
-                viewBox="0 0 37 40"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M18.5 0L37 20L18.5 40L0 20L18.5 0Z" fill="#D1D5DB" />
-              </svg>
-            </button>
-            <button
-              className="w-[36.5px] h-10 flex items-center justify-center"
-              title="Next articles"
-              aria-label="Navigate to next articles"
-            >
-              <svg
-                width="37"
-                height="40"
-                viewBox="0 0 37 40"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M18.5 0L37 20L18.5 40L0 20L18.5 0Z" fill="#D1D5DB" />
-              </svg>
-            </button>
+            {((articles || []).slice(3)).map((a) => {
+              const img = a.image_url || "https://via.placeholder.com/537x286/f3f4f6/9ca3af?text=Article";
+              return (
+                <article key={a.id} className="bg-white border border-gray-200 w-full lg:w-[537px] flex-shrink-0">
+                  <Link to={`/article-v2/${a.slug}`}>
+                    <div className="h-[286px] overflow-hidden">
+                      <img src={img} alt={a.title} className="w-full h-full object-cover" onError={onImgError} />
+                    </div>
+                  </Link>
+                  <div className="px-5 py-5 text-left">
+                    {a.category && (
+                      <span className="inline-block bg-red-accent text-white px-2 py-[5px] text-[18px] font-extrabold">{a.category}</span>
+                    )}
+                    <h3 className="mt-3 text-[30px] font-black uppercase text-black leading-[35px]">{a.title}</h3>
+                    <p className="mt-2 text-[16px]">
+                      {a.author_name && <span className="font-bold italic">By {a.author_name}</span>} {a.published_at && `- ${new Date(a.published_at).toLocaleDateString()}`}
+                    </p>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
+      )}
 
-      {/* Second Latest Journal Section */}
+      {/* Second Latest Journal Section (dynamic subset) - temporarily disabled */}
+      {false && (
       <section className="bg-neutral-100 py-10">
         <div className="max-w-[1600px] mx-auto px-4 lg:px-[70px]">
           <div className="flex flex-col lg:flex-row gap-[30px] items-start">
@@ -414,92 +356,28 @@ export default function Journal() {
 
               {/* Stacked article cards */}
               <div className="space-y-[30px]">
-                {/* Article 1 */}
-                <article className="flex flex-col lg:flex-row gap-[25px] items-start">
-                  <div
-                    className="w-full lg:w-[360px] h-[245px] bg-cover bg-center rounded-lg flex-shrink-0"
-                    style={{
-                      backgroundImage:
-                        "url('http://localhost:3845/assets/4788538ca0c9ce2876b9fbfcf7daa9c9d5cf1860.png')",
-                    }}
-                  />
-                  <div className="flex-1">
-                    <span className="inline-block bg-red-accent text-white px-2 py-[5px] text-[18px] font-bold uppercase mb-3">
-                      Exclusive
-                    </span>
-                    <h3 className="text-[28px] font-bold uppercase leading-[1.3] text-black mb-3">
-                      10 Hilarious Cartoons That Depict Real-Life Problems of
-                      Programmers
-                    </h3>
-                    <p className="text-[18px] text-black leading-[1.5] mb-3 max-w-[610px]">
-                      Redefined the user acquisition and redesigned the
-                      onboarding experience, all within 3 working weeks.
-                    </p>
-                    <div className="bg-white px-3 py-2 rounded-tr-[6px] rounded-br-[6px] inline-block">
-                      <span className="text-[16px] font-bold italic uppercase text-black">
-                        By Larisha Paul
-                      </span>
-                    </div>
-                  </div>
-                </article>
-
-                {/* Article 2 */}
-                <article className="flex flex-col lg:flex-row gap-[25px] items-start">
-                  <div
-                    className="w-full lg:w-[360px] h-[245px] bg-cover bg-center rounded-lg flex-shrink-0"
-                    style={{
-                      backgroundImage:
-                        "url('http://localhost:3845/assets/4788538ca0c9ce2876b9fbfcf7daa9c9d5cf1860.png')",
-                    }}
-                  />
-                  <div className="flex-1">
-                    <span className="inline-block bg-red-accent text-white px-2 py-[5px] text-[18px] font-bold uppercase mb-3">
-                      Exclusive
-                    </span>
-                    <h3 className="text-[28px] font-bold uppercase leading-[1.3] text-black mb-3">
-                      10 Hilarious Cartoons That Depict Real-Life Problems of
-                      Programmers
-                    </h3>
-                    <p className="text-[18px] text-black leading-[1.5] mb-3 max-w-[610px]">
-                      Redefined the user acquisition and redesigned the
-                      onboarding experience, all within 3 working weeks.
-                    </p>
-                    <div className="bg-white px-3 py-2 rounded-tr-[6px] rounded-br-[6px] inline-block">
-                      <span className="text-[16px] font-bold italic uppercase text-black">
-                        By Larisha Paul
-                      </span>
-                    </div>
-                  </div>
-                </article>
-
-                {/* Article 3 */}
-                <article className="flex flex-col lg:flex-row gap-[25px] items-start">
-                  <div
-                    className="w-full lg:w-[360px] h-[245px] bg-cover bg-center rounded-lg flex-shrink-0"
-                    style={{
-                      backgroundImage:
-                        "url('http://localhost:3845/assets/4788538ca0c9ce2876b9fbfcf7daa9c9d5cf1860.png')",
-                    }}
-                  />
-                  <div className="flex-1">
-                    <span className="inline-block bg-red-accent text-white px-2 py-[5px] text-[18px] font-bold uppercase mb-3">
-                      Exclusive
-                    </span>
-                    <h3 className="text-[28px] font-bold uppercase leading-[1.3] text-black mb-3">
-                      10 Hilarious Cartoons That Depict Real-Life Problems of
-                      Programmers
-                    </h3>
-                    <p className="text-[18px] text-black leading-[1.5] mb-3 max-w-[610px]">
-                      Redefined the user acquisition and redesigned the
-                      onboarding experience, all within 3 working weeks.
-                    </p>
-                    <div className="bg-white px-3 py-2 rounded-tr-[6px] rounded-br-[6px] inline-block">
-                      <span className="text-[16px] font-bold italic uppercase text-black">
-                        By Larisha Paul
-                      </span>
-                    </div>
-                  </div>
-                </article>
+                {(articles || []).slice(12, 15).map((a) => {
+                  const img = a.image_url || "https://via.placeholder.com/360x245/f3f4f6/9ca3af?text=Article";
+                  return (
+                    <article key={a.id} className="flex flex-col lg:flex-row gap-[25px] items-start">
+                      <Link to={`/article-v2/${a.slug}`} className="w-full lg:w-[360px] h-[245px] rounded-lg flex-shrink-0">
+                        <img src={img} alt={a.title} className="w-full h-full object-cover rounded-lg" onError={onImgError} />
+                      </Link>
+                      <div className="flex-1">
+                        {a.category && (
+                          <span className="inline-block bg-red-accent text-white px-2 py-[5px] text-[18px] font-bold uppercase mb-3">{a.category}</span>
+                        )}
+                        <h3 className="text-[28px] font-bold uppercase leading-[1.3] text-black mb-3">{a.title}</h3>
+                        {a.excerpt && (
+                          <p className="text-[18px] text-black leading-[1.5] mb-3 max-w-[610px]">{a.excerpt}</p>
+                        )}
+                        <div className="bg-white px-3 py-2 rounded-tr-[6px] rounded-br-[6px] inline-block">
+                          <span className="text-[16px] font-bold italic uppercase text-black">{a.author_name ? `By ${a.author_name}` : ''}</span>
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
               </div>
 
               {/* View all button */}
@@ -523,8 +401,10 @@ export default function Journal() {
           </div>
         </div>
       </section>
+      )}
 
-      {/* Recommends Section */}
+      {/* Recommends Section - temporarily disabled */}
+      {false && (
       <section className="max-w-[1600px] mx-auto px-4 lg:px-[70px] py-10">
         {/* Section title */}
         <h2 className="text-[35px] font-semibold text-black mb-[30px]">
@@ -655,19 +535,21 @@ export default function Journal() {
           </div>
         </div>
       </section>
+      )}
 
-      {/* Luxury Resort Image Section */}
+      {/* Luxury Resort Image Section (unsplash) */}
       <section className="w-full h-[600px] bg-cover bg-center bg-no-repeat">
         <div
           className="w-full h-full bg-cover bg-center"
           style={{
             backgroundImage:
-              "url('http://localhost:3845/assets/4b1b6a9b52c58b03055f9a8aa5be8d27106b110e.png')",
+              "url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=60')",
           }}
         />
       </section>
 
-      {/* Luxury Homes Section */}
+      {/* Luxury Homes Section - temporarily disabled */}
+      {false && (
       <section className="max-w-[1600px] mx-auto px-4 lg:px-[70px] py-10">
        
 
@@ -766,8 +648,10 @@ export default function Journal() {
           </button>
         </div>
       </section>
+      )}
 
-      {/* Videos Section */}
+      {/* Videos Section - temporarily disabled */}
+      {false && (
       <section className="bg-black py-10">
         <div className="max-w-[1600px] mx-auto px-4 lg:px-[70px]">
          
@@ -866,18 +750,19 @@ export default function Journal() {
           </div>
         </div>
       </section>
+      )}
 
       {/* Luxury Resort Panoramic Image Section */}
-      <section className="w-full h-[600px] bg-cover bg-center bg-no-repeat">
+      {false && (<section className="w-full h-[600px] bg-cover bg-center bg-no-repeat">
         <div
           className="w-full h-full bg-cover bg-center"
           style={{
             backgroundImage:
-              "url('http://localhost:3845/assets/c0dd2418424b5eea14cbbbca444afb66f4b84504.png')",
+              "url('https://images.unsplash.com/photo-1501117716987-c8e5a03459f1?auto=format&fit=crop&w=2000&q=60')",
           }}
         />
       </section>
-
+      )}
       {/* Coming in April - Secure Your Unit Section */}
       <section className="bg-black py-[50px]">
         <div className="max-w-[1600px] mx-auto px-4 lg:px-[70px]">

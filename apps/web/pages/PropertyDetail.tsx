@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { API } from "@shared/api";
-import type { PropertyCard } from "@/shared/api.types";
+import type { PropertyCard } from "@shared/api.types";
 
 const PropertyDetail = () => {
   const { slug } = useParams();

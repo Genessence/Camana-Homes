@@ -1,7 +1,5 @@
 import { Link } from 'react-router-dom';
-import Header from './Header';
-import Footer from './Footer';
-
+import { Header } from '../layout';
 interface PlaceholderPageProps {
   title: string;
   description?: string;
@@ -27,7 +25,6 @@ export default function PlaceholderPage({ title, description }: PlaceholderPageP
           </Link>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -12,9 +12,76 @@ import {
   Bed,
   Bath,
   Square,
+  Instagram,
+  Linkedin,
+  Youtube,
+  Globe,
 } from "lucide-react";
+import { Link, useParams } from "react-router-dom";
+import { apiService } from "../services/api";
+import { propertiesApiService, type PropertyCard } from "../services/propertiesApi";
 
 export default function AgentProfile() {
+  const { slug = "" } = useParams();
+  const [agent, setAgent] = useState<Awaited<ReturnType<typeof apiService.getAgentBySlug>> | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [listings, setListings] = useState<PropertyCard[]>([]);
+  const [loadingListings, setLoadingListings] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function run() {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await apiService.getAgentBySlug(slug);
+        if (!cancelled) setAgent(data);
+      } catch (e: any) {
+        if (!cancelled) setError(e?.message || "Failed to load agent");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    if (slug) run();
+    return () => {
+      cancelled = true;
+    };
+  }, [slug]);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function run() {
+      if (!agent?.id) return;
+      setLoadingListings(true);
+      try {
+        const resp = await propertiesApiService.getProperties(1, 6, { agent_id: agent.id });
+        if (!cancelled) setListings(resp.properties || []);
+      } catch (e) {
+        // ignore per-section errors for now
+      } finally {
+        if (!cancelled) setLoadingListings(false);
+      }
+    }
+    run();
+    return () => { cancelled = true; };
+  }, [agent?.id]);
+
+  const socialLinks = useMemo(() => [
+    { Icon: Instagram, href: agent?.instagram_url || undefined, label: "Instagram" },
+    { Icon: Linkedin, href: agent?.linkedin_url || undefined, label: "LinkedIn" },
+    { Icon: Youtube, href: agent?.youtube_url || undefined, label: "YouTube" },
+    { Icon: Globe, href: agent?.website_url || undefined, label: "Website" },
+    { Icon: Mail, href: agent?.email ? `mailto:${agent.email}` : undefined, label: "Email" },
+  ].filter((x) => !!x.href), [agent]);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading agent…</div>;
+  }
+  if (error || !agent) {
+    return <div className="min-h-screen flex items-center justify-center text-red-600">{error || "Agent not found"}</div>;
+  }
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -24,17 +91,18 @@ export default function AgentProfile() {
         <div
           className="hidden lg:block w-[743px] h-[830px] sticky top-0 bg-center bg-cover"
           style={{
-            backgroundImage:
-              "url('https://api.builder.io/api/v1/image/assets/TEMP/989624fdfd14e872dfbb46d0a37b356568496bef?width=1600')",
+            backgroundImage: `url('${agent.avatar_url || "https://via.placeholder.com/800x1000?text=Agent"}')`,
           }}
         />
         {/* Right content */}
         <div className="flex-1 min-w-0">
-          <div className="inline-flex bg-black text-white px-2.5 py-[5px] text-[14px] font-bold">
-            License No: 123456DXB
-          </div>
+          {agent.license_number ? (
+            <div className="inline-flex bg-black text-white px-2.5 py-[5px] text-[14px] font-bold">
+              License No: {agent.license_number}
+            </div>
+          ) : null}
           <h1 className="mt-3 text-[40px] md:text-[56px] lg:text-[68px] font-extrabold text-black leading-[1.05]">
-            Khushi Ostwal
+            {agent.name}
           </h1>
           <div className="mt-4 space-y-3">
             <div className="flex items-center gap-3 text-[18px] text-black">
@@ -45,7 +113,7 @@ export default function AgentProfile() {
                 />
               </svg>
               <span>
-                Licensed Real Estate Agent | Luxury Property Specialist | Dubai
+                {agent.bio || "Licensed Real Estate Agent"}
               </span>
             </div>
             <div className="flex items-center gap-3 text-[18px] text-black">
@@ -55,15 +123,15 @@ export default function AgentProfile() {
                   fill="currentColor"
                 />
               </svg>
-              <span>Dubai, UAE</span>
+              <span>{agent.location || ""}</span>
             </div>
             <div className="flex items-center gap-3 text-[17px] font-bold text-black">
               <Phone size={18} />
-              <span>+918375017988</span>
+              <span>{agent.phone_number || ""}</span>
             </div>
             <div className="flex items-center gap-3 text-[17px] font-bold text-black">
               <Mail size={18} />
-              <span>khushi@camanahomes.com</span>
+              <span>{agent.email || ""}</span>
             </div>
           </div>
           <button className="mt-6 bg-black text-white h-14 w-[171px] inline-flex items-center justify-center">
@@ -71,15 +139,18 @@ export default function AgentProfile() {
           </button>
           {/* Social round icons */}
           <div className="mt-4 flex items-center gap-2">
-            {Array.from({ length: 7 }).map((_, i) => (
-              <button
+            {socialLinks.map(({ Icon, href, label }, i) => (
+              <a
                 key={i}
-                title="Social link"
-                aria-label="Social link"
-                className="h-14 w-14 rounded-full border border-black/20 flex items-center justify-center"
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                title={label}
+                aria-label={label}
+                className="h-14 w-14 rounded-full border border-black/20 flex items-center justify-center hover:bg-gray-50"
               >
-                <span className="sr-only">social</span>
-              </button>
+                <Icon className="w-6 h-6" />
+              </a>
             ))}
           </div>
           {/* Social Connect strip */}
@@ -93,16 +164,19 @@ export default function AgentProfile() {
             </div>
           </div>
           <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="bg-neutral-100 p-2">
-                <div
-                  className="h-[178px] bg-center bg-cover"
-                  style={{
-                    backgroundImage:
-                      "url('https://api.builder.io/api/v1/image/assets/TEMP/1c586a2bf796f43887671486f52e771a180c6321?width=600')",
-                  }}
-                />
-              </div>
+            {socialLinks.map(({ Icon, label, href }, i) => (
+              <a
+                key={i}
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                className="bg-neutral-100 p-4 flex flex-col items-center justify-center gap-3 hover:shadow-md transition-shadow"
+                title={label}
+                aria-label={label}
+              >
+                <Icon className="w-7 h-7" />
+                <span className="text-sm font-semibold text-black">{label}</span>
+              </a>
             ))}
           </div>
         </div>
@@ -215,516 +289,78 @@ export default function AgentProfile() {
 
           {/* Property listings grid */}
           <div className="space-y-8">
-            {/* First row */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Property 1 */}
-              <div className="border border-gray-200 bg-white overflow-hidden">
-                <div className="relative">
-                  <img
-                    src="https://api.builder.io/api/v1/image/assets/TEMP/1c586a2bf796f43887671486f52e771a180c6321?width=1032"
-                    alt="Property"
-                    className="w-full h-80 object-cover"
-                  />
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    <div className="flex items-center gap-1 px-3 py-2 bg-black/10 backdrop-blur-sm border border-white text-white text-sm">
-                      <Eye size={14} />
-                      1,14K
-                    </div>
-                    <div className="px-3 py-2 bg-black/10 backdrop-blur-sm border border-white text-white text-sm">
-                      Video
-                    </div>
-                  </div>
-                  <div className="absolute top-4 right-4 flex gap-2">
-                    <button
-                      title="Save to favorites"
-                      aria-label="Save to favorites"
-                      className="p-2 bg-black/10 backdrop-blur-sm border border-white hover:bg-black/20 transition-colors"
-                    >
-                      <Heart className="text-white" size={16} />
-                    </button>
-                    <button
-                      title="Share"
-                      aria-label="Share"
-                      className="p-2 bg-black/10 backdrop-blur-sm border border-white hover:bg-black/20 transition-colors"
-                    >
-                      <Share2 className="text-white" size={14} />
-                    </button>
-                  </div>
-                  <div className="absolute bottom-4 right-4 flex gap-2">
-                    <button
-                      title="Previous"
-                      aria-label="Previous"
-                      className="w-8 h-8 flex items-center justify-center bg-black/10 backdrop-blur-sm border border-white hover:bg-black/20 transition-colors"
-                    >
-                      <ChevronLeft className="text-white" size={14} />
-                    </button>
-                    <button
-                      title="Next"
-                      aria-label="Next"
-                      className="w-8 h-8 flex items-center justify-center bg-black/10 backdrop-blur-sm border border-white hover:bg-black/20 transition-colors"
-                    >
-                      <ChevronRight className="text-white" size={14} />
-                    </button>
-                  </div>
-                </div>
-                <div className="p-4 space-y-3">
-                  <div className="flex justify-between items-start">
-                    <div className="font-bold text-xl text-black">
-                      $1,008,061
-                    </div>
-                    <div className="flex items-center gap-1 text-sm font-semibold text-black">
-                      Contact Agent
-                      <ChevronRight size={12} className="text-gray-600" />
-                    </div>
-                  </div>
-                  <h3 className="font-bold text-gray-900">
-                    Semi Detached Villas | Dubai
-                  </h3>
-                  <div className="flex items-center gap-4 text-sm text-white">
-                    <div className="flex items-center gap-1">
-                      <Bed size={14} />
-                      <span>4 bed</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Bath size={14} />
-                      <span>4 bath</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Square size={14} />
-                      <span>2,000 sq ft</span>
-                    </div>
-                  </div>
-                  <hr className="border-gray-200" />
-                </div>
-              </div>
-
-              {/* Property 2 */}
-              <div className="border border-gray-200 bg-white overflow-hidden">
-                <div className="relative">
-                  <img
-                    src="https://api.builder.io/api/v1/image/assets/TEMP/e7d848c6230cf76dc763f3a9879566254830f187?width=1032"
-                    alt="Property"
-                    className="w-full h-80 object-cover"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <div className="flex items-center gap-1 px-3 py-2 bg-black/10 backdrop-blur-sm border border-white text-white text-sm">
-                      <Eye size={14} />
-                      1,14K
-                    </div>
-                  </div>
-                  <div className="absolute top-4 right-4 flex gap-2">
-                    <button
-                      title="Save to favorites"
-                      aria-label="Save to favorites"
-                      className="p-2 bg-black/10 backdrop-blur-sm border border-white hover:bg-black/20 transition-colors"
-                    >
-                      <Heart className="text-white" size={16} />
-                    </button>
-                    <button
-                      title="Share"
-                      aria-label="Share"
-                      className="p-2 bg-black/10 backdrop-blur-sm border border-white hover:bg-black/20 transition-colors"
-                    >
-                      <Share2 className="text-white" size={14} />
-                    </button>
-                  </div>
-                </div>
-                <div className="p-4 space-y-3">
-                  <div className="flex justify-between items-start">
-                    <div className="font-bold text-xl text-black">$611,131</div>
-                    <div className="flex items-center gap-1 text-sm font-semibold text-black">
-                      Contact Agent
-                      <ChevronRight size={12} className="text-gray-600" />
-                    </div>
-                  </div>
-                  <h3 className="font-bold text-gray-900">
-                    Pool View | 2 Br+Maids | New York City
-                  </h3>
-                  <div className="flex items-center gap-4 text-sm text-white">
-                    <div className="flex items-center gap-1">
-                      <Bed size={14} />
-                      <span>4 bed</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Bath size={14} />
-                      <span>4 bath</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Square size={14} />
-                      <span>2,000 sq ft</span>
-                    </div>
-                  </div>
-                  <hr className="border-gray-200" />
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-3">
-                      <img
-                        src="https://api.builder.io/api/v1/image/assets/TEMP/44e8c12ce3ae54fcfc11b19fc61cecff2691e8aa?width=98"
-                        alt="Agent"
-                        className="w-12 h-12 rounded-full"
-                      />
-                      <div>
-                        <div className="font-bold text-sm text-black">
-                          David Paul
+            {loadingListings ? (
+              <div>Loading listings…</div>
+            ) : listings.length === 0 ? (
+              <div className="text-gray-600">No active listings for this agent.</div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {listings.map((p) => {
+                  const formattedPrice = (() => {
+                    const currency = p.price_currency || 'USD';
+                    try {
+                      return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(p.price_amount || 0);
+                    } catch {
+                      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(p.price_amount || 0);
+                    }
+                  })();
+                  return (
+                    <div key={p.id} className="border border-gray-200 bg-white overflow-hidden">
+                      <div className="relative">
+                        <Link to={`/listing/${p.slug}`}>
+                          <img src={p.primary_image_url} alt={p.title} className="w-full h-80 object-cover" onError={(e)=>{(e.currentTarget as HTMLImageElement).src='https://via.placeholder.com/800x600?text=Listing'}} />
+                        </Link>
+                        <div className="absolute top-4 left-4 flex gap-2">
+                          <div className="flex items-center gap-1 px-3 py-2 bg-black/10 backdrop-blur-sm border border-white text-white text-sm">
+                            <Eye size={14} />
+                            {p.views_count?.toLocaleString?.() || 0}
+                          </div>
+                          {p.has_video ? (
+                            <div className="px-3 py-2 bg-black/10 backdrop-blur-sm border border-white text-white text-sm">Video</div>
+                          ) : null}
                         </div>
-                        <div className="text-xs font-bold text-black">
-                          Camana Technologies LLC
+                        <div className="absolute top-4 right-4 flex gap-2">
+                          <button title="Save to favorites" aria-label="Save to favorites" className="p-2 bg-black/10 backdrop-blur-sm border border-white hover:bg-black/20 transition-colors">
+                            <Heart className="text-white" size={16} />
+                          </button>
+                          <button title="Share" aria-label="Share" className="p-2 bg-black/10 backdrop-blur-sm border border-white hover:bg-black/20 transition-colors">
+                            <Share2 className="text-white" size={14} />
+                          </button>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Property 3 */}
-              <div className="border border-gray-200 bg-white overflow-hidden">
-                <div className="relative">
-                  <img
-                    src="https://api.builder.io/api/v1/image/assets/TEMP/92e4f4a446092d25f1d2c628ab96f497292434ae?width=1032"
-                    alt="Property"
-                    className="w-full h-80 object-cover"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <div className="flex items-center gap-1 px-3 py-2 bg-black/10 backdrop-blur-sm border border-white text-white text-sm">
-                      <Eye size={14} />
-                      1,14K
-                    </div>
-                  </div>
-                  <div className="absolute top-4 right-4 flex gap-2">
-                    <button
-                      title="Save to favorites"
-                      aria-label="Save to favorites"
-                      className="p-2 bg-black/10 backdrop-blur-sm border border-white hover:bg-black/20 transition-colors"
-                    >
-                      <Heart className="text-white" size={16} />
-                    </button>
-                    <button
-                      title="Share"
-                      aria-label="Share"
-                      className="p-2 bg-black/10 backdrop-blur-sm border border-white hover:bg-black/20 transition-colors"
-                    >
-                      <Share2 className="text-white" size={14} />
-                    </button>
-                  </div>
-                </div>
-                <div className="p-4 space-y-3">
-                  <div className="flex justify-between items-start">
-                    <div className="font-bold text-xl text-black">$778,909</div>
-                    <div className="flex items-center gap-1 text-sm font-semibold text-black">
-                      Contact Agent
-                      <ChevronRight size={12} className="text-gray-600" />
-                    </div>
-                  </div>
-                  <h3 className="font-bold text-gray-900">
-                    Six Luxurious Ski In | LA
-                  </h3>
-                  <div className="flex items-center gap-4 text-sm text-white">
-                    <div className="flex items-center gap-1">
-                      <Bed size={14} />
-                      <span>4 bed</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Bath size={14} />
-                      <span>4 bath</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Square size={14} />
-                      <span>2,000 sq ft</span>
-                    </div>
-                  </div>
-                  <hr className="border-gray-200" />
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-3">
-                      <img
-                        src="https://api.builder.io/api/v1/image/assets/TEMP/bec29182c1fdda9b90e77780c0c0a24679313b57?width=98"
-                        alt="Agent"
-                        className="w-12 h-12 rounded-full"
-                      />
-                      <div>
-                        <div className="font-bold text-sm text-black">
-                          Marrie loose
+                      <div className="p-4 space-y-3">
+                        <div className="flex justify-between items-start">
+                          <div className="font-bold text-xl text-black">{formattedPrice}</div>
+                          <Link to={`/listing/${p.slug}`} className="flex items-center gap-1 text-sm font-semibold text-black">
+                            View details
+                            <ChevronRight size={12} className="text-gray-600" />
+                          </Link>
                         </div>
-                        <div className="text-xs font-bold text-black">
-                          Camana Technologies LLC
+                        <h3 className="font-bold text-gray-900">{p.title}</h3>
+                        <div className="flex items-center gap-4 text-sm text-black">
+                          <div className="flex items-center gap-1">
+                            <Bed size={14} />
+                            <span>{p.bedrooms} bed</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Bath size={14} />
+                            <span>{p.bathrooms} bath</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Square size={14} />
+                            <span>{(p.area_value ?? 0).toLocaleString()} {p.area_unit}</span>
+                          </div>
                         </div>
+                        <hr className="border-gray-200" />
                       </div>
                     </div>
-                    <img
-                      src="https://api.builder.io/api/v1/image/assets/TEMP/b69a8ad654149a58105e1fcba5d408a8585535b9?width=146"
-                      alt="Logo"
-                      className="w-16 h-6"
-                    />
-                  </div>
-                </div>
+                  );
+                })}
               </div>
-            </div>
-
-            {/* Second row - same structure */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Repeat similar structure for second row with same images and content */}
-              <div className="border border-gray-200 bg-white overflow-hidden">
-                <div className="relative">
-                  <img
-                    src="https://api.builder.io/api/v1/image/assets/TEMP/92e4f4a446092d25f1d2c628ab96f497292434ae?width=1032"
-                    alt="Property"
-                    className="w-full h-80 object-cover"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <div className="flex items-center gap-1 px-3 py-2 bg-black/10 backdrop-blur-sm border border-white text-white text-sm">
-                      <Eye size={14} />
-                      1,14K
-                    </div>
-                  </div>
-                  <div className="absolute top-4 right-4 flex gap-2">
-                    <button
-                      title="Save to favorites"
-                      aria-label="Save to favorites"
-                      className="p-2 bg-black/10 backdrop-blur-sm border border-white hover:bg-black/20 transition-colors"
-                    >
-                      <Heart className="text-white" size={16} />
-                    </button>
-                    <button
-                      title="Share"
-                      aria-label="Share"
-                      className="p-2 bg-black/10 backdrop-blur-sm border border-white hover:bg-black/20 transition-colors"
-                    >
-                      <Share2 className="text-white" size={14} />
-                    </button>
-                  </div>
-                </div>
-                <div className="p-4 space-y-3">
-                  <div className="flex justify-between items-start">
-                    <div className="font-bold text-xl text-black">$778,909</div>
-                    <div className="flex items-center gap-1 text-sm font-semibold text-black">
-                      Contact Agent
-                      <ChevronRight size={12} className="text-gray-600" />
-                    </div>
-                  </div>
-                  <h3 className="font-bold text-gray-900">
-                    Six Luxurious Ski In | LA
-                  </h3>
-                  <div className="flex items-center gap-4 text-sm text-white">
-                    <div className="flex items-center gap-1">
-                      <Bed size={14} />
-                      <span>4 bed</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Bath size={14} />
-                      <span>4 bath</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Square size={14} />
-                      <span>2,000 sq ft</span>
-                    </div>
-                  </div>
-                  <hr className="border-gray-200" />
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-3">
-                      <img
-                        src="https://api.builder.io/api/v1/image/assets/TEMP/bec29182c1fdda9b90e77780c0c0a24679313b57?width=98"
-                        alt="Agent"
-                        className="w-12 h-12 rounded-full"
-                      />
-                      <div>
-                        <div className="font-bold text-sm text-black">
-                          Marrie loose
-                        </div>
-                        <div className="text-xs font-bold text-black">
-                          Camana Technologies LLC
-                        </div>
-                      </div>
-                    </div>
-                    <img
-                      src="https://api.builder.io/api/v1/image/assets/TEMP/b69a8ad654149a58105e1fcba5d408a8585535b9?width=146"
-                      alt="Logo"
-                      className="w-16 h-6"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="border border-gray-200 bg-white overflow-hidden">
-                <div className="relative">
-                  <img
-                    src="https://api.builder.io/api/v1/image/assets/TEMP/1c586a2bf796f43887671486f52e771a180c6321?width=1032"
-                    alt="Property"
-                    className="w-full h-80 object-cover"
-                  />
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    <div className="flex items-center gap-1 px-3 py-2 bg-black/10 backdrop-blur-sm border border-white text-white text-sm">
-                      <Eye size={14} />
-                      1,14K
-                    </div>
-                    <div className="px-3 py-2 bg-black/10 backdrop-blur-sm border border-white text-white text-sm">
-                      Video
-                    </div>
-                  </div>
-                  <div className="absolute top-4 right-4 flex gap-2">
-                    <button
-                      title="Save to favorites"
-                      aria-label="Save to favorites"
-                      className="p-2 bg-black/10 backdrop-blur-sm border border-white hover:bg-black/20 transition-colors"
-                    >
-                      <Heart className="text-white" size={16} />
-                    </button>
-                    <button
-                      title="Share"
-                      aria-label="Share"
-                      className="p-2 bg-black/10 backdrop-blur-sm border border-white hover:bg-black/20 transition-colors"
-                    >
-                      <Share2 className="text-white" size={14} />
-                    </button>
-                  </div>
-                  <div className="absolute bottom-4 right-4 flex gap-2">
-                    <button
-                      title="Previous"
-                      aria-label="Previous"
-                      className="w-8 h-8 flex items-center justify-center bg-black/10 backdrop-blur-sm border border-white hover:bg-black/20 transition-colors"
-                    >
-                      <ChevronLeft className="text-white" size={14} />
-                    </button>
-                    <button
-                      title="Next"
-                      aria-label="Next"
-                      className="w-8 h-8 flex items-center justify-center bg-black/10 backdrop-blur-sm border border-white hover:bg-black/20 transition-colors"
-                    >
-                      <ChevronRight className="text-white" size={14} />
-                    </button>
-                  </div>
-                </div>
-                <div className="p-4 space-y-3">
-                  <div className="flex justify-between items-start">
-                    <div className="font-bold text-xl text-black">
-                      $1,008,061
-                    </div>
-                    <div className="flex items-center gap-1 text-sm font-semibold text-black">
-                      Contact Agent
-                      <ChevronRight size={12} className="text-gray-600" />
-                    </div>
-                  </div>
-                  <h3 className="font-bold text-gray-900">
-                    Semi Detached Villas | Dubai
-                  </h3>
-                  <div className="flex items-center gap-4 text-sm text-white">
-                    <div className="flex items-center gap-1">
-                      <Bed size={14} />
-                      <span>4 bed</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Bath size={14} />
-                      <span>4 bath</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Square size={14} />
-                      <span>2,000 sq ft</span>
-                    </div>
-                  </div>
-                  <hr className="border-gray-200" />
-                </div>
-              </div>
-
-              <div className="border border-gray-200 bg-white overflow-hidden">
-                <div className="relative">
-                  <img
-                    src="https://api.builder.io/api/v1/image/assets/TEMP/e7d848c6230cf76dc763f3a9879566254830f187?width=1032"
-                    alt="Property"
-                    className="w-full h-80 object-cover"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <div className="flex items-center gap-1 px-3 py-2 bg-black/10 backdrop-blur-sm border border-white text-white text-sm">
-                      <Eye size={14} />
-                      1,14K
-                    </div>
-                  </div>
-                  <div className="absolute top-4 right-4 flex gap-2">
-                    <button
-                      title="Save to favorites"
-                      aria-label="Save to favorites"
-                      className="p-2 bg-black/10 backdrop-blur-sm border border-white hover:bg-black/20 transition-colors"
-                    >
-                      <Heart className="text-white" size={16} />
-                    </button>
-                    <button
-                      title="Share"
-                      aria-label="Share"
-                      className="p-2 bg-black/10 backdrop-blur-sm border border-white hover:bg-black/20 transition-colors"
-                    >
-                      <Share2 className="text-white" size={14} />
-                    </button>
-                  </div>
-                </div>
-                <div className="p-4 space-y-3">
-                  <div className="flex justify-between items-start">
-                    <div className="font-bold text-xl text-black">$611,131</div>
-                    <div className="flex items-center gap-1 text-sm font-semibold text-black">
-                      Contact Agent
-                      <ChevronRight size={12} className="text-gray-600" />
-                    </div>
-                  </div>
-                  <h3 className="font-bold text-gray-900">
-                    Pool View | 2 Br+Maids | New York City
-                  </h3>
-                  <div className="flex items-center gap-4 text-sm text-white">
-                    <div className="flex items-center gap-1">
-                      <Bed size={14} />
-                      <span>4 bed</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Bath size={14} />
-                      <span>4 bath</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Square size={14} />
-                      <span>2,000 sq ft</span>
-                    </div>
-                  </div>
-                  <hr className="border-gray-200" />
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-3">
-                      <img
-                        src="https://api.builder.io/api/v1/image/assets/TEMP/44e8c12ce3ae54fcfc11b19fc61cecff2691e8aa?width=98"
-                        alt="Agent"
-                        className="w-12 h-12 rounded-full"
-                      />
-                      <div>
-                        <div className="font-bold text-sm text-black">
-                          David Paul
-                        </div>
-                        <div className="text-xs font-bold text-black">
-                          Camana Technologies LLC
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Navigation controls */}
-            <div className="flex justify-between items-center">
-              <button className="px-8 py-3 bg-black text-white hover:bg-gray-800 transition-colors">
-                View all
-              </button>
-              <div className="flex gap-2">
-                <button
-                  title="Previous"
-                  aria-label="Previous"
-                  className="w-12 h-12 flex items-center justify-center border border-white hover:bg-gray-50 transition-colors"
-                >
-                  <ChevronLeft size={16} />
-                </button>
-                <button
-                  title="Next"
-                  aria-label="Next"
-                  className="w-12 h-12 flex items-center justify-center border border-white hover:bg-gray-50 transition-colors"
-                >
-                  <ChevronRight size={16} />
-                </button>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </section>
-      // Footer temporarily removed (uses global footer from App.tsx)
     </div>
   );
 }

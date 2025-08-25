@@ -1,1 +1,217 @@
-// prisma/schema.prisma\ndatasource db {\n  provider = "postgresql"\n  url      = env("DATABASE_URL")\n}\n\ngenerator client {\n  provider = "prisma-client-js"\n}\n
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Agency {
+  id      Int     @id @default(autoincrement())
+  name    String
+  logoUrl String?
+  agents  Agent[]
+
+  @@map("agencies")
+}
+
+model Agent {
+  id          Int       @id @default(autoincrement())
+  name        String
+  avatarUrl   String?
+  phoneNumber String?
+  email       String?
+  slug        String?  @unique
+  licenseNumber String?
+  location    String?
+  bio         String?
+  instagramUrl String?
+  linkedinUrl  String?
+  youtubeUrl   String?
+  websiteUrl   String?
+  agencyId    Int?
+  agency      Agency?   @relation(fields: [agencyId], references: [id])
+  properties  Property[]
+
+  @@map("agents")
+}
+
+model Property {
+  id               Int      @id @default(autoincrement())
+  slug             String   @unique
+  title            String
+  priceAmount      Decimal
+  priceCurrency    String
+  pricePerSqft     Decimal?
+  propertyType     String
+  bedrooms         Int
+  bathrooms        Int
+  areaValue        Int
+  areaUnit         String
+  locationLabel    String
+
+  totalStories         Int?
+  fullBathrooms        Int?
+  halfBathrooms        Int?
+  lotSize              String?
+  permitNumber         String?
+  dedNumber            String?
+  mlsId                String?
+
+  interiorFeatures     Json?
+  appliances           Json?
+  floorDescription     String?
+  fireplace            Boolean?
+  fireplaceDescription String?
+  cooling              Boolean?
+  coolingDescription   String?
+  heating              Boolean?
+  heatingDescription   String?
+  basement             Boolean?
+
+  exteriorFeatures Json?
+  lotFeatures      String?
+  sewer            String?
+  patioPorch       String?
+
+  highSchool       String?
+  elementarySchool String?
+
+  taxes         String?
+  taxFrequency  String?
+  daysOnMarket  Int?
+  accessibility String?
+  garage        Boolean?
+  garageSpaces  Int?
+  parking       String?
+  parkingTotal  Int?
+  view          String?
+  county        String?
+  waterSource   String?
+  newConstruction Boolean?
+  pool            Boolean?
+  poolFeatures    String?
+  utilities       Json?
+
+  outdoorFeatures   Json?
+  indoorFeatures    Json?
+  viewDescription   String?
+  yearBuilt         Int?
+  description       String?
+  savesCount        Int     @default(0)
+  completionDate    String?
+  paymentOptions    String?
+  keyAmenities      Json?
+  locationDistances Json?
+  developer         String?
+  developerLogoUrl  String?
+
+  hasVideo       Boolean @default(false)
+  hasVirtualTour Boolean @default(false)
+  viewsCount     Int     @default(0)
+  trendingScore  Int     @default(0)
+  isFeatured     Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  agentId  Int?
+  agent    Agent?   @relation(fields: [agentId], references: [id])
+  images   PropertyImage[]
+  tours    TourRequest[]
+  viewed   RecentlyViewed[]
+  heroSlides HeroSlide[]
+
+  @@map("properties")
+  @@index([trendingScore])
+}
+
+model PropertyImage {
+  id         Int      @id @default(autoincrement())
+  propertyId Int
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  url        String
+  sortOrder  Int      @default(0)
+  isPrimary  Boolean  @default(false)
+  altText    String?
+
+  @@map("property_images")
+}
+
+model HeroSlide {
+  id         Int      @id @default(autoincrement())
+  imageUrl   String
+  title      String?
+  subtitle   String?
+  propertyId Int?
+  sortOrder  Int      @default(0)
+  isActive   Boolean  @default(true)
+
+  property   Property? @relation(fields: [propertyId], references: [id])
+
+  @@map("hero_slides")
+}
+
+model TourRequest {
+  id            Int      @id @default(autoincrement())
+  propertyId    Int
+  property      Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  visitorName   String
+  visitorEmail  String
+  visitorPhone  String?
+  preferredDate DateTime
+  preferredTime String
+  message       String?
+  status        String    @default("pending")
+  createdAt     DateTime  @default(now())
+
+  @@map("tour_requests")
+}
+
+model MortgageInquiry {
+  id                Int      @id @default(autoincrement())
+  propertyId        Int?
+  inquirerName      String
+  inquirerEmail     String
+  inquirerPhone     String?
+  contentSumInsured String
+  location          String
+  age               Int
+  message           String?
+  status            String   @default("pending")
+  createdAt         DateTime @default(now())
+
+  @@map("mortgage_inquiries")
+}
+
+model Article {
+  id                 Int      @id @default(autoincrement())
+  slug               String   @unique
+  title              String
+  excerpt            String?
+  imageUrl           String
+  category           String?
+  authorName         String?
+  authorAvatarUrl    String?
+  publishedAt        DateTime @default(now())
+  authorBio          String?
+  authorWebsiteUrl   String?
+  authorInstagramUrl String?
+  authorLinkedinUrl  String?
+  authorYoutubeUrl   String?
+
+  @@map("articles")
+}
+
+model RecentlyViewed {
+  id         Int      @id @default(autoincrement())
+  visitorId  String
+  propertyId Int
+  viewedAt   DateTime @default(now())
+
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@unique([visitorId, propertyId], name: "uq_recently_viewed_visitor_property")
+  @@map("recently_viewed")
+}

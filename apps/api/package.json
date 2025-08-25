@@ -1,2 +1,49 @@
 {
-  "name": "api",\n  "private": true,\n  "type": "module",\n  "scripts": {\n    "dev": "tsx watch src/server.ts",\n    "build": "tsc -p tsconfig.json",\n    "start": "node dist/server.js",\n    "prisma:generate": "prisma generate",\n    "prisma:migrate": "prisma migrate deploy"\n  },\n  "dependencies": {\n    "@aws-sdk/client-s3": "^3.723.0",\n    "@aws-sdk/s3-request-presigner": "^3.723.0",\n    "@prisma/client": "latest",\n    "bcryptjs": "^2.4.3",\n    "cookie-parser": "^1.4.7",\n    "cors": "^2.8.5",\n    "express": "^5.1.0",\n    "helmet": "^8.0.0",\n    "ioredis": "^5.4.2",\n    "jsonwebtoken": "^9.0.2",\n    "morgan": "^1.10.0",\n    "winston": "^3.17.0"\n  },\n  "devDependencies": {\n    "@types/cookie-parser": "^1.4.8",\n    "@types/express": "^5.0.3",\n    "@types/jsonwebtoken": "^9.0.6",\n    "@types/node": "^22.7.6",\n    "@types/cors": "^2.8.19",\n    "prisma": "latest",\n    "ts-node-dev": "^2.0.0",\n    "tslib": "^2.8.1",\n    "tsx": "^4.19.2",\n    "typescript": "^5.6.3"\n  }\n}\n
+  "name": "api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate deploy",
+    "prisma:seed": "tsx prisma/seed.ts",
+    "prisma:reset": "prisma migrate reset --force",
+    "db:setup": "npm run prisma:generate && npm run prisma:migrate && npm run prisma:seed",
+    "upload:images": "tsx scripts/upload-images-to-s3.ts",
+    "setup:local-images": "tsx scripts/setup-local-images.ts",
+    "setup:s3-policy": "tsx scripts/setup-s3-bucket-policy.ts",
+    "setup:s3-public": "tsx scripts/setup-s3-public-access.ts",
+    "setup:complete": "npm run upload:images && npm run setup:s3-policy && npm run db:setup",
+    "setup:local": "npm run setup:local-images && npm run db:setup"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.723.0",
+    "@aws-sdk/s3-request-presigner": "^3.723.0",
+    "@prisma/client": "latest",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "fast-xml-parser": "^5.2.5",
+    "helmet": "^8.0.0",
+    "ioredis": "^5.4.2",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.8",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^22.7.6",
+    "prisma": "^6.14.0",
+    "ts-node-dev": "^2.0.0",
+    "tslib": "^2.8.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}

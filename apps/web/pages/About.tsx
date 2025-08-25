@@ -1,5 +1,4 @@
-import Header from "@/components/Header"
-import HeaderTransparent from "@/components/HeaderTransparent"
+import { Header } from "@/components/layout"
 import { Mail, Star, ChevronLeft, ChevronRight } from "lucide-react"
 import soori from "../assets/soori4x.png"
 
@@ -13,7 +12,7 @@ export default function About() {
           backgroundImage: "linear-gradient(0deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.45) 100%), url('https://images.pexels.com/photos/7031407/pexels-photo-7031407.jpeg')"
         }}
       >
-        <HeaderTransparent />
+        <Header variant="transparent" />
 
         {/* Hero Content */}
         <div className="absolute inset-0 flex items-center justify-start">

@@ -1,6 +1,32 @@
 // API service for Listing Page
-// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
-const API_BASE_URL = "http://localhost:8000/api";
+function resolveBaseUrl(): string {
+  const envUrl = import.meta.env.VITE_API_BASE_URL as string | undefined;
+  // If running vite dev on 8081, talk to backend 8080 explicitly
+  const isDevHost = typeof window !== 'undefined' && window.location.port === '8081';
+  if (isDevHost) return 'http://localhost:8080/api';
+  if (envUrl && envUrl.length > 0) return envUrl;
+  return '/api';
+}
+const API_BASE_URL = resolveBaseUrl();
+
+function getVisitorId(): string {
+  try {
+    const key = 'camana_vid';
+    let v = localStorage.getItem(key) || '';
+    if (!v) {
+      try {
+        v = (crypto && 'randomUUID' in crypto) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      } catch {
+        v = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      }
+      try { localStorage.setItem(key, v); } catch {}
+      try { document.cookie = `${key}=${v}; path=/; max-age=${60 * 60 * 24 * 365}`; } catch {}
+    }
+    return v;
+  } catch {
+    return 'anonymous';
+  }
+}
 
 export interface PropertyDetail {
   id: number;
@@ -26,6 +52,7 @@ export interface PropertyDetail {
   key_amenities: string[];
   location_distances: Array<{ place: string; distance: string }>;
   developer: string;
+  developer_logo_url?: string | null;
   has_video: boolean;
   has_virtual_tour: boolean;
   views_count: number;
@@ -156,6 +183,26 @@ class ApiService {
     }
   }
 
+  // Get agent by slug
+  async getAgentBySlug(slug: string): Promise<{
+    id: number;
+    name: string;
+    slug: string | null;
+    avatar_url: string | null;
+    phone_number: string | null;
+    email: string | null;
+    license_number: string | null;
+    location: string | null;
+    bio: string | null;
+    instagram_url: string | null;
+    linkedin_url: string | null;
+    youtube_url: string | null;
+    website_url: string | null;
+    agency: { id: number; name: string; logo_url: string | null } | null;
+  }> {
+    return this.request(`/agents/${encodeURIComponent(slug)}`);
+  }
+
   // Get property details by slug
   async getPropertyDetail(slug: string): Promise<PropertyDetail> {
     return this.request<PropertyDetail>(`/properties/${slug}`);
@@ -184,10 +231,11 @@ class ApiService {
 
   // Track property view
   async trackPropertyView(slug: string): Promise<any> {
-    return this.request(`/properties/${slug}/recently-viewed`, {
-      method: 'GET',
+    const endpoint = `/activity/view-property?property_slug=${encodeURIComponent(slug)}`;
+    return this.request(endpoint, {
+      method: 'POST',
       headers: {
-        'X-Visitor-ID': 'anonymous', // You can implement proper visitor tracking
+        'X-Visitor-Id': getVisitorId(),
       },
     });
   }

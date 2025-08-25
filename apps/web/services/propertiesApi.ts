@@ -1,5 +1,5 @@
 // API service for Properties Listing Page
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 export interface PropertyListingFilters {
   search?: string;
@@ -10,6 +10,7 @@ export interface PropertyListingFilters {
   max_bedrooms?: number;
   sort_by?: 'price' | 'bedrooms' | 'views' | 'created_at';
   sort_order?: 'asc' | 'desc';
+  agent_id?: number;
 }
 
 export interface PropertyListingResponse {
@@ -111,6 +112,7 @@ class PropertiesApiService {
       if (filters.max_bedrooms) params.append('max_bedrooms', filters.max_bedrooms.toString());
       if (filters.sort_by) params.append('sort_by', filters.sort_by);
       if (filters.sort_order) params.append('sort_order', filters.sort_order);
+      if (typeof filters.agent_id === 'number') params.append('agent_id', String(filters.agent_id));
     }
 
     return this.request<PropertyListingResponse>(`/properties?${params.toString()}`);

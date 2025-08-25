@@ -1,6 +1,6 @@
 import React from "react";
 import { API } from "@shared/api";
-import type { HeroSlide, PropertyCard, ArticleCard } from "@/shared/api.types";
+import type { HeroSlide, PropertyCard, ArticleCard } from "@shared/api.types";
 import {
   ChevronDown,
   Eye,
@@ -18,17 +18,8 @@ import StayInTheKnow from "@/components/StayInTheKnow";
 import beyond from "../assets/beyond.png";
 import logoWhite from "../assets/Camana-white.png";
 import palm from "../assets/palm.jpg";
-import HeaderTransparent from "@/components/HeaderTransparent";
+import { Header } from "@/components/layout";
 import JoinClubForm from "@/components/JoinClubForm";
-
-// 5-image hero carousel (using existing assets as placeholders). Later we can fetch these from FastAPI.
-const FALLBACK_HERO_IMAGES: string[] = [
-  "https://api.builder.io/api/v1/image/assets/TEMP/150215d44c18f289f544dd9db57e5320bbc85d85?width=3200",
-  "https://api.builder.io/api/v1/image/assets/TEMP/1c586a2bf796f43887671486f52e771a180c6321?width=3200",
-  "https://api.builder.io/api/v1/image/assets/TEMP/b2aaf4ab7fe943123c831e8c3b0baabf8cb2f86e?width=3200",
-  "https://api.builder.io/api/v1/image/assets/TEMP/56cbf0ba5ca3f6afb6d89b14b20678c2c6f63047?width=3200",
-  "https://api.builder.io/api/v1/image/assets/TEMP/0ce93c9c3de7d61f7409992098980621d89f14ce?width=3200",
-];
 
 // MCP export assets for Coastal Real Estate Views section (node 3072:6218)
 const imgDivElementorElement =
@@ -64,6 +55,7 @@ const Index = () => {
         if (isMounted && Array.isArray(data) && data.length > 0) {
           console.log("Setting slides:", data);
           setSlides(data);
+          setCurrentHeroIndex(0);
         } else {
           console.log("No slides data or empty array");
         }
@@ -78,21 +70,19 @@ const Index = () => {
   }, []);
 
   React.useEffect(() => {
+    if (!slides || slides.length === 0) return;
     const intervalId = window.setInterval(() => {
-      const total = slides?.length || FALLBACK_HERO_IMAGES.length;
-      setCurrentHeroIndex((prev) => (prev + 1) % total);
+      setCurrentHeroIndex((prev) => (prev + 1) % slides.length);
     }, 5000);
     return () => window.clearInterval(intervalId);
-  }, []);
+  }, [slides?.length]);
 
   const currentSlide = slides?.[currentHeroIndex];
   console.log("Current slide:", currentSlide);
   console.log("Slides state:", slides);
   console.log("Current hero index:", currentHeroIndex);
 
-  const currentHeroImage =
-    currentSlide?.image_url ||
-    FALLBACK_HERO_IMAGES[currentHeroIndex % FALLBACK_HERO_IMAGES.length];
+  const currentHeroImage = currentSlide?.property?.image_urls?.[0] || "";
   const heroTitle = currentSlide?.title ?? "Connecting The World";
   const heroSubtitle =
     currentSlide?.subtitle ??
@@ -111,7 +101,7 @@ const Index = () => {
         />
 
         {/* Header */}
-       <HeaderTransparent />
+       <Header variant="transparent" />
 
         {/* Hero Content */}
         <div className="absolute inset-0 flex flex-col justify-center items-center px-4 sm:px-8 lg:px-[80px] gap-[10px]">
@@ -458,6 +448,8 @@ const Index = () => {
 
 export default Index;
 
+// (removed HeroListingsCarousel)
+
 function TrendingPropertiesGrid() {
   const [items, setItems] = React.useState<PropertyCard[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
@@ -477,7 +469,7 @@ function TrendingPropertiesGrid() {
         <Link
           key={p.id}
           to={`/listing/${p.slug}`}
-          className="w-full border border-gray-light bg-white p-[10px] block hover:shadow-xl transition-all duration-300 hover:scale-[1.02] rounded-lg overflow-hidden group"
+          className="w-full bg-white p-[10px] block rounded-lg overflow-hidden group shadow hover:shadow-lg transition-shadow"
         >
           <div className="relative h-[316px] mb-[10px]">
             <img
@@ -544,32 +536,52 @@ function TrendingPropertiesGrid() {
             </div>
             <div className="h-[1px] bg-gray-light"></div>
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-[5px]">
-                <img
-                  src={
-                    p.agent?.avatar_url ||
-                    "https://api.builder.io/api/v1/image/assets/TEMP/21584c4a5fb695a4f53c9f609c46424507f3b08c?width=98"
-                  }
-                  alt={p.agent?.name || "Agent"}
-                  className="w-[49px] h-[49px] rounded-full"
-                />
-                <div>
-                  <div className="font-dm-sans text-[16px] font-semibold italic text-black">
-                    {p.agent?.name}
-                  </div>
-                  <div className="font-dm-sans text-[12px] font-normal italic text-[#666]">
-                    {p.agent?.agency?.name}
+              {p.agent ? (
+                <div className="flex items-center gap-[5px]">
+                  <img
+                    src={
+                      p.agent?.avatar_url ||
+                      "https://api.builder.io/api/v1/image/assets/TEMP/21584c4a5fb695a4f53c9f609c46424507f3b08c?width=98"
+                    }
+                    alt={p.agent?.name || "Agent"}
+                    className="w-[49px] h-[49px] rounded-full"
+                  />
+                  <div>
+                    <div className="font-dm-sans text-[16px] font-semibold italic text-black">
+                      {p.agent?.name}
+                    </div>
+                    <div className="font-dm-sans text-[12px] font-normal italic text-[#666]">
+                      {p.agent?.agency?.name}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <img
-                src={
-                  p.agent?.agency?.logo_url ||
-                  "https://api.builder.io/api/v1/image/assets/TEMP/b69a8ad654149a58105e1fcba5d408a8585535b9?width=146"
-                }
-                alt="Company Logo"
-                className="w-[73px] h-[26px]"
-              />
+              ) : (
+                <div className="flex items-center gap-[5px]">
+                  <img
+                    src={
+                      p.developer_logo_url ||
+                      "https://via.placeholder.com/98x98/f3f4f6/9ca3af?text=Dev"
+                    }
+                    alt={p.developer || "Developer"}
+                    className="w-[49px] h-[49px] rounded-full object-contain bg-white"
+                  />
+                  <div>
+                    <div className="font-dm-sans text-[16px] font-semibold italic text-black">
+                      Direct from Developer
+                    </div>
+                    <div className="font-dm-sans text-[12px] font-normal italic text-[#666]">
+                      {p.developer || ""}
+                    </div>
+                  </div>
+                </div>
+              )}
+              {p.agent?.agency?.logo_url ? (
+                <img
+                  src={p.agent.agency.logo_url}
+                  alt="Company Logo"
+                  className="w-[73px] h-[26px]"
+                />
+              ) : null}
             </div>
           </div>
         </Link>
@@ -620,7 +632,7 @@ function TrendingPropertiesCarousel() {
           <Link
             key={p.id}
             to={`/listing/${p.slug}`}
-            className="w-full border border-gray-light bg-white p-[10px] block hover:shadow-lg transition-shadow"
+            className="w-full bg-white p-[10px] block rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow"
           >
             <div className="relative h-[316px] mb-[10px] overflow-hidden rounded-lg">
               <img
@@ -635,11 +647,11 @@ function TrendingPropertiesCarousel() {
                     {new Intl.NumberFormat().format(p.views_count)}
                   </span>
                 </div>
-                {p.has_video && (
+                {/* {p.has_video && (
                   <div className="px-[9.681px] py-[8.471px] border border-white bg-black/10 backdrop-blur-[8px] text-white font-dm-sans text-[13.391px] font-medium leading-[17.14px]">
                     Video
                   </div>
-                )}
+                )} */}
                 {p.has_virtual_tour && (
                   <div className="px-[9.681px] py-[8.471px] border border-white bg-black/10 backdrop-blur-[8px] text-white font-dm-sans text-[13.391px] font-medium leading-[17.14px]">
                     Virtual Tours
@@ -657,12 +669,12 @@ function TrendingPropertiesCarousel() {
                 </div>
                 <div className="flex items-center gap-[5px]">
                   <span className="font-dm-sans text-[14px] font-semibold text-black">
-                    Contact Agent
+                    {/* Contact Agent */}
                   </span>
                   <ArrowRight className="w-[10px] h-[5px] text-[#999] transform -rotate-90" />
                 </div>
               </div>
-              <h3 className="font-dm-sans text-[17.705px] font-bold text-black leading-[21.246px] tracking-[-0.354px]">
+              <h3 className="font-dm-sans text-[17.705px] font-normal text-black leading-[21.246px] tracking-[-0.354px]">
                 {p.title}
               </h3>
               <div className="flex items-center gap-[10px] text-[12.8px] font-normal text-black">
@@ -688,31 +700,53 @@ function TrendingPropertiesCarousel() {
               <div className="h-[1px] bg-gray-light"></div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-[5px]">
-                  <img
-                    src={
-                      p.agent?.avatar_url ||
-                      "https://api.builder.io/api/v1/image/assets/TEMP/21584c4a5fb695a4f53c9f609c46424507f3b08c?width=98"
-                    }
-                    alt={p.agent?.name || "Agent"}
-                    className="w-[49px] h-[49px] rounded-full"
-                  />
-                  <div>
-                    <div className="font-dm-sans text-[16px] font-semibold italic text-black">
-                      {p.agent?.name}
-                    </div>
-                    <div className="font-dm-sans text-[12px] font-normal italic text-[#666]">
-                      {p.agent?.agency?.name}
-                    </div>
-                  </div>
+                  {p.agent ? (
+                    <>
+                      <img
+                        src={
+                          p.agent?.avatar_url ||
+                          "https://api.builder.io/api/v1/image/assets/TEMP/21584c4a5fb695a4f53c9f609c46424507f3b08c?width=98"
+                        }
+                        alt={p.agent?.name || "Agent"}
+                        className="w-[49px] h-[49px] rounded-full"
+                      />
+                      <div>
+                        <div className="font-dm-sans text-[16px] font-semibold italic text-black">
+                          {p.agent?.name}
+                        </div>
+                        <div className="font-dm-sans text-[12px] font-normal italic text-[#666]">
+                          {p.agent?.agency?.name}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <img
+                        src={
+                          p.developer_logo_url ||
+                          "https://via.placeholder.com/98x98/f3f4f6/9ca3af?text=Dev"
+                        }
+                        alt={p.developer || "Developer"}
+                        className="w-[49px] h-[49px] rounded-full object-contain bg-white"
+                      />
+                      <div>
+                        <div className="font-dm-sans text-[16px] font-semibold italic text-black">
+                          Direct from Developer
+                        </div>
+                        <div className="font-dm-sans text-[12px] font-normal italic text-[#666]">
+                          {p.developer || ""}
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
-                <img
-                  src={
-                    p.agent?.agency?.logo_url ||
-                    "https://api.builder.io/api/v1/image/assets/TEMP/b69a8ad654149a58105e1fcba5d408a8585535b9?width=146"
-                  }
-                  alt="Company Logo"
-                  className="w-[73px] h-[26px]"
-                />
+                {p.agent?.agency?.logo_url ? (
+                  <img
+                    src={p.agent.agency.logo_url}
+                    alt="Company Logo"
+                    className="w-[73px] h-[26px]"
+                  />
+                ) : null}
               </div>
             </div>
           </Link>
@@ -954,33 +988,128 @@ function RecentlyViewedGrid() {
     return <div className="text-[#666]">No recent views yet.</div>;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-[20px]">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-[18px]">
       {items.map((p) => (
         <Link
           key={p.id}
           to={`/listing/${p.slug}`}
-          className="border border-gray-light overflow-hidden bg-white hover:shadow-lg transition-shadow"
+          className="w-full bg-white p-[10px] block rounded-lg overflow-hidden group shadow hover:shadow-lg transition-shadow"
         >
-          <div className="h-[180px] overflow-hidden">
+          <div className="relative h-[316px] mb-[10px]">
             <img
               src={p.primary_image_url}
               alt={p.title}
               className="w-full h-full object-cover"
             />
+            <div className="absolute top-[10px] left-[9px] flex gap-[10px]">
+              <div className="flex items-center gap-[6px] px-[9.681px] py-[8.471px] border border-white bg-black/10 backdrop-blur-[8px]">
+                <Eye className="w-[18px] h-[18px] text-white" />
+                <span className="text-white font-dm-sans text-[13.391px] font-medium leading-[17.14px]">
+                  {new Intl.NumberFormat().format(p.views_count)}
+                </span>
+              </div>
+              {/* {p.has_video && (
+                <div className="px-[9.681px] py-[8.471px] border border-white bg-black/10 backdrop-blur-[8px] text-white font-dm-sans text-[13.391px] font-medium leading-[17.14px]">
+                  Video
+                </div>
+              )} */}
+              {p.has_virtual_tour && (
+                <div className="px-[9.681px] py-[8.471px] border border-white bg-black/10 backdrop-blur-[8px] text-white font-dm-sans text-[13.391px] font-medium leading-[17.14px]">
+                  Virtual Tours
+                </div>
+              )}
+            </div>
           </div>
-          <div className="p-[15px]">
-            <h3 className="font-dm-sans text-[16px] font-semibold text-black mb-[8px]">
+          <div className="flex flex-col gap-[11px]">
+            <div className="flex items-center justify-between">
+              <div className="font-dm-sans text-[23.607px] font-semibold text-black leading-[28.328px] tracking-[-0.472px]">
+                {(() => {
+                  const amount = p.price_amount ?? 0;
+                  const currency = p.price_currency || 'USD';
+                  try { return new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(amount); }
+                  catch { return `${currency} ${amount.toLocaleString()}`; }
+                })()}
+              </div>
+              <div className="flex items-center gap-[5px]">
+                <span className="font-dm-sans text-[14px] font-semibold text-black">
+                  {/* Contact Agent */}
+                </span>
+                <ArrowRight className="w-[10px] h-[5px] text-[#999] transform -rotate-90" />
+              </div>
+            </div>
+            <h3 className="font-dm-sans text-[17.705px] font-normal text-black leading-[21.246px] tracking-[-0.354px]">
               {p.title}
             </h3>
-            <div className="font-dm-sans text-[18px] font-bold text-red-accent mb-[8px]">
-              {new Intl.NumberFormat(undefined, {
-                style: "currency",
-                currency: p.price_currency,
-              }).format(p.price_amount)}
+            <div className="flex items-center gap-[10px] text-[12.8px] font-normal text-black">
+              <span>{p.property_type}</span>
+              <span>|</span>
+              <div className="flex items-center gap-[2px]">
+                <Bed className="w-[17.705px] h-[17.705px]" />
+                <span className="font-plus-jakarta text-[11.803px] leading-[17.705px] tracking-[-0.236px]">
+                  {p.bedrooms}
+                </span>
+              </div>
+              <div className="flex items-center gap-[2px]">
+                <Bath className="w-[17.705px] h-[17.705px]" />
+                <span className="font-plus-jakarta text-[11.803px] leading-[17.705px] tracking-[-0.236px]">
+                  {p.bathrooms}
+                </span>
+              </div>
+              <span>|</span>
+              <span>
+                Area : {p.area_value} {p.area_unit}
+              </span>
             </div>
-            <div className="font-dm-sans text-[12px] font-normal text-[#666]">
-              {p.bedrooms} bed • {p.bathrooms} bath • {p.area_value}{" "}
-              {p.area_unit}
+            <div className="h-[1px] bg-gray-light"></div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-[5px]">
+                {p.agent ? (
+                  <>
+                    <img
+                      src={
+                        p.agent?.avatar_url ||
+                        "https://api.builder.io/api/v1/image/assets/TEMP/21584c4a5fb695a4f53c9f609c46424507f3b08c?width=98"
+                      }
+                      alt={p.agent?.name || "Agent"}
+                      className="w-[49px] h-[49px] rounded-full"
+                    />
+                    <div>
+                      <div className="font-dm-sans text-[16px] font-semibold italic text-black">
+                        {p.agent?.name}
+                      </div>
+                      <div className="font-dm-sans text-[12px] font-normal italic text-[#666]">
+                        {p.agent?.agency?.name}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <img
+                      src={
+                        p.developer_logo_url ||
+                        "https://via.placeholder.com/98x98/f3f4f6/9ca3af?text=Dev"
+                      }
+                      alt={p.developer || "Developer"}
+                      className="w-[49px] h-[49px] rounded-full object-contain bg-white"
+                    />
+                    <div>
+                      <div className="font-dm-sans text-[16px] font-semibold italic text-black">
+                        Direct from Developer
+                      </div>
+                      <div className="font-dm-sans text-[12px] font-normal italic text-[#666]">
+                        {p.developer || ""}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+              {p.agent?.agency?.logo_url ? (
+                <img
+                  src={p.agent.agency.logo_url}
+                  alt="Company Logo"
+                  className="w-[73px] h-[26px]"
+                />
+              ) : null}
             </div>
           </div>
         </Link>
@@ -1089,134 +1218,85 @@ function FeaturedSection() {
 
 function JournalCarousel() {
   const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [articles, setArticles] = React.useState<ArticleCard[] | null>(null);
+  const [error, setError] = React.useState<string | null>(null);
 
-  const journalArticles = [
-    {
-      image:
-        "https://api.builder.io/api/v1/image/assets/TEMP/1c586a2bf796f43887671486f52e771a180c6321?width=1032",
-      category: "Celebrity Homes",
-      title: "MARY TYLER MOORE'S SELLS FOR A REDUCED $16.9..",
-      author: "By Tori Latham",
-      time: "12 hours ago",
-    },
-    {
-      image:
-        "https://api.builder.io/api/v1/image/assets/TEMP/b2aaf4ab7fe943123c831e8c3b0baabf8cb2f86e?width=1032",
-      category: "Homes for Sale",
-      title: "THIS $1.9 MILLION WILLIAM KESLING HOME IN PASADENA",
-      author: "By Tori Latham",
-      time: "12 hours ago",
-    },
-    {
-      image:
-        "https://api.builder.io/api/v1/image/assets/TEMP/56cbf0ba5ca3f6afb6d89b14b20678c2c6f63047?width=1032",
-      category: "Product Recommendations",
-      title: "FROM YOUR OWN SO TO A CUSTOM PO",
-      author: "By Tori Latham",
-      time: "12 hours ago",
-    },
-    {
-      image:
-        "https://api.builder.io/api/v1/image/assets/TEMP/1c586a2bf796f43887671486f52e771a180c6321?width=1032",
-      category: "Luxury Living",
-      title: "INSIDE THE MOST EXPENSIVE PENTHOUSE IN DUBAI",
-      author: "By Sarah Johnson",
-      time: "2 days ago",
-    },
-    {
-      image:
-        "https://api.builder.io/api/v1/image/assets/TEMP/b2aaf4ab7fe943123c831e8c3b0baabf8cb2f86e?width=1032",
-      category: "Investment Tips",
-      title: "HOW TO INVEST IN INTERNATIONAL REAL ESTATE",
-      author: "By Michael Chen",
-      time: "3 days ago",
-    },
-    {
-      image:
-        "https://api.builder.io/api/v1/image/assets/TEMP/56cbf0ba5ca3f6afb6d89b14b20678c2c6f63047?width=1032",
-      category: "Architecture",
-      title: "MODERN ARCHITECTURE TRENDS FOR 2024",
-      author: "By Emma Rodriguez",
-      time: "4 days ago",
-    },
-  ];
+  React.useEffect(() => {
+    API.articles
+      .list(9)
+      .then(setArticles)
+      .catch((e) => setError(String(e)));
+  }, []);
 
   const articlesPerPage = 3;
-  const totalSlides = Math.ceil(journalArticles.length / articlesPerPage);
+  const totalSlides = Math.ceil(((articles?.length) || 0) / articlesPerPage);
   const canGoLeft = currentIndex > 0;
-  const canGoRight = currentIndex < totalSlides - 1;
+  const canGoRight = currentIndex < Math.max(totalSlides - 1, 0);
 
   const goToPrevious = () => {
     setCurrentIndex((prevIndex) => Math.max(0, prevIndex - 1));
   };
 
   const goToNext = () => {
-    setCurrentIndex((prevIndex) => Math.min(totalSlides - 1, prevIndex + 1));
+    setCurrentIndex((prevIndex) => Math.min(Math.max(totalSlides - 1, 0), prevIndex + 1));
   };
 
-  // Calculate the transform offset for smooth sliding
-  const slideOffset = currentIndex * -100; // Each slide moves 100% to the left
+  const slideOffset = currentIndex * -100;
+
+  if (error || !articles) {
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-[30px]">
+        {[0,1,2].map((i) => (
+          <div key={i} className="w-[537px] bg-white border border-[#e9e9e9] overflow-hidden">
+            <div className="h-[286px] bg-gray-200 animate-pulse" />
+            <div className="p-5">
+              <div className="h-5 w-24 bg-gray-200 animate-pulse mb-2" />
+              <div className="h-6 w-3/4 bg-gray-200 animate-pulse" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="relative">
-      {/* Carousel Container with overflow hidden */}
       <div className="overflow-hidden">
-        {/* Sliding Container */}
-        <div
-          className="flex transition-transform duration-500 ease-in-out"
-          style={{ transform: `translateX(${slideOffset}%)` }}
-        >
-          {/* Render all articles in groups of 3 */}
+        <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(${slideOffset}%)` }}>
           {Array.from({ length: totalSlides }, (_, slideIndex) => (
-            <div
-              key={slideIndex}
-              className="flex gap-[30px] flex-shrink-0"
-              style={{ width: "100%", minWidth: "100%" }}
-            >
-              {journalArticles
-                .slice(
-                  slideIndex * articlesPerPage,
-                  slideIndex * articlesPerPage + articlesPerPage,
-                )
-                .map((article, index) => (
+            <div key={slideIndex} className="flex gap-[30px] flex-shrink-0" style={{ width: "100%", minWidth: "100%" }}>
+              {articles
+                .slice(slideIndex * articlesPerPage, slideIndex * articlesPerPage + articlesPerPage)
+                .map((a, index) => (
                   <div
                     key={slideIndex * 3 + index}
-                    className="w-[537px] bg-white border border-[#e9e9e9] flex-shrink-0 overflow-hidden"
+                    className="bg-white border border-[#e9e9e9] flex-shrink-0 overflow-hidden"
+                    style={{ width: "calc((100% - 60px)/3)" }}
                   >
-                    <Link to="/journal" className="block">
+                    <Link to={`/article-v2/${a.slug}`} className="block">
                       <div className="flex flex-col">
-                        {/* Image */}
                         <div className="h-[286px] overflow-hidden">
                           <img
-                            src={article.image}
-                            alt="Article"
+                            src={a.image_url}
+                            alt={a.title}
                             className="w-full h-full object-cover"
+                            onError={(e) => { (e.currentTarget as HTMLImageElement).src = 'https://camana-homes.s3.ap-south-1.amazonaws.com/properties/dubai-marina/2200xxs%20(1).webp'; }}
                           />
                         </div>
-
-                        {/* Content */}
-                        <div className="p-5 flex flex-col items-center gap-[23px] min-h-0">
-                          {/* Category Tag */}
-                          <div className="bg-[#fd2d15] px-[10px] py-[5px]">
-                            <span className="font-dm-sans text-[18px] font-extrabold text-white truncate block max-w-full">
-                              {article.category}
-                            </span>
-                          </div>
-
-                          {/* Title */}
-                          <h3 className="font-dm-sans text-[30px] font-black text-black text-center uppercase leading-[35px] line-clamp-3">
-                            {article.title}
-                          </h3>
-
-                          {/* Author and Time */}
-                          <div className="font-dm-sans text-[16px] font-normal text-black text-center">
-                            <span className="font-bold italic truncate block">
-                              {article.author}
-                            </span>
-                            <span className="truncate block">
-                              {" "}
-                              - {article.time}
-                            </span>
+                        <div className="p-5 flex flex-col items-center gap-[12px] min-h-0">
+                          {a.category && (
+                            <div className="bg-[#fd2d15] px-[10px] py-[5px]">
+                              <span className="font-dm-sans text-[18px] font-extrabold text-white truncate block max-w-full">{a.category}</span>
+                            </div>
+                          )}
+                          <h3 className="font-dm-sans text-[24px] lg:text-[30px] font-bold text-black text-center leading-[32px] lg:leading-[35px] line-clamp-3">{a.title}</h3>
+                          <div className="font-dm-sans text-[14px] lg:text-[16px] font-normal text-black text-center">
+                            {a.author_name && (
+                              <span className="font-bold italic truncate block">By {a.author_name}</span>
+                            )}
+                            {a.published_at && (
+                              <span className="truncate block">{new Date(a.published_at).toLocaleDateString()}</span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -1228,32 +1308,13 @@ function JournalCarousel() {
         </div>
       </div>
 
-      {/* Navigation Arrows */}
       <div className="flex justify-between items-center mt-[30px]">
-        <div></div> {/* Empty div for spacing */}
+        <div></div>
         <div className="flex gap-2.5">
-          <button
-            onClick={goToPrevious}
-            disabled={!canGoLeft}
-            aria-label="Previous journal articles"
-            className={`w-[36.5px] h-10 flex items-center justify-center bg-white border border-gray-300 rounded transition-colors ${
-              canGoLeft
-                ? "hover:bg-gray-50 cursor-pointer"
-                : "opacity-50 cursor-not-allowed"
-            }`}
-          >
+          <button onClick={goToPrevious} disabled={!canGoLeft} aria-label="Previous journal articles" className={`w-[36.5px] h-10 flex items-center justify-center bg-white border border-gray-300 rounded transition-colors ${canGoLeft ? "hover:bg-gray-50 cursor-pointer" : "opacity-50 cursor-not-allowed"}`}>
             <ArrowLeft className="w-5 h-5 text-black" />
           </button>
-          <button
-            onClick={goToNext}
-            disabled={!canGoRight}
-            aria-label="Next journal articles"
-            className={`w-[36.5px] h-10 flex items-center justify-center bg-white border border-gray-300 rounded transition-colors ${
-              canGoRight
-                ? "hover:bg-gray-50 cursor-pointer"
-                : "opacity-50 cursor-not-allowed"
-            }`}
-          >
+          <button onClick={goToNext} disabled={!canGoRight} aria-label="Next journal articles" className={`w-[36.5px] h-10 flex items-center justify-center bg-white border border-gray-300 rounded transition-colors ${canGoRight ? "hover:bg-gray-50 cursor-pointer" : "opacity-50 cursor-not-allowed"}`}>
             <ArrowRight className="w-5 h-5 text-black" />
           </button>
         </div>

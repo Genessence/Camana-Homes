@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { apiService, PropertyDetail, PropertyStats } from "../services/api";
@@ -32,6 +36,26 @@ export default function ListingPage() {
   const [lightboxImages, setLightboxImages] = useState<string[]>([]);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [galleryOpen, setGalleryOpen] = useState(false);
+  const [tourDates, setTourDates] = useState<Array<{ date: Date; weekday: string; day: number; monthShort: string; iso: string }>>([]);
+  const [selectedTourDate, setSelectedTourDate] = useState<string | null>(null);
+  const dateScrollRef = useRef<HTMLDivElement | null>(null);
+
+  const [leadOpen, setLeadOpen] = useState(false);
+  const [leadName, setLeadName] = useState("");
+  const [leadEmail, setLeadEmail] = useState("");
+  const [leadPhone, setLeadPhone] = useState("");
+  const [leadLocation, setLeadLocation] = useState("");
+
+  const openLeadModal = () => setLeadOpen(true);
+  const closeLeadModal = () => {
+    setLeadOpen(false);
+  };
+  const submitLead = (e: React.FormEvent) => {
+    e.preventDefault();
+    // TODO: wire backend submit if/when endpoint is ready
+    console.log({ leadName, leadEmail, leadPhone, leadLocation, propertyId: property?.id, selectedTourDate });
+    setLeadOpen(false);
+  };
 
   const handleScrollToStats = () => {
     const target = document.getElementById("property-stats");
@@ -103,6 +127,28 @@ export default function ListingPage() {
 
     fetchPropertyData();
   }, [slug]);
+
+  useEffect(() => {
+    const now = new Date();
+    const next8: Array<{ date: Date; weekday: string; day: number; monthShort: string; iso: string }> = [];
+    for (let i = 0; i < 8; i++) {
+      const d = new Date(now);
+      d.setDate(now.getDate() + i);
+      const weekday = d.toLocaleDateString("en-US", { weekday: "long" });
+      const day = d.getDate();
+      const monthShort = d.toLocaleDateString("en-US", { month: "short" });
+      const iso = d.toISOString().slice(0, 10);
+      next8.push({ date: d, weekday, day, monthShort, iso });
+    }
+    setTourDates(next8);
+    setSelectedTourDate(next8[0]?.iso || null);
+  }, []);
+
+  const scrollDates = (dir: "left" | "right") => {
+    const el = dateScrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir === "left" ? -200 : 200, behavior: "smooth" });
+  };
 
   // Show skeleton while loading
   if (loading) {
@@ -1048,12 +1094,31 @@ export default function ListingPage() {
 
             {/* Right Column: Sidebar */}
             <div className="lg:sticky lg:top-10 lg:self-start">
+              {/* Agent/Developer Card */}
+              <div className="bg-[#f8f8f8] p-4 rounded-lg mb-4 flex items-center gap-3">
+                <div className="w-[56px] h-[56px] rounded-full overflow-hidden bg-white flex items-center justify-center">
+                  <img
+                    src={property.agent?.avatar_url || property.developer_logo_url || "https://via.placeholder.com/112x112/f3f4f6/9ca3af?text=Logo"}
+                    alt={property.agent?.name || property.developer || "Developer"}
+                    className={property.agent?.avatar_url ? "w-full h-full object-cover" : "w-[36px] h-[36px] object-contain"}
+                    onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/112x112/f3f4f6/9ca3af?text=Logo"; }}
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <div className="text-[18px] font-bold text-black">
+                    {property.agent?.name || "Direct from Developer"}
+                  </div>
+                  <div className="text-[14px] text-[#8c8c8c]">
+                    {property.agent?.agency?.name || property.developer || ""}
+                  </div>
+                </div>
+              </div>
               {/* Top Action Buttons */}
               <div className="flex gap-3 mb-6">
-                <button className="h-[50px] px-[25px] py-[15px] bg-black text-white text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-800 transition-colors">
+                <button onClick={openLeadModal} className="h-[50px] px-[25px] py-[15px] bg-black text-white text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-800 transition-colors">
                   Book the Tour
                 </button>
-                <button className="h-[50px] px-[25px] py-[15px] bg-black text-white text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-800 transition-colors">
+                <button onClick={openLeadModal} className="h-[50px] px-[25px] py-[15px] bg-black text-white text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-800 transition-colors">
                   Contact Agent
                 </button>
               </div>
@@ -1072,6 +1137,7 @@ export default function ListingPage() {
                       className="p-2 hover:bg-gray-200 rounded transition-colors"
                       title="Previous dates"
                       aria-label="Navigate to previous dates"
+                      onClick={() => scrollDates("left")}
                     >
                       <svg
                         width="16"
@@ -1089,62 +1155,26 @@ export default function ListingPage() {
                         />
                       </svg>
                     </button>
-                    <div className="flex gap-2">
-                      {/* Date Box 1 - Today */}
-                      <div className="bg-white p-3 rounded border border-[#e5e5e5] min-w-[80px] text-center">
-                        <div className="text-[12px] text-[#8c8c8c] mb-1">
-                          {new Date().toLocaleDateString("en-US", {
-                            weekday: "long",
-                          })}
-                        </div>
-                        <div className="text-[18px] font-bold text-black">
-                          {new Date().getDate()}
-                        </div>
-                        <div className="text-[12px] text-[#8c8c8c]">
-                          {new Date().toLocaleDateString("en-US", {
-                            month: "short",
-                          })}
-                        </div>
-                      </div>
-                      {/* Date Box 2 - Tomorrow */}
-                      <div className="bg-white p-3 rounded border border-[#e5e5e5] min-w-[80px] text-center">
-                        <div className="text-[12px] text-[#8c8c8c] mb-1">
-                          {new Date(
-                            Date.now() + 24 * 60 * 60 * 1000,
-                          ).toLocaleDateString("en-US", { weekday: "long" })}
-                        </div>
-                        <div className="text-[18px] font-bold text-black">
-                          {new Date(Date.now() + 24 * 60 * 60 * 1000).getDate()}
-                        </div>
-                        <div className="text-[12px] text-[#8c8c8c]">
-                          {new Date(
-                            Date.now() + 24 * 60 * 60 * 1000,
-                          ).toLocaleDateString("en-US", { month: "short" })}
-                        </div>
-                      </div>
-                      {/* Date Box 3 - Day after tomorrow */}
-                      <div className="bg-white p-3 rounded border border-[#e5e5e5] min-w-[80px] text-center">
-                        <div className="text-[12px] text-[#8c8c8c] mb-1">
-                          {new Date(
-                            Date.now() + 2 * 24 * 60 * 60 * 1000,
-                          ).toLocaleDateString("en-US", { weekday: "long" })}
-                        </div>
-                        <div className="text-[18px] font-bold text-black">
-                          {new Date(
-                            Date.now() + 2 * 24 * 60 * 60 * 1000,
-                          ).getDate()}
-                        </div>
-                        <div className="text-[12px] text-[#8c8c8c]">
-                          {new Date(
-                            Date.now() + 2 * 24 * 60 * 60 * 1000,
-                          ).toLocaleDateString("en-US", { month: "short" })}
-                        </div>
-                      </div>
+                    <div ref={dateScrollRef} className="flex gap-2 overflow-x-auto no-scrollbar">
+                      {tourDates.map((d) => (
+                        <button
+                          key={d.iso}
+                          type="button"
+                          onClick={() => setSelectedTourDate(d.iso)}
+                          className={`bg-white p-3 rounded border min-w-[80px] text-center ${selectedTourDate === d.iso ? 'border-black' : 'border-[#e5e5e5]'}`}
+                          aria-pressed={selectedTourDate === d.iso}
+                        >
+                          <div className="text-[12px] text-[#8c8c8c] mb-1">{d.weekday}</div>
+                          <div className="text-[18px] font-bold text-black">{d.day}</div>
+                          <div className="text-[12px] text-[#8c8c8c]">{d.monthShort}</div>
+                        </button>
+                      ))}
                     </div>
                     <button
                       className="p-2 hover:bg-gray-200 rounded transition-colors"
                       title="Next dates"
                       aria-label="Navigate to next dates"
+                      onClick={() => scrollDates("right")}
                     >
                       <svg
                         width="16"
@@ -1208,7 +1238,7 @@ export default function ListingPage() {
                 </div>
 
                 {/* Continue Button */}
-                <button className="w-full h-[50px] bg-black text-white text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-800 transition-colors rounded">
+                <button onClick={openLeadModal} className="w-full h-[50px] bg-black text-white text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-800 transition-colors rounded">
                   Continue
                 </button>
               </div>
@@ -1434,6 +1464,67 @@ export default function ListingPage() {
           </div>
         </div>
       )}
+      <LeadModal
+        open={leadOpen}
+        onOpenChange={setLeadOpen}
+        onSubmit={submitLead}
+        leadName={leadName}
+        setLeadName={setLeadName}
+        leadEmail={leadEmail}
+        setLeadEmail={setLeadEmail}
+        leadPhone={leadPhone}
+        setLeadPhone={setLeadPhone}
+        leadLocation={leadLocation}
+        setLeadLocation={setLeadLocation}
+      />
     </div>
+  );
+}
+
+// Lead capture modal component colocated for simplicity
+function LeadModal({ open, onOpenChange, onSubmit, leadName, setLeadName, leadEmail, setLeadEmail, leadPhone, setLeadPhone, leadLocation, setLeadLocation }: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  leadName: string;
+  setLeadName: (v: string) => void;
+  leadEmail: string;
+  setLeadEmail: (v: string) => void;
+  leadPhone: string;
+  setLeadPhone: (v: string) => void;
+  leadLocation: string;
+  setLeadLocation: (v: string) => void;
+}) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[480px]">
+        <DialogHeader>
+          <DialogTitle>Request a Tour</DialogTitle>
+          <DialogDescription>Share your contact details and agent will reach out shortly.</DialogDescription>
+        </DialogHeader>
+        <form onSubmit={onSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="lead-name">Name</Label>
+            <Input id="lead-name" value={leadName} onChange={(e) => setLeadName(e.target.value)} placeholder="Your name" required />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="lead-email">Email</Label>
+            <Input id="lead-email" type="email" value={leadEmail} onChange={(e) => setLeadEmail(e.target.value)} placeholder="you@example.com" required />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="lead-phone">Phone</Label>
+            <Input id="lead-phone" value={leadPhone} onChange={(e) => setLeadPhone(e.target.value)} placeholder="+1 555-123-4567" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="lead-location">Location</Label>
+            <Input id="lead-location" value={leadLocation} onChange={(e) => setLeadLocation(e.target.value)} placeholder="City, Country" />
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+            <Button type="submit">Submit</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

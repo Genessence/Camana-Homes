@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { API } from "@shared/api";
-import type { ArticleCard } from "@/shared/api.types";
+import type { ArticleCard } from "@shared/api.types";
 
 const ArticleDetail = () => {
   const { slug } = useParams();
