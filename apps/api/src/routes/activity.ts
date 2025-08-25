@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { trackView, recentlyViewed } from '../controllers/activity.controller';
+import { trackView, recentlyViewed } from '../controllers/activity.controller.js';
 
 export const activityRouter = Router();
 

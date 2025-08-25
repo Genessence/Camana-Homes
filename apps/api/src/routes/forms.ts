@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createTourRequest, createMortgageInquiry } from '../controllers/forms.controller';
+import { createTourRequest, createMortgageInquiry } from '../controllers/forms.controller.js';
 
 export const formsRouter = Router();
 
