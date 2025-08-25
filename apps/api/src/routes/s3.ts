@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getSignedUploadUrl, getSignedDownloadUrl } from '../lib/s3';
+import { getSignedUploadUrl, getSignedDownloadUrl } from '../lib/s3.js';
 
 export const s3Router = Router();
 

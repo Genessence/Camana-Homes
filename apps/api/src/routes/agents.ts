@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { list, create, bySlug } from '../controllers/agents.controller';
+import { list, create, bySlug } from '../controllers/agents.controller.js';
 import { list as listAgencies } from '../controllers/agencies.controller';
 
 export const agentsRouter = Router();

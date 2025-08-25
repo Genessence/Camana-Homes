@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { healthcheckDb } from '../lib/prisma';
+import { healthcheckDb } from '../lib/prisma.js';
 
 export const healthRouter = Router();
 

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { list, bySlug } from '../controllers/articles.controller';
+import { list, bySlug } from '../controllers/articles.controller.js';
 
 export const articlesRouter = Router();
 

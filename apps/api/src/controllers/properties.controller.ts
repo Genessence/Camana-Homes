@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import { Prisma } from '@prisma/client';
-import { prisma } from '../lib/prisma';
+import { prisma } from '../lib/prisma.js';
 
 function mapPropertyCard(p: any) {
   return {

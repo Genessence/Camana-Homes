@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { trending, featured, bySlug, stats, list, isSlugAvailable, create } from '../controllers/properties.controller';
+import { trending, featured, bySlug, stats, list, isSlugAvailable, create } from '../controllers/properties.controller.js';
 
 export const propertiesRouter = Router();
 

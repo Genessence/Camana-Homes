@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import { prisma } from '../lib/prisma';
+import { prisma } from '../lib/prisma.js';
 
 export const trackView: RequestHandler = async (req, res) => {
   // Safely read body regardless of parsing issues

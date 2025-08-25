@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import { prisma } from '../lib/prisma';
+import { prisma } from '../lib/prisma.js';
 
 export const list: RequestHandler = async (_req, res) => {
   const agents = await prisma.agent.findMany({ include: { agency: true }, orderBy: { name: 'asc' } });
