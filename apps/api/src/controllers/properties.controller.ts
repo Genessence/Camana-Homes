@@ -225,9 +225,9 @@ export const create: RequestHandler = async (req, res) => {
     data: {
       slug: data.slug,
       title: data.title,
-      priceAmount: new Prisma.Decimal(data.priceAmount ?? 0),
+      priceAmount: data.priceAmount != null ? Number(data.priceAmount) : 0,
       priceCurrency: data.priceCurrency,
-      pricePerSqft: data.pricePerSqft != null ? new Prisma.Decimal(data.pricePerSqft) : null,
+      pricePerSqft: data.pricePerSqft != null ? Number(data.pricePerSqft) : null,
       propertyType: data.propertyType,
       bedrooms: data.bedrooms ?? 0,
       bathrooms: data.bathrooms ?? 0,
