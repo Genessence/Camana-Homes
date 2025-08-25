@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import { healthRouter } from './health';
-import { s3Router } from './s3';
-import { propertiesRouter } from './properties';
-import { articlesRouter } from './articles';
-import { activityRouter } from './activity';
-import { formsRouter } from './forms';
-import { heroSlidesRouter } from './hero-slides';
-import { agentsRouter } from './agents';
+import { healthRouter } from './health.js';
+import { s3Router } from './s3.js';
+import { propertiesRouter } from './properties.js';
+import { articlesRouter } from './articles.js';
+import { activityRouter } from './activity.js';
+import { formsRouter } from './forms.js';
+import { heroSlidesRouter } from './hero-slides.js';
+import { agentsRouter } from './agents.js';
 
 export const router = Router();
 
