@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
+import { Heart } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -39,6 +40,8 @@ export default function ListingPage() {
   const [tourDates, setTourDates] = useState<Array<{ date: Date; weekday: string; day: number; monthShort: string; iso: string }>>([]);
   const [selectedTourDate, setSelectedTourDate] = useState<string | null>(null);
   const dateScrollRef = useRef<HTMLDivElement | null>(null);
+
+  const [isSaved, setIsSaved] = useState(false);
 
   const [leadOpen, setLeadOpen] = useState(false);
   const [leadName, setLeadName] = useState("");
@@ -182,15 +185,15 @@ export default function ListingPage() {
       {/* Header Section - Figma node 3072:11462 */}
 
       {/* Property ID/Reference Section */}
-      <section className="max-w-[1600px] mx-auto px-4 lg:px-[70px] py-4">
+      <section className="max-w-[1600px] mx-auto px-12 py-6">
         {/* <div className="inline-block bg-blue-50 border border-blue-200 px-3 py-2 rounded">
           <span className="text-blue-800 text-sm font-medium">#{slug}</span>
         </div> */}
       </section>
 
       {/* Main Content Container */}
-      <main className="max-w-[1600px] mx-auto px-4 lg:px-[70px] py-[50px] relative">
-        <div className="flex flex-col gap-10">
+      <main className="max-w-[1600px] mx-auto px-12 py-6 relative">
+        <div className="flex flex-col gap-5 mt-[-50px]">
           {/* Breadcrumb Navigation Section */}
           <div className="text-[18px] font-medium text-[#8c8c8c] tracking-[-0.36px] leading-[27px]">
             <Link
@@ -204,93 +207,100 @@ export default function ListingPage() {
           </div>
 
           {/* Image Gallery Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-[808px_1fr] gap-[25px]">
+          <div className="grid grid-cols-1 lg:grid-cols-[664px_1fr] gap-4">
             {/* Main Large Image */}
-            <div className="relative w-full h-[600px] bg-gray-200 cursor-zoom-in" onClick={() => openSingleImage(
-              property.images[0]?.url || property.primary_image_url || "https://via.placeholder.com/808x600/f3f4f6/9ca3af?text=Property+Image"
+            <div className="relative w-full h-[445.72px] bg-gray-200 cursor-zoom-in" onClick={() => openSingleImage(
+              property.images[0]?.url || property.primary_image_url || "https://via.placeholder.com/664x446/f3f4f6/9ca3af?text=Property+Image"
             )}>
               <img
                 src={
                   property.images[0]?.url ||
                   property.primary_image_url ||
-                  "https://via.placeholder.com/808x600/f3f4f6/9ca3af?text=Property+Image"
+                  "https://via.placeholder.com/664x446/f3f4f6/9ca3af?text=Property+Image"
                 }
                 alt={property.images[0]?.alt_text || "Main property image"}
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   // Fallback to placeholder if image fails to load
                   e.currentTarget.src =
-                    "https://via.placeholder.com/808x600/f3f4f6/9ca3af?text=Property+Image";
+                    "https://via.placeholder.com/664x446/f3f4f6/9ca3af?text=Property+Image";
                 }}
               />
-              {/* Image overlay with property reference */}
-              <div className="absolute top-4 left-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded text-sm">
-                #{slug}
-              </div>
+              {/* Save button overlay */}
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); setIsSaved((v) => !v); }}
+                aria-pressed={isSaved}
+                className="absolute bottom-4 left-4 z-10 flex items-center gap-2 px-4 py-2 bg-black/40 text-white border border-white rounded-md backdrop-blur-sm hover:bg-black/50 transition-colors"
+                title={isSaved ? "Saved" : "Save"}
+              >
+                <Heart className="w-5 h-5" strokeWidth={2} fill={isSaved ? "currentColor" : "none"} />
+                <span className="text-sm font-medium">{isSaved ? "Saved" : "Save"}</span>
+              </button>
             </div>
 
             {/* Small Images Grid */}
-            <div className="grid grid-cols-2 gap-[25px]">
+            <div className="grid grid-cols-2 lg:grid-cols-[328px_328px] gap-2">
               {/* Small Image 1 */}
-              <div className="relative w-full h-[287px] bg-gray-200 cursor-zoom-in" onClick={() => property.images[1]?.url && openSingleImage(property.images[1].url)}>
+              <div className="relative w-full lg:w-[328px] h-[218.86px] lg:h-[218.86px] bg-gray-200 cursor-zoom-in" onClick={() => property.images[1]?.url && openSingleImage(property.images[1].url)}>
                 <img
                   src={
                     property.images[1]?.url ||
-                    "https://via.placeholder.com/400x287/f3f4f6/9ca3af?text=Image+2"
+                    "https://via.placeholder.com/328x219/f3f4f6/9ca3af?text=Image+2"
                   }
                   alt={property.images[1]?.alt_text || "Property image 2"}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.src =
-                      "https://via.placeholder.com/400x287/f3f4f6/9ca3af?text=Image+2";
+                      "https://via.placeholder.com/328x219/f3f4f6/9ca3af?text=Image+2";
                   }}
                 />
               </div>
 
               {/* Small Image 2 */}
-              <div className="relative w-full h-[287px] bg-gray-200 cursor-zoom-in" onClick={() => property.images[2]?.url && openSingleImage(property.images[2].url)}>
+              <div className="relative w-full lg:w-[328px] h-[218.86px] lg:h-[218.86px] bg-gray-200 cursor-zoom-in" onClick={() => property.images[2]?.url && openSingleImage(property.images[2].url)}>
                 <img
                   src={
                     property.images[2]?.url ||
-                    "https://via.placeholder.com/400x287/f3f4f6/9ca3af?text=Image+3"
+                    "https://via.placeholder.com/328x219/f3f4f6/9ca3af?text=Image+3"
                   }
                   alt={property.images[2]?.alt_text || "Property image 3"}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.src =
-                      "https://via.placeholder.com/400x287/f3f4f6/9ca3af?text=Image+3";
+                      "https://via.placeholder.com/328x219/f3f4f6/9ca3af?text=Image+3";
                   }}
                 />
               </div>
 
               {/* Small Image 3 */}
-              <div className="relative w-full h-[287px] bg-gray-200 cursor-zoom-in" onClick={() => property.images[3]?.url && openSingleImage(property.images[3].url)}>
+              <div className="relative w-full lg:w-[328px] h-[218.86px] lg:h-[218.86px] bg-gray-200 cursor-zoom-in" onClick={() => property.images[3]?.url && openSingleImage(property.images[3].url)}>
                 <img
                   src={
                     property.images[3]?.url ||
-                    "https://via.placeholder.com/400x287/f3f4f6/9ca3af?text=Image+4"
+                    "https://via.placeholder.com/328x219/f3f4f6/9ca3af?text=Image+4"
                   }
                   alt={property.images[3]?.alt_text || "Property image 4"}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.src =
-                      "https://via.placeholder.com/400x287/f3f4f6/9ca3af?text=Image+4";
+                      "https://via.placeholder.com/328x219/f3f4f6/9ca3af?text=Image+4";
                   }}
                 />
               </div>
 
               {/* Small Image 4 */}
-              <div className="relative w-full h-[287px] bg-gray-200">
+              <div className="relative w-full lg:w-[328px] h-[218.86px] lg:h-[218.86px] bg-gray-200">
                 <img
                   src={
                     property.images[4]?.url ||
-                    "https://via.placeholder.com/400x287/f3f4f6/9ca3af?text=Image+5"
+                    "https://via.placeholder.com/328x219/f3f4f6/9ca3af?text=Image+5"
                   }
                   alt={property.images[4]?.alt_text || "Property image 5"}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.src =
-                      "https://via.placeholder.com/400x287/f3f4f6/9ca3af?text=Image+5";
+                      "https://via.placeholder.com/328x219/f3f4f6/9ca3af?text=Image+5";
                   }}
                 />
                 {/* "View All Photos" overlay */}
@@ -347,34 +357,35 @@ export default function ListingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-10">
             {/* Left Column: Property Details */}
             <div className="flex flex-col gap-6">
-              {/* Property Title */}
-              <h1 className="text-[32px] font-bold text-black leading-[40px] tracking-[-0.64px]">
-                {property.title}
-              </h1>
+              {/* Title + Price + Location with tighter spacing */}
+              <div className="flex flex-col gap-1.5">
+                {/* Property Title */}
+                <h1 className="text-[28px] lg:text-[30px] font-bold text-black leading-[1.2] tracking-[-0.56px]">
+                  {property.title}
+                </h1>
 
-              {/* Property Price */}
-              <div className="text-[36px] font-bold text-black leading-[45px] tracking-[-0.72px]">
-                {property.price_currency}{" "}
-                {property.price_amount.toLocaleString()}
-              </div>
+                {/* Property Price */}
+                <div className="text-[30px] lg:text-[32px] font-bold text-black leading-[1.2] tracking-[-0.64px]">
+                  {property.price_currency}{" "}
+                  {property.price_amount.toLocaleString()}
+                </div>
 
-              {/* Property Location */}
-              <div className="flex items-center gap-2">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M8 0C4.686 0 2 2.686 2 6c0 4 6 10 6 10s6-6 6-10c0-3.314-2.686-6-6-6zm0 9c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"
-                    fill="#fd2d15"
-                  />
-                </svg>
-                <span className="text-[18px] text-black">
-                  {property.location_label}
-                </span>
+                {/* Property Location */}
+                <div className="flex items-center gap-2 text-[16px]">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M8 0C4.686 0 2 2.686 2 6c0 4 6 10 6 10s6-6 6-10c0-3.314-2.686-6-6-6zm0 9c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"
+                      fill="#fd2d15"
+                    />
+                  </svg>
+                  <span className="text-black">{property.location_label}</span>
+                </div>
               </div>
 
               {/* Property Statistics Grid */}
@@ -578,9 +589,9 @@ export default function ListingPage() {
               </div>
 
               {/* Property Description */}
-              <div className="text-[16px] text-[#8c8c8c] leading-[24px]">
+              {/* <div className="text-[16px] text-[#8c8c8c] leading-[24px]">
                 {property.description || "-"}
-              </div>
+              </div> */}
 
               {/* Detailed Property Description */}
               <div className="space-y-8">

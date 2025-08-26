@@ -21,6 +21,7 @@ export default function PropertyCreate() {
   const [priceAmount, setPriceAmount] = React.useState<number | "">("");
   const [priceCurrency, setPriceCurrency] = React.useState("USD");
   const [pricePerSqft, setPricePerSqft] = React.useState<number | "">("");
+  const [priceOnRequest, setPriceOnRequest] = React.useState(false);
   const [propertyType, setPropertyType] = React.useState("Apartment");
   const [bedrooms, setBedrooms] = React.useState<number | "">("");
   const [bathrooms, setBathrooms] = React.useState<number | "">("");
@@ -140,7 +141,7 @@ export default function PropertyCreate() {
   const validate = () => {
     if (!title.trim()) return "Title is required";
     if (!slug.trim()) return "Slug is required";
-    if (priceAmount === "" || Number(priceAmount) <= 0) return "Price amount is required";
+    if (!priceOnRequest && (priceAmount === "" || Number(priceAmount) <= 0)) return "Price amount is required";
     if (!priceCurrency) return "Currency is required";
     if (!propertyType) return "Property type is required";
     if (bedrooms === "") return "Bedrooms is required";
@@ -163,7 +164,7 @@ export default function PropertyCreate() {
       const payload: any = {
         title,
         slug,
-        priceAmount: Number(priceAmount),
+        priceAmount: priceOnRequest ? 0 : Number(priceAmount),
         priceCurrency,
         pricePerSqft: pricePerSqft === "" ? null : Number(pricePerSqft),
         propertyType,
@@ -260,7 +261,27 @@ export default function PropertyCreate() {
               <div>
                 <TextInput label="Slug" value={slug} onChange={setSlug} required helper={slugAvailable === false ? "Not available" : slugAvailable === true ? "Available" : "URL-friendly unique identifier"} />
               </div>
-              <NumberInput label="Price Amount" value={priceAmount} onChange={setPriceAmount} required />
+              <div>
+                <div className="flex items-center justify-between">
+                  <label className="block text-sm font-medium mb-1">Price Amount *</label>
+                  <label className="inline-flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={priceOnRequest}
+                      onChange={(e) => setPriceOnRequest(e.target.checked)}
+                    />
+                    <span>Price on Request</span>
+                  </label>
+                </div>
+                <input
+                  className="w-full border border-gray-300 p-2"
+                  type="number"
+                  value={priceAmount}
+                  onChange={(e) => setPriceAmount(e.target.value === "" ? "" : Number(e.target.value))}
+                  required={!priceOnRequest}
+                  disabled={priceOnRequest}
+                />
+              </div>
               <TextInput label="Price Currency" value={priceCurrency} onChange={setPriceCurrency} required />
               <NumberInput label="Price per sqft" value={pricePerSqft} onChange={setPricePerSqft} />
               <TextInput label="Property Type" value={propertyType} onChange={setPropertyType} required />

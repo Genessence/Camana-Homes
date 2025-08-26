@@ -41,9 +41,35 @@ const imgIcon1 =
 const imgSvg =
   "http://localhost:3845/assets/c217a521b74c0a1cf7ee28610d185936dbf7d128.svg";
 
+function timeAgo(dateString: string): string {
+  try {
+    const date = new Date(dateString);
+    const diffMs = Date.now() - date.getTime();
+    const seconds = Math.floor(diffMs / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    if (days > 0) return days === 1 ? "1 day ago" : `${days} days ago`;
+    if (hours > 0) return hours === 1 ? "1 hour ago" : `${hours} hours ago`;
+    if (minutes > 0) return minutes === 1 ? "1 minute ago" : `${minutes} minutes ago`;
+    return "Just now";
+  } catch {
+    return "";
+  }
+}
+
 const Index = () => {
   const [currentHeroIndex, setCurrentHeroIndex] = React.useState<number>(0);
   const [slides, setSlides] = React.useState<HeroSlide[] | null>(null);
+  const [buyType, setBuyType] = React.useState<'Buy' | 'Rent'>('Buy');
+  const [buyOpen, setBuyOpen] = React.useState(false);
+  const buyRef = React.useRef<HTMLDivElement | null>(null);
+  const [locationValue, setLocationValue] = React.useState<string>('Dubai');
+  const [locationOpen, setLocationOpen] = React.useState<boolean>(false);
+  const locationRef = React.useRef<HTMLDivElement | null>(null);
+  const [priceValue, setPriceValue] = React.useState<string>('$500,000');
+  const [priceOpen, setPriceOpen] = React.useState<boolean>(false);
+  const priceRef = React.useRef<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
     let isMounted = true;
@@ -76,6 +102,17 @@ const Index = () => {
     }, 5000);
     return () => window.clearInterval(intervalId);
   }, [slides?.length]);
+
+  React.useEffect(() => {
+    const onDocClick = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (buyRef.current && !buyRef.current.contains(target)) setBuyOpen(false);
+      if (locationRef.current && !locationRef.current.contains(target)) setLocationOpen(false);
+      if (priceRef.current && !priceRef.current.contains(target)) setPriceOpen(false);
+    };
+    document.addEventListener('click', onDocClick);
+    return () => document.removeEventListener('click', onDocClick);
+  }, []);
 
   const currentSlide = slides?.[currentHeroIndex];
   console.log("Current slide:", currentSlide);
@@ -116,29 +153,87 @@ const Index = () => {
           </div>
 
           {/* Search Bar */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-white rounded-[10px] overflow-hidden p-0 sm:pl-2.5 w-full max-w-[860px] min-h-[55px] shadow-lg">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-white rounded-[10px] overflow-visible p-0 sm:pl-2.5 w-full max-w-[860px] min-h-[55px] shadow-lg">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center w-full divide-y sm:divide-y-0">
               {/* Buy Dropdown */}
-              <div className="flex items-center justify-between border-[#d9d9d9] sm:border-r pr-[15px] w-full sm:w-[116px] cursor-pointer hover:bg-gray-50 transition-colors">
-                <span className="font-dm-sans text-[16px] font-normal text-black px-[12px] py-[12px] sm:py-0">
-                  Buy
-                </span>
+              <div
+                ref={buyRef}
+                className="relative flex items-center justify-between border-[#d9d9d9] sm:border-r pr-[15px] w-full sm:w-[116px] hover:bg-gray-50 transition-colors cursor-pointer"
+                onClick={() => setBuyOpen((o) => !o)}
+              >
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); setBuyOpen((o) => !o); }}
+                  className="flex-1 text-left font-dm-sans text-[16px] font-normal text-black px-[12px] py-[12px] sm:py-0"
+                  aria-haspopup="listbox"
+                  aria-expanded={buyOpen}
+                >
+                  {buyType}
+                </button>
                 <div className="w-[38px] h-[55px] hidden sm:flex items-center justify-center">
                   <ChevronDown className="w-4 h-4 text-[#999999]" />
                 </div>
+                {buyOpen && (
+                  <div
+                    className="absolute left-0 top-full mt-1 z-[50] bg-white border border-gray-200 shadow-lg w-[160px]"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => { setBuyType('Buy'); setBuyOpen(false); }}
+                      className="w-full text-left px-3 py-2 hover:bg-gray-100 text-[14px]"
+                      role="option"
+                    >
+                      Buy
+                    </button>
+                    <div className="w-full px-3 py-2 text-[14px] text-gray-400 cursor-not-allowed flex items-center justify-between select-none">
+                      <span>Rent</span>
+                      <span className="text-[10px] uppercase tracking-wider bg-gray-100 text-gray-500 px-2 py-[2px] rounded-full">Soon</span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Location */}
-              <div className="flex items-center justify-between border-[#d9d9d9] sm:border-r pr-[15px] w-full sm:w-[264px] cursor-pointer hover:bg-gray-50 transition-colors">
-                <div className="flex items-center gap-[5px] px-[12px] py-[12px] sm:py-0">
+              <div
+                ref={locationRef}
+                className="relative flex items-center justify-between border-[#d9d9d9] sm:border-r pr-[15px] w-full sm:w-[264px] hover:bg-gray-50 transition-colors cursor-pointer"
+                onClick={() => setLocationOpen((o) => !o)}
+              >
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); setLocationOpen((o) => !o); }}
+                  className="flex items-center gap-[5px] px-[12px] py-[12px] sm:py-0 w-full text-left"
+                  aria-haspopup="listbox"
+                  aria-expanded={locationOpen}
+                >
                   <MapPin className="w-[18px] h-[18px] text-black" />
                   <span className="font-dm-sans text-[16px] font-normal text-black">
-                    Los Angeles
+                    {locationValue}
                   </span>
-                </div>
+                </button>
                 <div className="w-[38px] h-[55px] hidden sm:flex items-center justify-center">
                   <ChevronDown className="w-4 h-4 text-[#999999]" />
                 </div>
+                {locationOpen && (
+                  <div
+                    className="absolute left-0 top-full mt-1 z-[50] bg-white border border-gray-200 shadow-lg w-[220px] max-h-[260px] overflow-auto"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {['Dubai','Abu Dhabi','Thailand','Maldives','Indonesia','India'].map((opt) => (
+                      <button
+                        key={opt}
+                        type="button"
+                        onClick={() => { setLocationValue(opt); setLocationOpen(false); }}
+                        className={`w-full text-left px-3 py-2 text-[14px] hover:bg-gray-100 ${locationValue===opt ? 'bg-gray-50 font-medium' : ''}`}
+                        role="option"
+                        aria-selected={locationValue===opt}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Beds & Bath */}
@@ -152,41 +247,70 @@ const Index = () => {
               </div>
 
               {/* Price */}
-              <div className="flex items-center justify-between w-full sm:w-[160px] cursor-pointer hover:bg-gray-50 transition-colors">
-                <span className="font-dm-sans text-[16px] font-normal text-black px-[12px] py-[12px] sm:py-0">
-                  $500,000
-                </span>
+              <div
+                ref={priceRef}
+                className="relative flex items-center justify-between w-full sm:w-[160px] hover:bg-gray-50 transition-colors cursor-pointer"
+                onClick={() => setPriceOpen((o) => !o)}
+              >
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); setPriceOpen((o) => !o); }}
+                  className="font-dm-sans text-[16px] font-normal text-black px-[12px] py-[12px] sm:py-0 flex-1 text-left"
+                  aria-haspopup="listbox"
+                  aria-expanded={priceOpen}
+                >
+                  {priceValue}
+                </button>
                 <div className="w-[38px] h-[55px] hidden sm:flex items-center justify-center">
                   <ChevronDown className="w-4 h-4 text-[#999999]" />
                 </div>
+                {priceOpen && (
+                  <div
+                    className="absolute left-0 top-full mt-1 z-[50] bg-white border border-gray-200 shadow-lg w-[200px] max-h-[260px] overflow-auto"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {['$500,000','$1,000,000','$ 2,000,000','$3,000,000','$4,000,000','$5,000,000+'].map((opt) => (
+                      <button
+                        key={opt}
+                        type="button"
+                        onClick={() => { setPriceValue(opt); setPriceOpen(false); }}
+                        className={`w-full text-left px-3 py-2 text-[14px] hover:bg-gray-100 ${priceValue===opt ? 'bg-gray-50 font-medium' : ''}`}
+                        role="option"
+                        aria-selected={priceValue===opt}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
             {/* Search Button */}
-            <button className="bg-red-accent text-white font-dm-sans text-[16px] font-bold leading-[22.4px] tracking-[-0.48px] px-[15px] h-[55px] w-full sm:w-[126px] hover:bg-red-accent/90 transition-colors mt-0 flex items-center justify-center">
+            <button className="bg-red-accent text-white font-dm-sans text-[16px] font-bold leading-[22.4px] tracking-[-0.48px] px-[15px] h-[55px] w-full sm:w-[126px] hover:bg-red-accent/90 transition-colors mt-0 flex items-center justify-center rounded-b-[10px] sm:rounded-b-none sm:rounded-r-[10px]">
               Search
             </button>
           </div>
 
           {/* Featured Property */}
           {currentSlide?.property && (
-            <div className="absolute bottom-[50px] left-4 lg:left-[80px] hidden lg:block">
+            <div className="absolute bottom-[24px] sm:bottom-[32px] left-4 lg:left-[80px] block">
               <Link
                 to={`/listing/${currentSlide.property.slug}`}
                 className="block"
               >
-                <div className="w-[350px] cursor-pointer hover:opacity-90 transition-opacity">
-                  <h3 className="font-dm-sans text-[20px] font-bold text-white leading-[21.246px] tracking-[0.02em] mb-2" style={{lineHeight: "1.1"}}>
+                <div className="w-[80vw] max-w-[360px] sm:w-[300px] md:w-[330px] lg:w-[350px] cursor-pointer hover:opacity-90 transition-opacity">
+                  <h3 className="font-dm-sans text-[16px] font-normal text-white leading-[21.246px] tracking-[0.02em] mb-2" style={{lineHeight: "1.1"}}>
                     {currentSlide.property.title}
                   </h3>
-                  <div className="flex items-center gap-[10px] mb-[8px] w-[300px]">
+                  {/* <div className="flex items-center gap-[10px] mb-[8px] w-[300px]">
                     <span className="font-dm-sans text-[18.001px] font-normal text-white leading-[21.618px] tracking-[-0.288px] whitespace-normal">
                       By {currentSlide.property.developer || "Developer"},{" "}
                       {currentSlide.property.location_label}
                     </span>
                     <ArrowRight className="w-[11px] h-[6px] text-white transform -rotate-90" />
-                  </div>
-                  <div className="font-dm-sans text-[21.284px] font-bold text-white leading-[23.857px]">
+                  </div> */}
+                  <div className="font-dm-sans text-[16px] font-bold text-white leading-[23.857px]">
                     {new Intl.NumberFormat(undefined, {
                       style: "currency",
                       currency: currentSlide.property.price_currency,
@@ -205,7 +329,7 @@ const Index = () => {
         style={{ marginBottom: "50px" }}
       >
         {/* Welcome Section */}
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-[20px] lg:gap-[30px] mb-[40px] lg:mb-[80px] px-0">
+        {/* <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-[20px] lg:gap-[30px] mb-[40px] lg:mb-[80px] px-0">
           <h2 className="font-dm-sans text-[32px] lg:text-[55px] font-semibold text-black leading-normal">
             Welcome Back Mr. Vijay
           </h2>
@@ -214,7 +338,7 @@ const Index = () => {
             curated to provide you with the best in luxury living and prime real
             estate investment options, tailored to your needs
           </p>
-        </div>
+        </div> */}
 
         {/* Trending Properties */}
         <div className="mb-[60px] lg:mb-[100px]">
@@ -234,7 +358,7 @@ const Index = () => {
         </div>
 
         {/* Statistics Section */}
-        <div className="mb-[60px] lg:mb-[100px] bg-white">
+        <div className="mb-[48px] lg:mb-[48px] bg-white">
           <div className="flex flex-col-reverse lg:flex-row items-center lg:items-start gap-8">
             {/* Left Side - Text Content */}
             <div className="space-y-[40px]">
@@ -362,7 +486,7 @@ const Index = () => {
             <div className="absolute inset-0 bg-black/35" />
             <div className="relative z-10 h-full flex flex-col justify-center gap-4 p-6 sm:p-10 text-white">
               <div className="font-dm-sans text-[14px] font-semibold tracking-[2px] uppercase text-[#c0c0c0]">
-                Coming in April
+                Coming in October
               </div>
               <h3 className="font-dm-sans text-[28px] sm:text-[32px] lg:text-[35px] font-bold leading-[1.2] max-w-[520px]">
                 New luxury Development on Palm Jumeirah
@@ -469,9 +593,9 @@ function TrendingPropertiesGrid() {
         <Link
           key={p.id}
           to={`/listing/${p.slug}`}
-          className="w-full bg-white p-[10px] block rounded-lg overflow-hidden group shadow hover:shadow-lg transition-shadow"
+          className="w-full bg-white border-[8px] border-white block overflow-hidden group shadow hover:shadow-lg transition-shadow"
         >
-          <div className="relative h-[316px] mb-[10px]">
+          <div className="relative h-[240px] w-full">
             <img
               src={p.primary_image_url}
               alt={p.title}
@@ -496,7 +620,7 @@ function TrendingPropertiesGrid() {
               )}
             </div>
           </div>
-          <div className="flex flex-col gap-[11px]">
+          <div className="p-4 flex flex-col gap-[11px]">
             <div className="flex items-center justify-between">
               <div className="font-dm-sans text-[23.607px] font-semibold text-black leading-[28.328px] tracking-[-0.472px]">
                 {new Intl.NumberFormat(undefined, {
@@ -646,13 +770,13 @@ function TrendingPropertiesCarousel() {
           <Link
             key={p.id}
             to={`/listing/${p.slug}`}
-            className="w-full bg-white p-[10px] block rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow"
+            className="w-full bg-white border-[8px] border-white block overflow-hidden shadow hover:shadow-lg transition-shadow"
           >
-            <div className="relative h-[316px] mb-[10px] overflow-hidden rounded-lg">
+            <div className="relative h-[240px] w-full overflow-hidden">
               <img
                 src={p.primary_image_url}
                 alt={p.title}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                className="w-full h-full object-cover"
               />
               <div className="absolute top-[10px] left-[9px] flex gap-[10px]">
                 <div className="flex items-center gap-[6px] px-[9.681px] py-[8.471px] border border-white bg-black/10 backdrop-blur-[8px]">
@@ -673,7 +797,7 @@ function TrendingPropertiesCarousel() {
                 )}
               </div>
             </div>
-            <div className="flex flex-col gap-[11px]">
+            <div className="p-4 flex flex-col gap-[11px]">
               <div className="flex items-center justify-between">
                 <div className="font-dm-sans text-[23.607px] font-semibold text-black leading-[28.328px] tracking-[-0.472px]">
                   {new Intl.NumberFormat(undefined, {
@@ -1007,9 +1131,9 @@ function RecentlyViewedGrid() {
         <Link
           key={p.id}
           to={`/listing/${p.slug}`}
-          className="w-full bg-white p-[10px] block rounded-lg overflow-hidden group shadow hover:shadow-lg transition-shadow"
+          className="w-full bg-white border-[8px] border-white block overflow-hidden group shadow hover:shadow-lg transition-shadow"
         >
-          <div className="relative h-[316px] mb-[10px]">
+          <div className="relative h-[240px] w-full">
             <img
               src={p.primary_image_url}
               alt={p.title}
@@ -1034,7 +1158,7 @@ function RecentlyViewedGrid() {
               )}
             </div>
           </div>
-          <div className="flex flex-col gap-[11px]">
+          <div className="p-4 flex flex-col gap-[11px]">
             <div className="flex items-center justify-between">
               <div className="font-dm-sans text-[23.607px] font-semibold text-black leading-[28.328px] tracking-[-0.472px]">
                 {(() => {
@@ -1192,13 +1316,13 @@ function RecentlyViewedCarousel() {
           <Link
             key={p.id}
             to={`/listing/${p.slug}`}
-            className="w-full bg-white p-[10px] block rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow"
+            className="w-full bg-white border-[8px] border-white block overflow-hidden shadow hover:shadow-lg transition-shadow"
           >
-            <div className="relative h-[316px] mb-[10px] overflow-hidden rounded-lg">
+            <div className="relative h-[240px] w-full overflow-hidden">
               <img
                 src={p.primary_image_url}
                 alt={p.title}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                className="w-full h-full object-cover"
               />
               <div className="absolute top-[10px] left-[9px] flex gap-[10px]">
                 <div className="flex items-center gap-[6px] px-[9.681px] py-[8.471px] border border-white bg-black/10 backdrop-blur-[8px]">
@@ -1214,7 +1338,7 @@ function RecentlyViewedCarousel() {
                 )}
               </div>
             </div>
-            <div className="flex flex-col gap-[11px]">
+            <div className="p-4 flex flex-col gap-[11px]">
               <div className="flex items-center justify-between">
                 <div className="font-dm-sans text-[23.607px] font-semibold text-black leading-[28.328px] tracking-[-0.472px]">
                   {(() => {
@@ -1456,10 +1580,11 @@ function FeaturedSection() {
 }
 
 function JournalCarousel() {
-  const [currentIndex, setCurrentIndex] = React.useState(0);
   const [articles, setArticles] = React.useState<ArticleCard[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
-  const [articlesPerPage, setArticlesPerPage] = React.useState(3);
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+  const [canGoLeft, setCanGoLeft] = React.useState(false);
+  const [canGoRight, setCanGoRight] = React.useState(false);
 
   React.useEffect(() => {
     API.articles
@@ -1469,31 +1594,48 @@ function JournalCarousel() {
   }, []);
 
   React.useEffect(() => {
-    const computePerPage = () => {
-      const width = window.innerWidth;
-      if (width < 640) return 1; // < sm
-      if (width < 1024) return 2; // < lg
-      return 3;
+    const updateButtons = () => {
+      const el = containerRef.current;
+      if (!el) return;
+      // Use small tolerance to account for fractional pixels and image load shifts
+      const tol = 5;
+      setCanGoLeft(el.scrollLeft > 0);
+      setCanGoRight(el.scrollLeft + el.clientWidth < el.scrollWidth - tol);
     };
-    const update = () => setArticlesPerPage(computePerPage());
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, []);
+    updateButtons();
+    // Re-run after layout/images settle
+    const t1 = setTimeout(updateButtons, 100);
+    const t2 = setTimeout(updateButtons, 300);
+    window.addEventListener('resize', updateButtons);
+    const el = containerRef.current;
+    if (el) el.addEventListener('scroll', updateButtons, { passive: true });
+    return () => {
+      clearTimeout(t1); clearTimeout(t2);
+      window.removeEventListener('resize', updateButtons);
+      if (el) el.removeEventListener('scroll', updateButtons as any);
+    };
+  }, [articles]);
 
-  const totalSlides = Math.ceil(((articles?.length) || 0) / articlesPerPage);
-  const canGoLeft = currentIndex > 0;
-  const canGoRight = currentIndex < Math.max(totalSlides - 1, 0);
+  const CARD_WIDTH = 470;
+  const GAP_PX = 30;
 
   const goToPrevious = () => {
-    setCurrentIndex((prevIndex) => Math.max(0, prevIndex - 1));
+    const el = containerRef.current;
+    if (!el) return;
+    const period = CARD_WIDTH + GAP_PX;
+    const remainder = el.scrollLeft % period;
+    const delta = remainder === 0 ? period : remainder;
+    el.scrollBy({ left: -delta, behavior: 'smooth' });
   };
 
   const goToNext = () => {
-    setCurrentIndex((prevIndex) => Math.min(Math.max(totalSlides - 1, 0), prevIndex + 1));
+    const el = containerRef.current;
+    if (!el) return;
+    const period = CARD_WIDTH + GAP_PX;
+    const remainder = (el.scrollLeft + el.clientWidth) % period;
+    const delta = remainder === 0 ? period : (period - remainder);
+    el.scrollBy({ left: delta, behavior: 'smooth' });
   };
-
-  const slideOffset = currentIndex * -100;
 
   if (error || !articles) {
     return (
@@ -1514,47 +1656,37 @@ function JournalCarousel() {
   return (
     <div className="relative">
       <div className="overflow-hidden">
-        <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(${slideOffset}%)` }}>
-          {Array.from({ length: totalSlides }, (_, slideIndex) => (
-            <div key={slideIndex} className="flex gap-[30px] flex-shrink-0" style={{ width: "100%", minWidth: "100%" }}>
-              {articles
-                .slice(slideIndex * articlesPerPage, slideIndex * articlesPerPage + articlesPerPage)
-                .map((a, index) => (
-                  <div
-                    key={slideIndex * 3 + index}
-                    className="bg-white border border-[#e9e9e9] flex-shrink-0 overflow-hidden"
-                    style={{ width: `calc((100% - ${30 * (articlesPerPage - 1)}px)/${articlesPerPage})` }}
-                  >
-                    <Link to={`/article-v2/${a.slug}`} className="block">
-                      <div className="flex flex-col">
-                        <div className="h-[286px] overflow-hidden">
-                          <img
-                            src={a.image_url}
-                            alt={a.title}
-                            className="w-full h-full object-cover"
-                            onError={(e) => { (e.currentTarget as HTMLImageElement).src = 'https://camana-homes.s3.ap-south-1.amazonaws.com/properties/dubai-marina/2200xxs%20(1).webp'; }}
-                          />
-                        </div>
-                        <div className="p-5 flex flex-col items-center gap-[12px] min-h-0">
-                          {a.category && (
-                            <div className="bg-[#fd2d15] px-[10px] py-[5px]">
-                              <span className="font-dm-sans text-[18px] font-extrabold text-white truncate block max-w-full">{a.category}</span>
-                            </div>
-                          )}
-                          <h3 className="font-dm-sans text-[24px] lg:text-[30px] font-bold text-black text-center leading-[32px] lg:leading-[35px] line-clamp-3">{a.title}</h3>
-                          <div className="font-dm-sans text-[14px] lg:text-[16px] font-normal text-black text-center">
-                            {a.author_name && (
-                              <span className="font-bold italic truncate block">By {a.author_name}</span>
-                            )}
-                            {a.published_at && (
-                              <span className="truncate block">{new Date(a.published_at).toLocaleDateString()}</span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
+        <div ref={containerRef} className="flex gap-[30px] overflow-x-auto scrollbar-hide snap-x snap-mandatory">
+          {(articles || []).map((a, index) => (
+            <div key={index} className="bg-white border border-[#e9e9e9] flex-shrink-0 overflow-hidden snap-start" style={{ width: "470px", height: "394px" }}>
+              <Link to={`/article-v2/${a.slug}`} className="block">
+                <div className="flex flex-col">
+                  <div className="h-[224px] overflow-hidden w-full">
+                    <img
+                      src={a.image_url}
+                      alt={a.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = 'https://camana-homes.s3.ap-south-1.amazonaws.com/properties/dubai-marina/2200xxs%20(1).webp'; }}
+                    />
                   </div>
-                ))}
+                  <div className="p-4 flex flex-col items-center text-center gap-[12px] min-h-0">
+                    {a.category && (
+                      <div className="bg-[#fd2d15] px-[10px] py-[5px]">
+                        <span className="font-dm-sans text-[18px] font-extrabold text-white truncate block max-w-full">{a.category}</span>
+                      </div>
+                    )}
+                    <h3 className="font-dm-sans text-[24px] lg:text-[26px] font-bold text-black text-center leading-[30px] line-clamp-3">{a.title}</h3>
+                    <div className="font-dm-sans text-[14px] lg:text-[16px] font-normal text-black text-center flex items-center justify-center gap-3">
+                      {/* {a.author_name && ( */}
+                      <span className="font-semibold italic">By Sudoku Capital</span>
+                      {/* )} */}
+                      {/* {a.published_at && ( */}
+                      <span className="text-[#666]"> - 12 hours ago</span>
+                      {/* )} */}
+                    </div>
+                  </div>
+                </div>
+              </Link>
             </div>
           ))}
         </div>

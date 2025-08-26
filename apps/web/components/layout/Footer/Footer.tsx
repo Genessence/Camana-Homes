@@ -206,21 +206,21 @@ const Footer: React.FC<FooterProps> = ({
       </div>
 
       {/* Bottom Footer */}
-      <div className={cn("border-t py-4", borderColor)}>
+      <div className={cn("border-t border-b py-4", borderColor)}>
         <div className={cn(
-          "mx-auto flex items-center justify-between gap-4",
+          "mx-auto grid grid-cols-1 md:grid-cols-3 items-center gap-4 px-4",
           isMembers ? "container px-16" : "max-w-[1460px] px-[63px]"
         )}>
-          {/* Logo */}
-          <div className="flex items-center gap-3">
+          {/* Logo - left on desktop, centered on mobile */}
+          <div className="flex items-center justify-center md:justify-start">
             <img
               src={footerLogo}
               alt="Camana Homes"
               className="h-[43px] w-[155px]"
             />
           </div>
-          
-          {/* Copyright */}
+
+          {/* Copyright - centered */}
           <div className="text-center text-[16px]">
             <span className={cn(
               "font-semibold",
@@ -229,15 +229,43 @@ const Footer: React.FC<FooterProps> = ({
               © Copyright <span className="font-semibold">Camana Homes</span> 2025. All Right Reserved
             </span>
           </div>
-          
-          {/* Empty div for spacing */}
-          <div className="w-[155px]"></div>
+
+          {/* Social Links - right on desktop, centered on mobile */}
+          <div className={cn(
+            "flex items-center justify-center md:justify-end gap-6",
+            isMembers ? "text-white" : "text-black"
+          )}>
+            {/* Instagram */}
+            <a href="#" aria-label="Instagram" className="hover:opacity-80 transition-opacity" target="_blank" rel="noreferrer">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" strokeWidth="1.8"/>
+                <circle cx="12" cy="12" r="3.8" stroke="currentColor" strokeWidth="1.8"/>
+                <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/>
+              </svg>
+            </a>
+            {/* LinkedIn */}
+            <a href="#" aria-label="LinkedIn" className="hover:opacity-80 transition-opacity" target="_blank" rel="noreferrer">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="2" y="2" width="20" height="20" rx="3" stroke="currentColor" strokeWidth="1.8"/>
+                <rect x="6.2" y="9.2" width="2.4" height="8.6" fill="currentColor"/>
+                <circle cx="7.4" cy="6.5" r="1.3" fill="currentColor"/>
+                <path d="M11 17.8V9.2h2.3v1.2c.5-.8 1.3-1.4 2.6-1.4 2 0 3.1 1.3 3.1 3.5v5.2h-2.4v-4.7c0-1.3-.6-2-1.7-2-1.1 0-1.7.8-1.7 2v4.7H11z" fill="currentColor"/>
+              </svg>
+            </a>
+            {/* YouTube */}
+            <a href="#" aria-label="YouTube" className="hover:opacity-80 transition-opacity" target="_blank" rel="noreferrer">
+              <svg width="30" height="22" viewBox="0 0 30 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="1" y="1" width="28" height="20" rx="5" stroke="currentColor" strokeWidth="1.8"/>
+                <path d="M13 8.2v5.6l5-2.8-5-2.8z" fill="currentColor"/>
+              </svg>
+            </a>
+          </div>
         </div>
       </div>
 
       {/* Privacy Section - Only for default variant */}
       {!isMembers && (
-        <div className="container mx-auto px-4 lg:px-16 pb-8">
+        <div className="mx-auto max-w-[1460px] px-[63px] pb-8">
           <div className="pt-6">
             <h4 className="text-black text-lg font-semibold mb-4">Your Privacy & Trust</h4>
             <p className="text-gray-700 text-base leading-relaxed">

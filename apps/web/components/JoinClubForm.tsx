@@ -2,7 +2,7 @@ import React from "react";
 
 export default function JoinClubForm() {
   return (
-    <div className="flex flex-col gap-[24px] p-6 sm:p-8 lg:px-[70px] lg:py-[50px] text-white lg:h-[494px] justify-start lg:justify-center relative z-10">
+    <div className="flex flex-col gap-[24px] p-6 sm:p-8 lg:px-[70px] lg:py-[50px] text-white lg:h-[524px] justify-start lg:justify-center relative z-10">
       <div className="space-y-[30px]">
         <div>
           <h3 className="font-dm-sans text-[24px] sm:text-[28px] lg:text-[35px] font-semibold mb-[30px]">
@@ -42,19 +42,19 @@ export default function JoinClubForm() {
               <input
                 type="checkbox"
                 defaultChecked
-                className="mt-[2px] w-5 h-5 bg-[#fd2d15] border-[#fd2d15] border-2 rounded-none appearance-none checked:bg-[#fd2d15] checked:border-[#fd2d15] cursor-pointer"
+                className="mt-[2px] shrink-0 w-[18px] h-[18px] bg-[#fd2d15] border-[#fd2d15] border-2 rounded-none appearance-none checked:bg-[#fd2d15] checked:border-[#fd2d15] cursor-pointer"
               />
               <span>
-                Lorem Ipsum is simply dummy text of the printing and
+              By accepting and providing my personal information I am consenting to Camana Homes Privacy Policy, the applicable data protection laws and Terms of Use.
               </span>
             </label>
             <label className="flex items-start gap-3 text-[14px] text-white/85">
               <input
                 type="checkbox"
-                className="mt-[2px] w-5 h-5 bg-transparent border-[#ffffff] border-2 rounded-none appearance-none checked:bg-[#fd2d15] checked:border-[#fd2d15] cursor-pointer"
+                className="mt-[2px] shrink-0 w-[18px] h-[18px] bg-transparent border-[#ffffff] border-2 rounded-none appearance-none checked:bg-[#fd2d15] checked:border-[#fd2d15] cursor-pointer"
               />
               <span>
-                Lorem Ipsum is simply dummy text of the printing and
+              I agree to receive information about offers , deals and services from this website 
               </span>
             </label>
           </div>

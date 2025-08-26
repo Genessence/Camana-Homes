@@ -6,7 +6,6 @@ import { cn } from '@/lib/utils';
 // Import logos
 import logoBlack from '../../../assets/logo-black.png';
 import logoWhite from '../../../assets/Camana-white.png';
-import comingSoon from '../../../assets/coming-soon.png';
 
 interface HeaderProps {
   variant?: 'default' | 'transparent';
@@ -45,8 +44,7 @@ const Header: React.FC<HeaderProps> = ({
   
   // Countries list
   const countries = [
-    "Dubai", "Italy", "Switzerland", "Mexico", "Australia", 
-    "South Africa", "Germany", "Greece", "United States"
+    "Dubai", "Abu Dhabi", "Thailand", "Maldives", "Indonesia", "India"
   ];
 
   return (
@@ -96,7 +94,7 @@ const Header: React.FC<HeaderProps> = ({
         {/* Right Actions */}
         <div className="flex items-center gap-3">
           <button className={cn(
-            "hidden md:flex items-center justify-center h-[50px] px-[21px] py-2 border font-dm-sans text-[14px] font-medium transition-colors",
+            "hidden md:flex items-center justify-center h-[40px] px-[21px] py-2 border font-dm-sans text-[14px] font-medium transition-colors",
             isTransparent 
               ? "border-white bg-white/14 text-white hover:bg-white/20 backdrop-blur-sm" 
               : "border-black bg-gray-100/20 text-black hover:bg-gray-200/30"
@@ -106,23 +104,23 @@ const Header: React.FC<HeaderProps> = ({
           
           <div className="relative">
             <button className={cn(
-              "flex items-center justify-center h-[50px] px-5 py-2 font-dm-sans text-[14px] font-medium transition-colors",
+              "flex items-center justify-center h-[40px] px-5 py-2 font-dm-sans text-[14px] font-medium transition-colors",
               isTransparent 
                 ? "bg-white text-black hover:bg-gray-100" 
                 : "bg-black text-white hover:bg-gray-900"
             )}>
               Agent Login
+              {/* <span
+                className={cn(
+                  "ml-2 px-2 py-[2px] rounded-full text-[10px] uppercase tracking-wider",
+                  isTransparent ? "bg-black/80 text-white" : "bg-white/15 text-white"
+                )}
+              >
+                Coming soon
+              </span> */}
             </button>
             
-            {/* Coming Soon badge for transparent variant */}
-            {/* {isTransparent && (
-              <img
-                src={comingSoon}
-                alt="Coming Soon"
-                className="pointer-events-none select-none absolute top-10 left-1/2 -translate-x-1/2 h-[54px] w-auto drop-shadow-[0_4px_10px_rgba(0,0,0,0.35)] z-50"
-                style={{ transform: 'scale(1.5)' }}
-              />
-            )} */}
+            {/* Subtle badge rendered inside button */}
           </div>
           
           <Menu className={cn("w-5 h-5 cursor-pointer", textColor)} />
@@ -132,35 +130,37 @@ const Header: React.FC<HeaderProps> = ({
       {/* Country Navigation */}
       {showCountrySelector && (
         <div className={cn(
-          "hidden lg:flex items-center justify-center h-[46px] px-4 xl:px-[315px]",
+          "flex items-center justify-start lg:justify-center h-[46px] px-4 lg:px-[70px] xl:px-[70px] 2xl:px-[120px]",
           isTransparent 
             ? "border-t border-white/20 border-b border-white/20 bg-white/15 backdrop-blur-[8.5px]" 
             : "bg-gray-50 border-t border-gray-200"
         )}>
-          <div className="flex items-center gap-6 py-3 overflow-x-auto">
-            {countries.map((country) => (
-              <button
-                key={country}
-                className={cn(
-                  "text-center font-inter text-[17px] font-medium leading-[19.2px] hover:opacity-80 cursor-pointer transition-colors whitespace-nowrap",
+          <div className="w-full overflow-x-auto overscroll-x-contain scrollbar-hide">
+            <div className="flex w-fit items-center gap-6 py-3 mx-auto">
+              {countries.map((country) => (
+                <button
+                  key={country}
+                  className={cn(
+                    "text-center font-inter text-[17px] font-medium leading-[19.2px] hover:opacity-80 cursor-pointer transition-colors whitespace-nowrap",
+                    isTransparent ? "text-white" : "text-gray-700"
+                  )}
+                >
+                  {country}
+                </button>
+              ))}
+              
+              <div className="flex items-center gap-2 flex-shrink-0">
+                {/* <span className={cn(
+                  "text-center font-inter text-[17px] font-medium leading-[19.2px]",
                   isTransparent ? "text-white" : "text-gray-700"
-                )}
-              >
-                {country}
-              </button>
-            ))}
-            
-            <div className="flex items-center gap-2">
-              <span className={cn(
-                "text-center font-inter text-[17px] font-medium leading-[19.2px]",
-                isTransparent ? "text-white" : "text-gray-700"
-              )}>
-                More
-              </span>
-              <ChevronDown className={cn(
-                "w-[11px] h-[6px]",
-                isTransparent ? "text-white" : "text-gray-700"
-              )} />
+                )}>
+                  More
+                </span>
+                <ChevronDown className={cn(
+                  "w-[11px] h-[6px]",
+                  isTransparent ? "text-white" : "text-gray-700"
+                )} /> */}
+              </div>
             </div>
           </div>
         </div>
