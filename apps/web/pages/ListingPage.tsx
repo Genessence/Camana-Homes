@@ -366,8 +366,9 @@ export default function ListingPage() {
 
                 {/* Property Price */}
                 <div className="text-[30px] lg:text-[32px] font-bold text-black leading-[1.2] tracking-[-0.64px]">
-                  {property.price_currency}{" "}
-                  {property.price_amount.toLocaleString()}
+                  {property.price_amount && property.price_amount > 0
+                    ? `${property.price_currency} ${property.price_amount.toLocaleString()}`
+                    : 'Price on Request'}
                 </div>
 
                 {/* Property Location */}

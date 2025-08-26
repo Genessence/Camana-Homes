@@ -623,10 +623,9 @@ function TrendingPropertiesGrid() {
           <div className="p-4 flex flex-col gap-[11px]">
             <div className="flex items-center justify-between">
               <div className="font-dm-sans text-[23.607px] font-semibold text-black leading-[28.328px] tracking-[-0.472px]">
-                {new Intl.NumberFormat(undefined, {
-                  style: "currency",
-                  currency: p.price_currency,
-                }).format(p.price_amount)}
+                {p.price_amount && p.price_amount > 0
+                  ? new Intl.NumberFormat(undefined, { style: 'currency', currency: p.price_currency }).format(p.price_amount)
+                  : 'Price on Request'}
               </div>
               <div className="flex items-center gap-[5px]">
                 <span className="font-dm-sans text-[14px] font-semibold text-black">
@@ -800,10 +799,9 @@ function TrendingPropertiesCarousel() {
             <div className="p-4 flex flex-col gap-[11px]">
               <div className="flex items-center justify-between">
                 <div className="font-dm-sans text-[23.607px] font-semibold text-black leading-[28.328px] tracking-[-0.472px]">
-                  {new Intl.NumberFormat(undefined, {
-                    style: "currency",
-                    currency: p.price_currency,
-                  }).format(p.price_amount)}
+                  {p.price_amount && p.price_amount > 0
+                    ? new Intl.NumberFormat(undefined, { style: 'currency', currency: p.price_currency }).format(p.price_amount)
+                    : 'Price on Request'}
                 </div>
                 <div className="flex items-center gap-[5px]">
                   <span className="font-dm-sans text-[14px] font-semibold text-black">
@@ -1343,6 +1341,16 @@ function RecentlyViewedCarousel() {
                 <div className="font-dm-sans text-[23.607px] font-semibold text-black leading-[28.328px] tracking-[-0.472px]">
                   {(() => {
                     const amount = p.price_amount ?? 0;
+                    if (!amount || amount <= 0) return 'Price on Request';
+                    const currency = p.price_currency || 'USD';
+                    try { return new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(amount); }
+                    catch { return `${currency} ${amount.toLocaleString()}`; }
+                  })()}
+                </div>
+                <div className="font-dm-sans text-[23.607px] font-semibold text-black leading-[28.328px] tracking-[-0.472px]">
+                  {(() => {
+                    const amount = p.price_amount ?? 0;
+                    if (!amount || amount <= 0) return 'Price on Request';
                     const currency = p.price_currency || 'USD';
                     try { return new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(amount); }
                     catch { return `${currency} ${amount.toLocaleString()}`; }

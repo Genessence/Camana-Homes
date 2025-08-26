@@ -10,6 +10,7 @@
     "prisma:migrate": "prisma migrate deploy",
     "prisma:seed": "tsx prisma/seed.ts",
     "prisma:reset": "prisma migrate reset --force",
+    "db:clear:properties": "tsx prisma/clear-properties.ts",
     "db:setup": "npm run prisma:generate && npm run prisma:migrate && npm run prisma:seed",
     "upload:images": "tsx scripts/upload-images-to-s3.ts",
     "setup:local-images": "tsx scripts/setup-local-images.ts",
