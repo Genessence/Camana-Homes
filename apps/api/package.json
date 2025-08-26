@@ -17,7 +17,8 @@
     "setup:s3-policy": "tsx scripts/setup-s3-bucket-policy.ts",
     "setup:s3-public": "tsx scripts/setup-s3-public-access.ts",
     "setup:complete": "npm run upload:images && npm run setup:s3-policy && npm run db:setup",
-    "setup:local": "npm run setup:local-images && npm run db:setup"
+    "setup:local": "npm run setup:local-images && npm run db:setup",
+    "db:push-hero-slides": "tsx prisma/push-hero-slides.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.723.0",

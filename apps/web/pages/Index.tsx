@@ -311,10 +311,12 @@ const Index = () => {
                     <ArrowRight className="w-[11px] h-[6px] text-white transform -rotate-90" />
                   </div> */}
                   <div className="font-dm-sans text-[16px] font-bold text-white leading-[23.857px]">
-                    {new Intl.NumberFormat(undefined, {
-                      style: "currency",
-                      currency: currentSlide.property.price_currency,
-                    }).format(currentSlide.property.price_amount)}
+                  {currentSlide.property.price_amount && currentSlide.property.price_amount > 0
+                    ? new Intl.NumberFormat(undefined, {
+                        style: "currency",
+                        currency: currentSlide.property.price_currency,
+                      }).format(currentSlide.property.price_amount)
+                    : "Price on Request"}
                   </div>
                 </div>
               </Link>
