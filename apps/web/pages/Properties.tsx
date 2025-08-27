@@ -372,7 +372,15 @@ const PropertyCardItem = ({ property }: { property: PropertyCard }) => {
         {/* Price and Agent */}
         <div className="flex items-center justify-between">
           <div className="font-dm-sans text-[32px] font-semibold text-black tracking-[-0.63px]">
-            {property.price_currency} {property.price_amount.toLocaleString()}
+            {/* {property.price_currency} {property.price_amount.toLocaleString()} */}
+            {property.price_amount && property.price_amount > 0
+            ? new Intl.NumberFormat(undefined, {
+                style: "currency",
+                currency: property.price_currency,
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              }).format(property.price_amount)
+            : "Price on Request"}
           </div>
           {property.agent && (
             <img

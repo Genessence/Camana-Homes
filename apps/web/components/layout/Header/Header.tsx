@@ -4,7 +4,7 @@ import { ChevronDown, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // Import logos
-import logoBlack from '../../../assets/logo-black.png';
+import logoBlack from '../../../assets/logo-black1.png';
 import logoWhite from '../../../assets/Camana-white.png';
 
 interface HeaderProps {
@@ -66,7 +66,7 @@ const Header: React.FC<HeaderProps> = ({
             src={logo}
             alt="Camana Homes"
             className="object-contain drop-shadow cursor-pointer"
-            style={{ width: "155px" }}
+            style={isTransparent ? { width: "155px"} : { width: "125px" }}
             onClick={() => navigate('/')}
           />
         </div>

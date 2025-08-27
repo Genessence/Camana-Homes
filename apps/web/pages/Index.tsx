@@ -393,7 +393,7 @@ const Index = () => {
 
                 <div className="bg-neutral-100 px-8 lg:px-10 py-8 lg:py-10 flex flex-col gap-2.5">
                   <div className="font-dm-sans text-[36px] lg:text-[42px] font-bold text-red-accent leading-[1]">
-                    20 +
+                    10 +
                   </div>
                   <div className="font-dm-sans text-[16px] lg:text-[18px] font-medium text-black leading-[1.3]">
                     Global Markets
@@ -402,7 +402,7 @@ const Index = () => {
 
                 <div className="bg-neutral-100 px-8 lg:px-10 py-8 lg:py-10 flex flex-col gap-2.5">
                   <div className="font-dm-sans text-[36px] lg:text-[42px] font-bold text-red-accent leading-[1]">
-                    5000 +
+                    100 +
                   </div>
                   <div className="font-dm-sans text-[16px] lg:text-[18px] font-medium text-black leading-[1.3]">
                     Elite agents
