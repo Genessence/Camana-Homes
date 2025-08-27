@@ -236,7 +236,7 @@ const Footer: React.FC<FooterProps> = ({
             isMembers ? "text-white" : "text-black"
           )}>
             {/* Instagram */}
-            <a href="#" aria-label="Instagram" className="hover:opacity-80 transition-opacity" target="_blank" rel="noreferrer">
+            <a href="https://www.instagram.com/camanahomes" aria-label="Instagram" className="hover:opacity-80 transition-opacity" target="_blank" rel="noreferrer">
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" strokeWidth="1.8"/>
                 <circle cx="12" cy="12" r="3.8" stroke="currentColor" strokeWidth="1.8"/>
@@ -244,7 +244,7 @@ const Footer: React.FC<FooterProps> = ({
               </svg>
             </a>
             {/* LinkedIn */}
-            <a href="#" aria-label="LinkedIn" className="hover:opacity-80 transition-opacity" target="_blank" rel="noreferrer">
+            <a href="https://www.linkedin.com/company/camanahomes/" aria-label="LinkedIn" className="hover:opacity-80 transition-opacity" target="_blank" rel="noreferrer">
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="2" y="2" width="20" height="20" rx="3" stroke="currentColor" strokeWidth="1.8"/>
                 <rect x="6.2" y="9.2" width="2.4" height="8.6" fill="currentColor"/>
@@ -253,7 +253,7 @@ const Footer: React.FC<FooterProps> = ({
               </svg>
             </a>
             {/* YouTube */}
-            <a href="#" aria-label="YouTube" className="hover:opacity-80 transition-opacity" target="_blank" rel="noreferrer">
+            <a href="https://youtube.com/@camanahomes" aria-label="YouTube" className="hover:opacity-80 transition-opacity" target="_blank" rel="noreferrer">
               <svg width="30" height="22" viewBox="0 0 30 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="1" y="1" width="28" height="20" rx="5" stroke="currentColor" strokeWidth="1.8"/>
                 <path d="M13 8.2v5.6l5-2.8-5-2.8z" fill="currentColor"/>

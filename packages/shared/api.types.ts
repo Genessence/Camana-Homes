@@ -57,7 +57,6 @@ export type PropertyCard = {
   location_distances?: Array<Record<string, any>> | null;
   developer?: string | null;
   developer_logo_url?: string | null;
-  developer_logo_url?: string | null;
   
   // Existing fields
   has_video: boolean;

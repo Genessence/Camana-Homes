@@ -26,6 +26,8 @@ import ScrollToTop from "./utils/ScrollToTop";
 import PropertyCreate from "./pages/PropertyCreate";
 import AgentCreate from "./pages/AgentCreate";
 import AgentsList from "./pages/AgentsList";
+import ArticlesList from "./pages/ArticlesList";
+import ArticleCreate from "./pages/ArticleCreate";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +56,8 @@ const AppRoutes = () => {
         <Route path="/properties" element={<Properties />} />
         <Route path="/properties/new" element={<PropertyCreate />} />
         <Route path="/agents" element={<AgentsList />} />
+        <Route path="/articles" element={<ArticlesList />} />
+        <Route path="/articles/new" element={<ArticleCreate />} />
         <Route path="/agents/new" element={<AgentCreate />} />
         <Route path="/members-club" element={<MembersClub />} />
         <Route path="/about-us" element={<About />} />

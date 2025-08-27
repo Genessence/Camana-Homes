@@ -45,6 +45,8 @@ const ArticleV2 = () => {
     return () => { mounted = false; };
   }, [slug]);
 
+  console.log(article);
+
   const SectionSkeleton = (
     <div className="animate-pulse">
       <div className="h-[40px] w-[220px] bg-gray-200 mb-4" />

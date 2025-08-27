@@ -14,7 +14,9 @@ export const list: RequestHandler = async (req, res) => {
     image_url: a.imageUrl ?? null,
     category: a.category ?? null,
     excerpt: a.excerpt ?? null,
-    created_at: a.publishedAt.toISOString(),
+    author_name: a.authorName ?? null,
+    author_avatar_url: a.authorAvatarUrl ?? null,
+    published_at: a.publishedAt.toISOString(),
   })));
 };
 
@@ -27,9 +29,39 @@ export const bySlug: RequestHandler = async (req, res) => {
     id: a.id,
     slug: a.slug,
     title: a.title,
+    excerpt: a.excerpt ?? '',
     body: a.excerpt ?? '',
     image_url: a.imageUrl ?? null,
     category: a.category ?? null,
-    created_at: a.publishedAt.toISOString(),
+    author_name: a.authorName ?? null,
+    author_avatar_url: a.authorAvatarUrl ?? null,
+    published_at: a.publishedAt.toISOString(),
   });
+};
+
+export const create: RequestHandler = async (req, res) => {
+  const { title, slug, imageUrl, category, excerpt, authorName, authorAvatarUrl } = req.body || {};
+  if (!title || !slug || !imageUrl) return res.status(400).json({ error: 'title, slug and imageUrl required' });
+  const exists = await prisma.article.findFirst({ where: { slug } });
+  if (exists) return res.status(409).json({ error: 'slug exists' });
+
+  const a = await prisma.article.create({
+    data: {
+      title,
+      slug,
+      imageUrl,
+      category: category || null,
+      excerpt: excerpt || null,
+      authorName: authorName || null,
+      authorAvatarUrl: authorAvatarUrl || null,
+    },
+  });
+  res.status(201).json({ id: a.id, slug: a.slug });
+};
+
+export const remove: RequestHandler = async (req, res) => {
+  const id = Number(req.params.id);
+  if (!id || Number.isNaN(id)) return res.status(400).json({ error: 'invalid id' });
+  await prisma.article.delete({ where: { id } });
+  res.json({ ok: true });
 };

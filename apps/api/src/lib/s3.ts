@@ -16,4 +16,9 @@ export async function getSignedDownloadUrl(key: string, expiresInSeconds = 900) 
   return getSignedUrl(s3, cmd, { expiresIn: expiresInSeconds });
 }
 
+export function getPublicUrl(key: string) {
+  if (!bucket) return key;
+  return `https://${bucket}.s3.${region}.amazonaws.com/${key}`;
+}
+
 

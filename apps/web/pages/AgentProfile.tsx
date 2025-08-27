@@ -164,7 +164,7 @@ export default function AgentProfile() {
           </div>
           {/* About the Agent (moved below social links) */}
           <div className="mt-10">
-            <h2 className="text-3xl lg:text-4xl font-bold text-black">About</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-black">About the Agent</h2>
             {agent.about ? (
               <div className="prose max-w-none text-gray-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: agent.about }} />
             ) : (

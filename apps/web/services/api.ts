@@ -194,6 +194,19 @@ class ApiService {
     return res.json();
   }
 
+  // Articles
+  async listArticles(limit = 50): Promise<Array<{ id: number; slug: string; title: string; image_url: string | null; category: string | null; excerpt: string | null; created_at: string }>> {
+    return this.request(`/articles?limit=${limit}`);
+  }
+  async createArticle(data: { title: string; slug: string; imageUrl: string; category?: string; excerpt?: string; authorName?: string; authorAvatarUrl?: string; }): Promise<{ id: number; slug: string }> {
+    return this.request(`/articles`, { method: 'POST', body: JSON.stringify(data) });
+  }
+  async deleteArticle(id: number): Promise<{ ok: boolean }> {
+    const res = await fetch(`${API_BASE_URL}/articles/${id}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' } });
+    if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
+    return res.json();
+  }
+
   // Get agent by slug
   async getAgentBySlug(slug: string): Promise<{
     id: number;
