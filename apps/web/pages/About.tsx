@@ -1,6 +1,11 @@
 import { Header } from "@/components/layout"
-import { Mail, Star, ChevronLeft, ChevronRight } from "lucide-react"
+import { Mail, Linkedin } from "lucide-react"
 import soori from "../assets/soori4x.png"
+import about1 from "../assets/about1.jpeg"
+import about2 from "../assets/about2.jpeg"
+import vijayImg from "../assets/vijay.jpeg"
+import simarImg from "../assets/simar.jpeg"
+import madhurImg from "../assets/madhur.JPEG"
 
 export default function About() {
   return (
@@ -52,8 +57,8 @@ export default function About() {
             </div>
             <div className="flex-shrink-0">
               <img 
-                src="https://api.builder.io/api/v1/image/assets/TEMP/a5ecc21b1a64c58b9f3d67d1ebfe01f957536016?width=600" 
-                alt="Community" 
+                src={about1}
+                alt="A Global Network of Trust"
                 className="w-[300px] h-[300px] rounded-full object-cover"
               />
             </div>
@@ -65,14 +70,14 @@ export default function About() {
       <section className="py-16 lg:py-20">
         <div className="container mx-auto px-4 lg:px-16">
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 order-2 lg:order-1">
               <img 
-                src="https://api.builder.io/api/v1/image/assets/TEMP/03ceb19303fbb8b3c6150c8c3e99bb76d2030382?width=600" 
-                alt="Community" 
+                src={about2}
+                alt="Connecting People, Places & Possibilities"
                 className="w-[300px] h-[300px] rounded-full object-cover"
               />
             </div>
-            <div className="flex-1 max-w-4xl">
+            <div className="flex-1 max-w-4xl order-1 lg:order-2">
               <div className="space-y-4">
                 <h3 className="text-black text-3xl font-bold">
                     Connecting People, Places &amp; Possibilities
@@ -97,7 +102,7 @@ export default function About() {
           <div className="space-y-8">
             {/* Feature 1 */}
             <div className="flex flex-col lg:flex-row items-start gap-4 lg:gap-8">
-              <div className="text-brand-red text-6xl sm:text-8xl lg:text-[116px] font-bold leading-none flex-shrink-0 lg:w-32 text-right" style={{transform: "translateX(-20px)", color:"#FD2D15"}}>1</div>
+              <div className="text-brand-red text-6xl sm:text-8xl lg:text-[116px] font-bold leading-none flex-shrink-0 lg:w-32 text-right lg:-translate-x-5" style={{ color:"#FD2D15"}}>1</div>
               <div className="flex-1 lg:pt-4">
                 <h3 className="text-black text-xl font-bold mb-2">
                     A Global Luxury Marketplace
@@ -225,80 +230,60 @@ export default function About() {
               Did you know? The best properties in Dubai sell out they ever hit the market did you know? The best properties in Dubai sell out they ever hit the market
             </p>
           </div>
-          
-          <div className="relative">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-8">
-              <div className="flex flex-col items-center">
-                <img 
-                  src="https://api.builder.io/api/v1/image/assets/TEMP/4a4a06937e6bd8fb02a70d5c19f039ad430b9b92?width=640" 
-                  alt="Team Member" 
-                  className="w-full h-[433px] object-cover rounded-lg"
-                />
-              </div>
-              <div className="flex flex-col items-center">
-                <img 
-                  src="https://api.builder.io/api/v1/image/assets/TEMP/458e678f48d29e0d26a90828ce335d500cedd450?width=640" 
-                  alt="Team Member" 
-                  className="w-full h-[433px] object-cover rounded-lg"
-                />
-              </div>
-              <div className="flex flex-col items-center relative">
-                <div 
-                  className="w-full h-[433px] rounded-lg relative flex items-end p-6"
-                  style={{
-                    backgroundImage: "linear-gradient(180deg, rgba(0, 0, 0, 0.00) 55.16%, rgba(0, 0, 0, 0.67) 76.3%), url('https://api.builder.io/api/v1/image/assets/TEMP/7a9ee1fb891cfc7442ef28358f1e8e4a9bcd5c42?width=640')",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center"
-                  }}
-                >
-                  <div className="text-white">
-                    <h3 className="text-xl font-bold mb-1">Isabella Clarke</h3>
-                    <p className="text-gray-200">Real Estate Negotiation Expert</p>
-                    {/* Social Icons */}
-                    <div className="flex gap-2 mt-4">
-                      <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                        <div className="w-4 h-4 bg-black"></div>
-                      </div>
-                      <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                        <div className="w-4 h-4 bg-black"></div>
-                      </div>
-                      <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                        <div className="w-4 h-4 bg-black"></div>
-                      </div>
-                      <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                        <div className="w-4 h-4 bg-black"></div>
-                      </div>
-                      <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                        <div className="w-4 h-4 bg-black"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col items-center">
-                <img 
-                  src="https://api.builder.io/api/v1/image/assets/TEMP/34cb9ee6a5ae50e4ce12041356092194086ea050?width=640" 
-                  alt="Team Member" 
-                  className="w-full h-[433px] object-cover rounded-lg"
-                />
-              </div>
-              <div className="flex flex-col items-center">
-                <img 
-                  src="https://api.builder.io/api/v1/image/assets/TEMP/8f94bfebeebf3ec83ff9afb9759a584930ac7c49?width=640" 
-                  alt="Team Member" 
-                  className="w-full h-[433px] object-cover rounded-lg"
-                />
+
+          <div className="w-full flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8">
+            {/* Card 1 */}
+            <div className="group relative w-[260px] h-[400px] overflow-hidden rounded-lg shadow-sm">
+              <img
+                src={vijayImg}
+                alt="Vijay Singh - Founder & CEO"
+                className="w-full h-full object-cover transition-transform duration-300 ease-out scale-110 group-hover:scale-125"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 ease-out"></div>
+              <div className="absolute inset-x-0 bottom-0 translate-y-6 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out p-4 bg-gradient-to-t from-black/70 to-transparent">
+                <h3 className="text-white text-lg font-bold">Vijay Singh</h3>
+                <p className="text-white/90 text-sm">Founder & CEO</p>
+                <a href="https://www.linkedin.com/in/vjkumar07" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="inline-flex items-center gap-2 text-white mt-3">
+                  <Linkedin className="w-4 h-4" />
+                  <span className="text-sm">LinkedIn</span>
+                </a>
               </div>
             </div>
-            
-            {/* Navigation Arrows */}
-            <div className="flex justify-between items-center absolute -bottom-16 left-0 right-0">
-              <button className="bg-black/10 backdrop-blur-sm border border-gray-300 p-2 rounded">
-                <ChevronLeft className="w-6 h-6 text-white" />
-              </button>
-              <button className="bg-black/10 backdrop-blur-sm border border-gray-300 p-2 rounded">
-                <ChevronRight className="w-6 h-6 text-white" />
-              </button>
+
+            {/* Card 2 */}
+            <div className="group relative w-[260px] h-[400px] overflow-hidden rounded-lg shadow-sm">
+              <img
+                src={madhurImg}
+                alt="Madhur Sinha - Founder & COO"
+                className="w-full h-full object-cover transition-transform duration-300 ease-out scale-110 group-hover:scale-125"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 ease-out"></div>
+              <div className="absolute inset-x-0 bottom-0 translate-y-6 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out p-4 bg-gradient-to-t from-black/70 to-transparent">
+                <h3 className="text-white text-lg font-bold">Madhur Sinha</h3>
+                <p className="text-white/90 text-sm">Founder & COO</p>
+                <a href="https://www.linkedin.com/in/madhur-sinha" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="inline-flex items-center gap-2 text-white mt-3">
+                  <Linkedin className="w-4 h-4" />
+                  <span className="text-sm">LinkedIn</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Card 3 */}
+            <div className="group relative w-[260px] h-[400px] overflow-hidden rounded-lg shadow-sm">
+              <img
+                src={simarImg}
+                alt="Simerpreet Singh - Investor Relations - Europe"
+                className="w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 ease-out"></div>
+              <div className="absolute inset-x-0 bottom-0 translate-y-6 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out p-4 bg-gradient-to-t from-black/70 to-transparent">
+                <h3 className="text-white text-lg font-bold">Simerpreet Singh</h3>
+                <p className="text-white/90 text-sm">Investor Relations - Europe</p>
+                <a href="https://www.linkedin.com/in/simerpreet-singh-00b61b157" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="inline-flex items-center gap-2 text-white mt-3">
+                  <Linkedin className="w-4 h-4" />
+                  <span className="text-sm">LinkedIn</span>
+                </a>
+              </div>
             </div>
           </div>
         </div>
