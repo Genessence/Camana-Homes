@@ -1349,15 +1349,6 @@ function RecentlyViewedCarousel() {
                     catch { return `${currency} ${amount.toLocaleString()}`; }
                   })()}
                 </div>
-                <div className="font-dm-sans text-[23.607px] font-semibold text-black leading-[28.328px] tracking-[-0.472px]">
-                  {(() => {
-                    const amount = p.price_amount ?? 0;
-                    if (!amount || amount <= 0) return 'Price on Request';
-                    const currency = p.price_currency || 'USD';
-                    try { return new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(amount); }
-                    catch { return `${currency} ${amount.toLocaleString()}`; }
-                  })()}
-                </div>
                 <div className="flex items-center gap-[5px]">
                   <span className="font-dm-sans text-[14px] font-semibold text-black">
                     {/* Contact Agent */}
@@ -1559,10 +1550,12 @@ function FeaturedSection() {
         </Link>
         <div className="flex items-center gap-4 text-[16px] lg:text-[18px]">
           <span className="opacity-90">
-            {new Intl.NumberFormat(undefined, {
-              style: "currency",
-              currency: current.price_currency,
-            }).format(current.price_amount)}
+          {current.price_amount && current.price_amount > 0
+            ? new Intl.NumberFormat(undefined, {
+                style: "currency",
+                currency: current.price_currency,
+              }).format(current.price_amount)
+            : "Price on Request"}
           </span>
         </div>
       </div>
