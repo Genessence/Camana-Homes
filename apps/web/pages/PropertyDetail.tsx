@@ -82,6 +82,8 @@ const PropertyDetail = () => {
               {new Intl.NumberFormat(undefined, {
                 style: "currency",
                 currency: data.price_currency,
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
               }).format(data.price_amount)}
             </div>
             <div className="text-[#333]">

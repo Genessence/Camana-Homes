@@ -124,6 +124,8 @@ const ApiTest = () => {
                   {new Intl.NumberFormat(undefined, {
                     style: "currency",
                     currency: prop.price_currency,
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
                   }).format(prop.price_amount)}
                 </p>
                 <p className="text-sm text-gray-600">

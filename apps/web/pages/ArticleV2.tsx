@@ -206,7 +206,7 @@ const ArticleV2 = () => {
                       </div>
                       <div className="p-4">
                         <div className="text-[18px] font-bold text-black mb-1">
-                          {new Intl.NumberFormat(undefined, { style: 'currency', currency: p.price_currency || 'USD' }).format(p.price_amount)}
+                          {new Intl.NumberFormat(undefined, { style: 'currency', currency: p.price_currency || 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(p.price_amount)}
                         </div>
                         <div className="text-[14px] text-[#666] mb-1">{p.property_type} | {p.location_label}</div>
                         <div className="flex items-center gap-4 text-[13px] text-black">

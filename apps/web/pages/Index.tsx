@@ -315,6 +315,8 @@ const Index = () => {
                     ? new Intl.NumberFormat(undefined, {
                         style: "currency",
                         currency: currentSlide.property.price_currency,
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0,
                       }).format(currentSlide.property.price_amount)
                     : "Price on Request"}
                   </div>
@@ -626,7 +628,7 @@ function TrendingPropertiesGrid() {
             <div className="flex items-center justify-between">
               <div className="font-dm-sans text-[23.607px] font-semibold text-black leading-[28.328px] tracking-[-0.472px]">
                 {p.price_amount && p.price_amount > 0
-                  ? new Intl.NumberFormat(undefined, { style: 'currency', currency: p.price_currency }).format(p.price_amount)
+                  ? new Intl.NumberFormat(undefined, { style: 'currency', currency: p.price_currency, minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(p.price_amount)
                   : 'Price on Request'}
               </div>
               <div className="flex items-center gap-[5px]">
@@ -802,7 +804,7 @@ function TrendingPropertiesCarousel() {
               <div className="flex items-center justify-between">
                 <div className="font-dm-sans text-[23.607px] font-semibold text-black leading-[28.328px] tracking-[-0.472px]">
                   {p.price_amount && p.price_amount > 0
-                    ? new Intl.NumberFormat(undefined, { style: 'currency', currency: p.price_currency }).format(p.price_amount)
+                    ? new Intl.NumberFormat(undefined, { style: 'currency', currency: p.price_currency, minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(p.price_amount)
                     : 'Price on Request'}
                 </div>
                 <div className="flex items-center gap-[5px]">
@@ -1164,8 +1166,8 @@ function RecentlyViewedGrid() {
                 {(() => {
                   const amount = p.price_amount ?? 0;
                   const currency = p.price_currency || 'USD';
-                  try { return new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(amount); }
-                  catch { return `${currency} ${amount.toLocaleString()}`; }
+                  try { return new Intl.NumberFormat(undefined, { style: 'currency', currency, minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount); }
+                  catch { return `${currency} ${Math.round(amount).toLocaleString()}`; }
                 })()}
               </div>
               <div className="flex items-center gap-[5px]">
@@ -1345,8 +1347,8 @@ function RecentlyViewedCarousel() {
                     const amount = p.price_amount ?? 0;
                     if (!amount || amount <= 0) return 'Price on Request';
                     const currency = p.price_currency || 'USD';
-                    try { return new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(amount); }
-                    catch { return `${currency} ${amount.toLocaleString()}`; }
+                    try { return new Intl.NumberFormat(undefined, { style: 'currency', currency, minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount); }
+                    catch { return `${currency} ${Math.round(amount).toLocaleString()}`; }
                   })()}
                 </div>
                 <div className="flex items-center gap-[5px]">
@@ -1554,6 +1556,8 @@ function FeaturedSection() {
             ? new Intl.NumberFormat(undefined, {
                 style: "currency",
                 currency: current.price_currency,
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
               }).format(current.price_amount)
             : "Price on Request"}
           </span>

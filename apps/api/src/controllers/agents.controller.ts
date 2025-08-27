@@ -23,6 +23,7 @@ export const create: RequestHandler = async (req, res) => {
     licenseNumber,
     location,
     bio,
+    about,
     instagramUrl,
     linkedinUrl,
     youtubeUrl,
@@ -41,22 +42,25 @@ export const create: RequestHandler = async (req, res) => {
     }
   }
 
+  const createData: any = {
+    name,
+    avatarUrl: avatarUrl || null,
+    phoneNumber: phoneNumber || null,
+    email: email || null,
+    slug: slug || null,
+    licenseNumber: licenseNumber || null,
+    location: location || null,
+    bio: bio || null,
+    about: about || null,
+    instagramUrl: instagramUrl || null,
+    linkedinUrl: linkedinUrl || null,
+    youtubeUrl: youtubeUrl || null,
+    websiteUrl: websiteUrl || null,
+    agencyId,
+  };
+
   const agent = await prisma.agent.create({
-    data: {
-      name,
-      avatarUrl: avatarUrl || null,
-      phoneNumber: phoneNumber || null,
-      email: email || null,
-      slug: slug || null,
-      licenseNumber: licenseNumber || null,
-      location: location || null,
-      bio: bio || null,
-      instagramUrl: instagramUrl || null,
-      linkedinUrl: linkedinUrl || null,
-      youtubeUrl: youtubeUrl || null,
-      websiteUrl: websiteUrl || null,
-      agencyId,
-    },
+    data: createData,
     include: { agency: true },
   });
   res.status(201).json(agent);
@@ -88,6 +92,8 @@ export const bySlug: RequestHandler = async (req, res) => {
     return res.status(404).json({ error: 'agent not found' });
   }
 
+  const about = (agent as any).about ?? null;
+
   return res.json({
     id: agent.id,
     name: agent.name,
@@ -98,6 +104,7 @@ export const bySlug: RequestHandler = async (req, res) => {
     license_number: agent.licenseNumber ?? null,
     location: agent.location ?? null,
     bio: agent.bio ?? null,
+    about,
     instagram_url: agent.instagramUrl ?? null,
     linkedin_url: agent.linkedinUrl ?? null,
     youtube_url: agent.youtubeUrl ?? null,
@@ -106,6 +113,19 @@ export const bySlug: RequestHandler = async (req, res) => {
       ? { id: agent.agency.id, name: agent.agency.name, logo_url: agent.agency.logoUrl ?? null }
       : null,
   });
+};
+
+export const remove: RequestHandler = async (req, res) => {
+  const id = Number(req.params.id);
+  if (!id || Number.isNaN(id)) return res.status(400).json({ error: 'invalid id' });
+
+  // Null-out agentId on properties, then delete the agent
+  await prisma.$transaction([
+    prisma.property.updateMany({ where: { agentId: id }, data: { agentId: null } }),
+    prisma.agent.delete({ where: { id } })
+  ]);
+
+  res.json({ ok: true });
 };
 
 

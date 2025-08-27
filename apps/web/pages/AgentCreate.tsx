@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 export default function AgentCreate() {
   const navigate = useNavigate();
@@ -14,6 +16,7 @@ export default function AgentCreate() {
   const [licenseNumber, setLicenseNumber] = React.useState("");
   const [location, setLocation] = React.useState("");
   const [bio, setBio] = React.useState("");
+  const [aboutHtml, setAboutHtml] = React.useState("");
   const [instagramUrl, setInstagramUrl] = React.useState("");
   const [linkedinUrl, setLinkedinUrl] = React.useState("");
   const [youtubeUrl, setYoutubeUrl] = React.useState("");
@@ -42,6 +45,7 @@ export default function AgentCreate() {
         licenseNumber: licenseNumber || null,
         location: location || null,
         bio: bio || null,
+        about: aboutHtml || null,
         instagramUrl: instagramUrl || null,
         linkedinUrl: linkedinUrl || null,
         youtubeUrl: youtubeUrl || null,
@@ -63,6 +67,18 @@ export default function AgentCreate() {
     }
   };
 
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      [{ indent: '-1' }, { indent: '+1' }],
+      [{ align: [] }],
+      ['link'],
+      ['clean'],
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-[900px] mx-auto px-4 lg:px-[70px] py-8">
@@ -81,6 +97,11 @@ export default function AgentCreate() {
           <div>
             <label className="block text-sm font-medium mb-1">Bio</label>
             <textarea className="w-full border border-gray-300 p-2" rows={5} value={bio} onChange={(e) => setBio(e.target.value)} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">About</label>
+            <ReactQuill theme="snow" value={aboutHtml} onChange={setAboutHtml} modules={quillModules} />
+            <p className="text-xs text-gray-500 mt-1">Use the toolbar to format paragraphs, lists, and links.</p>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <TextInput label="Instagram URL" value={instagramUrl} onChange={setInstagramUrl} />

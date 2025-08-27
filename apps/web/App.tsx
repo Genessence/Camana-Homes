@@ -25,6 +25,7 @@ import ApiTest from "./pages/ApiTest";
 import ScrollToTop from "./utils/ScrollToTop";
 import PropertyCreate from "./pages/PropertyCreate";
 import AgentCreate from "./pages/AgentCreate";
+import AgentsList from "./pages/AgentsList";
 
 const queryClient = new QueryClient();
 
@@ -52,6 +53,7 @@ const AppRoutes = () => {
         <Route path="/listing/:slug/gallery" element={<Gallery />} />
         <Route path="/properties" element={<Properties />} />
         <Route path="/properties/new" element={<PropertyCreate />} />
+        <Route path="/agents" element={<AgentsList />} />
         <Route path="/agents/new" element={<AgentCreate />} />
         <Route path="/members-club" element={<MembersClub />} />
         <Route path="/about-us" element={<About />} />

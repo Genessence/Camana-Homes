@@ -183,6 +183,17 @@ class ApiService {
     }
   }
 
+  // Agents
+  async listAgents(): Promise<Array<{ id: number; name: string; avatar_url: string | null; phone_number: string | null; email: string | null; }>> {
+    return this.request(`/agents`);
+  }
+  async deleteAgent(id: number): Promise<{ ok: boolean }> {
+    const url = `${API_BASE_URL}/agents/${id}`;
+    const res = await fetch(url, { method: 'DELETE', headers: { 'Content-Type': 'application/json' } });
+    if (!res.ok) throw new Error(`Delete failed: ${res.status}`);
+    return res.json();
+  }
+
   // Get agent by slug
   async getAgentBySlug(slug: string): Promise<{
     id: number;
@@ -194,6 +205,7 @@ class ApiService {
     license_number: string | null;
     location: string | null;
     bio: string | null;
+    about: string | null;
     instagram_url: string | null;
     linkedin_url: string | null;
     youtube_url: string | null;

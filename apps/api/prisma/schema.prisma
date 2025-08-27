@@ -26,6 +26,7 @@ model Agent {
   licenseNumber String?
   location    String?
   bio         String?
+  about       String?
   instagramUrl String?
   linkedinUrl  String?
   youtubeUrl   String?
