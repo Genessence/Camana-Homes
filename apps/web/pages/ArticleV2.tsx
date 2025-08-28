@@ -3,6 +3,7 @@ import { API } from "@shared/api";
 import type { ArticleCard, PropertyCard } from "@shared/api.types";
 import { Link, useParams } from "react-router-dom";
 import { Mail, Facebook, Instagram, Linkedin, Twitter, ArrowLeft, ArrowRight, Eye, Bed, Bath } from "lucide-react";
+import LeadModal from "@/components/ui/LeadModal";
 
 const PUBLIC_IMAGE_FALLBACK = "https://camana-homes.s3.ap-south-1.amazonaws.com/properties/dubai-marina/2200xxs%20(1).webp";
 
@@ -12,6 +13,14 @@ const ArticleV2 = () => {
   const [featuredProperty, setFeaturedProperty] = React.useState<PropertyCard | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
+  // Lead modal state (same pattern as AgentProfile)
+  const [leadOpen, setLeadOpen] = React.useState(false);
+  const [leadName, setLeadName] = React.useState("");
+  const [leadEmail, setLeadEmail] = React.useState("");
+  const [leadPhone, setLeadPhone] = React.useState("");
+  const [leadLocation, setLeadLocation] = React.useState("");
+  const openLeadModal = () => setLeadOpen(true);
+  const submitLead = (e: React.FormEvent) => { e.preventDefault(); setLeadOpen(false); };
 
   const { slug } = useParams<{ slug?: string }>();
 
@@ -97,6 +106,9 @@ const ArticleV2 = () => {
               <h1 className="text-black text-center font-dm-sans text-[35px] lg:text-[47px] font-bold leading-tight uppercase max-w-[1100px]">
                 {article.title}
               </h1>
+              {article.excerpt && (
+                      <p className="text-[#3D3E3F] font-dm-sans text-[16px] leading-[20px] font-normal text-center w-[80%] line-clamp-2">{article.excerpt}</p>
+              )}
               {/* Meta */}
               <div className="font-dm-sans text-[16px] text-black">
                 {article.author_name && <span className="font-bold">By {article.author_name}</span>}
@@ -142,26 +154,23 @@ const ArticleV2 = () => {
                 {/* Body with right rail (reading time) */}
                 <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-[20px] items-start">
                   <div className="flex flex-col gap-[16px]">
-                    {article.excerpt && (
-                      <p className="text-[#3D3E3F] font-dm-sans text-[18px] leading-[30px] font-bold">{article.excerpt}</p>
-                    )}
                     {article.body && (
                       <div
-                        className="prose max-w-none text-[#3D3E3F] font-dm-sans text-[18px] leading-[30px]"
+                        className="prose max-w-none text-[#3D3E3F] font-dm-sans text-[16px] leading-[30px]"
                         dangerouslySetInnerHTML={{ __html: article.body }}
                       />
                     )}
                   </div>
 
                   {/* Right rail: Reading time */}
-                  <aside className="w-full lg:sticky lg:top-[20px] h-fit bg-[#F5F5F5] rounded-md p-4">
+                  {/* <aside className="w-full lg:sticky lg:top-[20px] h-fit bg-[#F5F5F5] rounded-md p-4">
                     <div className="text-[14px] font-dm-sans font-bold text-[#333] mb-2">10 Minute read</div>
                     <ul className="list-disc pl-5 space-y-2 text-[14px] text-[#555]">
                       <li>Lorem Ipsum is simply dummy text of the printing</li>
                       <li>Lorem Ipsum has been the industry standard dummy text</li>
                       <li>It has survived not only five centuries</li>
                     </ul>
-                  </aside>
+                  </aside> */}
                   {/* Two cards under left column width */}
                   <div className="lg:col-start-1 lg:col-end-2 grid grid-cols-1 gap-[20px] mt-[20px]">
                   {([featuredProperty].filter(Boolean) as PropertyCard[]).concat(
@@ -316,16 +325,36 @@ const ArticleV2 = () => {
                   Read More articles by {article.author_name} →
                 </Link>
               )}
-              <div className="flex items-center gap-[15px] mt-[10px] text-black">
+              <button onClick={openLeadModal} className="mt-4 bg-white text-black h-14 w-full sm:w-[171px] inline-flex items-center justify-center">
+                Contact Agent
+              </button>
+              {/* <div className="flex items-center gap-[15px] mt-[10px] text-black">
                 <a href="#" className="w-[40px] h-[40px] rounded-full bg-white grid place-items-center">🌐</a>
                 <a href="#" className="w-[40px] h-[40px] rounded-full bg-white grid place-items-center">📷</a>
                 <a href="#" className="w-[40px] h-[40px] rounded-full bg-white grid place-items-center">in</a>
                 <a href="#" className="w-[40px] h-[40px] rounded-full bg-white grid place-items-center">▶</a>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Lead Modal */}
+      <LeadModal
+        open={leadOpen}
+        onOpenChange={setLeadOpen}
+        onSubmit={submitLead}
+        leadName={leadName}
+        setLeadName={setLeadName}
+        leadEmail={leadEmail}
+        setLeadEmail={setLeadEmail}
+        leadPhone={leadPhone}
+        setLeadPhone={setLeadPhone}
+        leadLocation={leadLocation}
+        setLeadLocation={setLeadLocation}
+        title="Contact the Agent"
+        description="Share your contact details and the agent will reach out shortly."
+      />
     </div>
   );
 };
