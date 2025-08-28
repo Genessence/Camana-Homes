@@ -9,6 +9,7 @@ const PUBLIC_IMAGE_FALLBACK = "https://camana-homes.s3.ap-south-1.amazonaws.com/
 const ArticleV2 = () => {
   const [article, setArticle] = React.useState<ArticleCard | null>(null);
   const [related, setRelated] = React.useState<PropertyCard[] | null>(null);
+  const [featuredProperty, setFeaturedProperty] = React.useState<PropertyCard | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -44,6 +45,28 @@ const ArticleV2 = () => {
     load();
     return () => { mounted = false; };
   }, [slug]);
+
+  // Fetch full listing data for featured property if article provides a slug
+  React.useEffect(() => {
+    let mounted = true;
+    const doFetch = async () => {
+      try {
+        const fp: any = article?.featured_property;
+        const fpSlug: string | undefined = fp?.slug || fp?.property_slug || fp?.listing_slug;
+        if (fpSlug) {
+          const full = await API.properties.bySlug(fpSlug);
+          if (!mounted) return;
+          setFeaturedProperty(full);
+        } else {
+          setFeaturedProperty(null);
+        }
+      } catch {
+        setFeaturedProperty(null);
+      }
+    };
+    doFetch();
+    return () => { mounted = false; };
+  }, [article?.featured_property]);
 
   console.log(article);
 
@@ -141,25 +164,115 @@ const ArticleV2 = () => {
                   </aside>
                   {/* Two cards under left column width */}
                   <div className="lg:col-start-1 lg:col-end-2 grid grid-cols-1 gap-[20px] mt-[20px]">
-                  {(article?.featured_property ? [article.featured_property] : (related || []).slice(0, 1)).map((p) => (
-                    <Link key={p.id} to={`/listing/${p.slug}`} className="block bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow">
-                      <div className="relative h-[220px]">
+                  {([featuredProperty].filter(Boolean) as PropertyCard[]).concat(
+                    !featuredProperty && related && related.length > 0 ? [related[0]] : []
+                  ).slice(0,1).map((p) => (
+                    <Link
+                      key={p.id}
+                      to={`/listing/${p.slug}`}
+                      className="w-full bg-white border-[8px] border-white block overflow-hidden shadow hover:shadow-lg transition-shadow"
+                    >
+                      <div className="relative h-[220px] w-full overflow-hidden">
                         <img
                           src={(p as any).primary_image_url}
                           alt={p.title}
                           className="w-full h-full object-cover"
                           onError={(e) => { (e.currentTarget as HTMLImageElement).src = PUBLIC_IMAGE_FALLBACK; }}
                         />
-                      </div>
-                      <div className="p-4">
-                        <div className="text-[18px] font-bold text-black mb-1">
-                          {new Intl.NumberFormat(undefined, { style: 'currency', currency: p.price_currency || 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(p.price_amount)}
+                        <div className="absolute top-[10px] left-[9px] flex gap-[10px]">
+                          <div className="flex items-center gap-[6px] px-[9.681px] py-[8.471px] border border-white bg-black/10 backdrop-blur-[8px]">
+                            <Eye className="w-[18px] h-[18px] text-white" />
+                            <span className="text-white font-dm-sans text-[13.391px] font-medium leading-[17.14px]">
+                              {new Intl.NumberFormat().format((p as any).views_count || 0)}
+                            </span>
+                          </div>
+                          {(p as any).has_virtual_tour && (
+                            <div className="px-[9.681px] py-[8.471px] border border-white bg-black/10 backdrop-blur-[8px] text-white font-dm-sans text-[13.391px] font-medium leading-[17.14px]">
+                              Virtual Tours
+                            </div>
+                          )}
                         </div>
-                        <div className="text-[14px] text-[#666] mb-1">{p.property_type} | {p.location_label}</div>
-                        <div className="flex items-center gap-4 text-[13px] text-black">
-                          <span className="flex items-center gap-1"><Bed className="w-4 h-4" />{p.bedrooms}</span>
-                          <span className="flex items-center gap-1"><Bath className="w-4 h-4" />{p.bathrooms}</span>
-                          <span>Area: {p.area_value} {p.area_unit}</span>
+                      </div>
+                      <div className="p-4 flex flex-col gap-[11px]">
+                        <div className="flex items-center justify-between">
+                          <div className="font-dm-sans text-[23.607px] font-semibold text-black leading-[28.328px] tracking-[-0.472px]">
+                            {(() => {
+                              const amount = (p as any).price_amount ?? 0;
+                              const currency = (p as any).price_currency || 'USD';
+                              if (!amount || amount <= 0) return 'Price on Request';
+                              try { return new Intl.NumberFormat(undefined, { style: 'currency', currency, minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount); }
+                              catch { return `${currency} ${Math.round(amount).toLocaleString()}`; }
+                            })()}
+                          </div>
+                          <div className="flex items-center gap-[5px]">
+                            <ArrowRight className="w-[10px] h-[5px] text-[#999] transform -rotate-90" />
+                          </div>
+                        </div>
+                        <h3 className="font-dm-sans text-[17.705px] font-normal text-black leading-[21.246px] tracking-[-0.354px]">
+                          {p.title}
+                        </h3>
+                        <div className="flex items-center gap-[10px] text-[12.8px] font-normal text-black">
+                          <span>{(p as any).property_type}</span>
+                          <span>|</span>
+                          <div className="flex items-center gap-[2px]">
+                            <Bed className="w-[17.705px] h-[17.705px]" />
+                            <span className="font-plus-jakarta text-[11.803px] leading-[17.705px] tracking-[-0.236px]">
+                              {(p as any).bedrooms}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-[2px]">
+                            <Bath className="w-[17.705px] h-[17.705px]" />
+                            <span className="font-plus-jakarta text-[11.803px] leading-[17.705px] tracking-[-0.236px]">
+                              {(p as any).bathrooms}
+                            </span>
+                          </div>
+                          <span>|</span>
+                          <span>
+                            Area : {(p as any).area_value} {(p as any).area_unit}
+                          </span>
+                        </div>
+                        <div className="h-[1px] bg-gray-light"></div>
+                        <div className="flex items-center justify-between">
+                          {(p as any).agent ? (
+                            <div className="flex items-center gap-[5px]">
+                              <img
+                                src={(p as any).agent?.avatar_url || "https://api.builder.io/api/v1/image/assets/TEMP/21584c4a5fb695a4f53c9f609c46424507f3b08c?width=98"}
+                                alt={(p as any).agent?.name || "Agent"}
+                                className="w-[49px] h-[49px] rounded-full"
+                              />
+                              <div>
+                                <div className="font-dm-sans text-[16px] font-semibold italic text-black">
+                                  {(p as any).agent?.name}
+                                </div>
+                                <div className="font-dm-sans text-[12px] font-normal italic text-[#666]">
+                                  {(p as any).agent?.agency?.name}
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-[5px]">
+                              <img
+                                src={(p as any).developer_logo_url || "https://via.placeholder.com/98x98/f3f4f6/9ca3af?text=Dev"}
+                                alt={(p as any).developer || "Developer"}
+                                className="w-[49px] h-[49px] rounded-full object-contain bg-white"
+                              />
+                              <div>
+                                <div className="font-dm-sans text-[16px] font-semibold italic text-black">
+                                  Direct from Developer
+                                </div>
+                                <div className="font-dm-sans text-[12px] font-normal italic text-[#666]">
+                                  {(p as any).developer || ""}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          {(p as any).agent?.agency?.logo_url ? (
+                            <img
+                              src={(p as any).agent.agency.logo_url}
+                              alt="Company Logo"
+                              className="w-[73px] h-[26px]"
+                            />
+                          ) : null}
                         </div>
                       </div>
                     </Link>

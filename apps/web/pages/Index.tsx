@@ -14,6 +14,7 @@ import {
   Star,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import TrendingPropertyCard from "@/components/ui/TrendingPropertyCard";
 import StayInTheKnow from "@/components/StayInTheKnow";
 import beyond from "../assets/beyond.png";
 import logoWhite from "../assets/Camana-white.png";
