@@ -122,54 +122,12 @@ const ArticleV2 = () => {
                     {article.excerpt && (
                       <p className="text-[#3D3E3F] font-dm-sans text-[18px] leading-[30px] font-bold">{article.excerpt}</p>
                     )}
-
-                    <p className="text-[#3D3E3F] font-dm-sans text-[18px] leading-[30px]">
-                      Lorem Ipsum is simply dummy text of the printing and typesetting industry. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets and more recently with desktop publishing software like Aldus PageMaker.
-                    </p>
-
-                    <p className="text-[#3D3E3F] font-dm-sans text-[18px] leading-[30px]">
-                      Lorem Ipsum is simply dummy text of the printing and typesetting industry. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets and more recently with desktop publishing software like Aldus PageMaker.
-                    </p>
-                    <p className="text-[#3D3E3F] font-dm-sans text-[18px] leading-[30px]">
-                      Lorem Ipsum is simply dummy text of the printing and typesetting industry. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets and more recently with desktop publishing software like Aldus PageMaker.
-                    </p>
-
                     {article.body && (
                       <div
                         className="prose max-w-none text-[#3D3E3F] font-dm-sans text-[18px] leading-[30px]"
                         dangerouslySetInnerHTML={{ __html: article.body }}
                       />
                     )}
-
-                    <p className="text-[#3D3E3F] font-dm-sans text-[18px] leading-[30px]">
-                      Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock looked up one of the more obscure Latin words, consectetur, and discovered its undoubtable source.
-                    </p>
-                    <p className="text-[#3D3E3F] font-dm-sans text-[18px] leading-[30px]">
-                      The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32. This book is a treatise on the theory of ethics, very popular during the Renaissance.
-                    </p>
-
-                    {/* Inline Image 2 */}
-                    <div className="my-[10px]">
-                      <img
-                        src={"https://camana-homes.s3.ap-south-1.amazonaws.com/articles/palm-jumeirah-investment.jpg"}
-                        alt="Article visual"
-                        className="w-full h-[340px] lg:h-[420px] object-cover"
-                        onError={(e) => { (e.currentTarget as HTMLImageElement).src = PUBLIC_IMAGE_FALLBACK; }}
-                      />
-                    </div>
-
-                    <p className="text-[#3D3E3F] font-dm-sans text-[18px] leading-[30px]">
-                      It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software. Today it remains a staple placeholder used by designers and developers worldwide.
-                    </p>
-                    <p className="text-[#3D3E3F] font-dm-sans text-[18px] leading-[30px]">
-                      It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software. Today it remains a staple placeholder used by designers and developers worldwide.
-                    </p>
-                    <p className="text-[#3D3E3F] font-dm-sans text-[18px] leading-[30px]">
-                      It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software. Today it remains a staple placeholder used by designers and developers worldwide.
-                    </p>
-                    <p className="text-[#3D3E3F] font-dm-sans text-[18px] leading-[30px]">
-                      It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software. Today it remains a staple placeholder used by designers and developers worldwide.
-                    </p>
                   </div>
 
                   {/* Right rail: Reading time */}

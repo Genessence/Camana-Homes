@@ -23,7 +23,6 @@ uploadsRouter.post('/uploads/image', upload.single('file'), async (req, res) => 
       Key: key,
       Body: req.file.buffer,
       ContentType: req.file.mimetype || 'application/octet-stream',
-      ACL: 'public-read',
     }));
 
     const url = `https://${bucket}.s3.${region}.amazonaws.com/${key}`;
