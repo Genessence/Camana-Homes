@@ -8,6 +8,7 @@ function resolveBaseUrl(): string {
   return '/api';
 }
 const API_BASE_URL = resolveBaseUrl();
+export function getApiBaseUrl(): string { return API_BASE_URL; }
 
 function getVisitorId(): string {
   try {

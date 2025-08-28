@@ -6,8 +6,8 @@ const bucket = process.env.S3_BUCKET || '';
 
 export const s3 = new S3Client({ region });
 
-export async function getSignedUploadUrl(key: string, contentType: string, expiresInSeconds = 900) {
-  const cmd = new PutObjectCommand({ Bucket: bucket, Key: key, ContentType: contentType });
+export async function getSignedUploadUrl(key: string, contentType: string, expiresInSeconds = 900, acl?: 'public-read') {
+  const cmd = new PutObjectCommand({ Bucket: bucket, Key: key, ContentType: contentType, ACL: acl });
   return getSignedUrl(s3, cmd, { expiresIn: expiresInSeconds });
 }
 

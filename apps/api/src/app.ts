@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { router } from './routes/index.js';
+import multer from 'multer';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,5 +28,6 @@ export function createApp() {
   app.use(morgan('combined'));
 
   app.use('/api', router);
+  // Multer requires no extra app-level config since we mount under uploads router
   return app;
 }

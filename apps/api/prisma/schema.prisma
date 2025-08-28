@@ -123,6 +123,7 @@ model Property {
   tours    TourRequest[]
   viewed   RecentlyViewed[]
   heroSlides HeroSlide[]
+  featuredInArticles Article[] @relation("ArticleFeaturedProperty")
 
   @@map("properties")
   @@index([trendingScore])
@@ -191,6 +192,7 @@ model Article {
   slug               String   @unique
   title              String
   excerpt            String?
+  body               String?
   imageUrl           String
   category           String?
   authorName         String?
@@ -201,6 +203,8 @@ model Article {
   authorInstagramUrl String?
   authorLinkedinUrl  String?
   authorYoutubeUrl   String?
+  featuredPropertyId Int?
+  featuredProperty   Property? @relation("ArticleFeaturedProperty", fields: [featuredPropertyId], references: [id])
 
   @@map("articles")
 }

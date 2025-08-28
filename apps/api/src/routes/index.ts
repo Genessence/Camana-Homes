@@ -7,6 +7,7 @@ import { activityRouter } from './activity.js';
 import { formsRouter } from './forms.js';
 import { heroSlidesRouter } from './hero-slides.js';
 import { agentsRouter } from './agents.js';
+import { uploadsRouter } from './uploads.js';
 
 export const router = Router();
 
@@ -19,5 +20,6 @@ router.use(activityRouter);
 router.use(formsRouter);
 router.use(heroSlidesRouter);
 router.use(agentsRouter);
+router.use(uploadsRouter);
 
 

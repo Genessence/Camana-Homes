@@ -78,11 +78,26 @@ export type ArticleCard = {
   slug: string;
   title: string;
   excerpt?: string | null;
+  body?: string | null;
   image_url: string;
   category?: string | null;
   author_name?: string | null;
   author_avatar_url?: string | null;
   published_at: string;
+  featured_property?: {
+    id: number;
+    slug: string;
+    title: string;
+    primary_image_url: string;
+    price_amount: number;
+    price_currency: string;
+    property_type: string;
+    location_label: string;
+    bedrooms: number;
+    bathrooms: number;
+    area_value: number;
+    area_unit: string;
+  } | null;
 };
 
 export type RecentlyViewedEntry = {

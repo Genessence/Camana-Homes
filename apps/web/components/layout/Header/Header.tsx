@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ChevronDown, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import LeadModal from '@/components/ui/LeadModal';
 
 // Import logos
 import logoBlack from '../../../assets/logo-black1.png';
@@ -23,6 +24,17 @@ const Header: React.FC<HeaderProps> = ({
   const navigate = useNavigate();
   const location = useLocation();
   const [isMoreOpen, setIsMoreOpen] = useState(false);
+  const [leadOpen, setLeadOpen] = useState(false);
+  const [leadName, setLeadName] = useState("");
+  const [leadEmail, setLeadEmail] = useState("");
+  const [leadPhone, setLeadPhone] = useState("");
+  const [leadLocation, setLeadLocation] = useState("");
+
+  const openLeadModal = () => setLeadOpen(true);
+  const submitLead = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLeadOpen(false);
+  };
 
   // Determine variant based on location if not explicitly set
   const transparentPaths = ['/', '/about-us', '/journal', '/article'];
@@ -103,13 +115,13 @@ const Header: React.FC<HeaderProps> = ({
           </button>
           
           <div className="relative">
-            <button className={cn(
+            <button onClick={openLeadModal} className={cn(
               "flex items-center justify-center h-[40px] px-5 py-2 font-dm-sans text-[14px] font-medium transition-colors",
               isTransparent 
                 ? "bg-white text-black hover:bg-gray-100" 
                 : "bg-black text-white hover:bg-gray-900"
             )}>
-              Agent Login
+              List with us
               {/* <span
                 className={cn(
                   "ml-2 px-2 py-[2px] rounded-full text-[10px] uppercase tracking-wider",
@@ -165,6 +177,21 @@ const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
       )}
+      <LeadModal
+        open={leadOpen}
+        onOpenChange={setLeadOpen}
+        onSubmit={submitLead}
+        leadName={leadName}
+        setLeadName={setLeadName}
+        leadEmail={leadEmail}
+        setLeadEmail={setLeadEmail}
+        leadPhone={leadPhone}
+        setLeadPhone={setLeadPhone}
+        leadLocation={leadLocation}
+        setLeadLocation={setLeadLocation}
+        title="List with us"
+        description="Tell us about yourself and we’ll get in touch."
+      />
     </header>
   );
 };

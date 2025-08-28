@@ -120,9 +120,7 @@ const ArticleV2 = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-[20px] items-start">
                   <div className="flex flex-col gap-[16px]">
                     {article.excerpt && (
-                      <p className="text-[#3D3E3F] font-dm-sans text-[18px] leading-[30px]">
-                        {article.excerpt}
-                      </p>
+                      <p className="text-[#3D3E3F] font-dm-sans text-[18px] leading-[30px] font-bold">{article.excerpt}</p>
                     )}
 
                     <p className="text-[#3D3E3F] font-dm-sans text-[18px] leading-[30px]">
@@ -136,15 +134,12 @@ const ArticleV2 = () => {
                       Lorem Ipsum is simply dummy text of the printing and typesetting industry. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets and more recently with desktop publishing software like Aldus PageMaker.
                     </p>
 
-                    {/* Inline Image 1 */}
-                    <div className="my-[10px]">
-                      <img
-                        src={article.image_url || PUBLIC_IMAGE_FALLBACK}
-                        alt={article.title}
-                        className="w-full h-[340px] lg:h-[420px] object-cover"
-                        onError={(e) => { (e.currentTarget as HTMLImageElement).src = PUBLIC_IMAGE_FALLBACK; }}
+                    {article.body && (
+                      <div
+                        className="prose max-w-none text-[#3D3E3F] font-dm-sans text-[18px] leading-[30px]"
+                        dangerouslySetInnerHTML={{ __html: article.body }}
                       />
-                    </div>
+                    )}
 
                     <p className="text-[#3D3E3F] font-dm-sans text-[18px] leading-[30px]">
                       Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock looked up one of the more obscure Latin words, consectetur, and discovered its undoubtable source.
@@ -187,24 +182,16 @@ const ArticleV2 = () => {
                     </ul>
                   </aside>
                   {/* Two cards under left column width */}
-                  <div className="lg:col-start-1 lg:col-end-2 grid grid-cols-1 lg:grid-cols-2 gap-[20px] mt-[20px]">
-                  {(related || []).slice(0, 2).map((p) => (
+                  <div className="lg:col-start-1 lg:col-end-2 grid grid-cols-1 gap-[20px] mt-[20px]">
+                  {(article?.featured_property ? [article.featured_property] : (related || []).slice(0, 1)).map((p) => (
                     <Link key={p.id} to={`/listing/${p.slug}`} className="block bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow">
                       <div className="relative h-[220px]">
                         <img
-                          src={p.primary_image_url}
+                          src={(p as any).primary_image_url}
                           alt={p.title}
                           className="w-full h-full object-cover"
                           onError={(e) => { (e.currentTarget as HTMLImageElement).src = PUBLIC_IMAGE_FALLBACK; }}
                         />
-                        <div className="absolute top-2 left-2 flex gap-2">
-                          <div className="backdrop-blur-sm bg-black/20 text-white text-xs px-2 py-1 flex items-center gap-1">
-                            <Eye className="w-4 h-4" /> {new Intl.NumberFormat().format(p.views_count)}
-                          </div>
-                          {p.has_virtual_tour && (
-                            <div className="backdrop-blur-sm bg-black/20 text-white text-xs px-2 py-1">Virtual Tours</div>
-                          )}
-                        </div>
                       </div>
                       <div className="p-4">
                         <div className="text-[18px] font-bold text-black mb-1">
