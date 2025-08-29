@@ -332,7 +332,7 @@ const ArticleV2 = () => {
                     About the Agent
                   </Link>
                 )}
-                <button onClick={openLeadModal} className="bg-white text-black h-14 w-full sm:w-[171px] inline-flex items-center justify-center">
+                <button onClick={openLeadModal} className="bg-transparent border-2 border-white text-white h-14 w-full sm:w-[171px] inline-flex items-center justify-center">
                   Contact Agent
                 </button>
               </div>

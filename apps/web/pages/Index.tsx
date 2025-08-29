@@ -154,7 +154,7 @@ const Index = () => {
           </div>
 
           {/* Search Bar */}
-          <div className="hidden sm:flex flex-col sm:flex-row items-stretch sm:items-center bg-white rounded-[10px] overflow-visible p-0 sm:pl-2.5 w-full max-w-[860px] min-h-[55px] shadow-lg">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-white/30 sm:bg-white rounded-[10px] overflow-visible p-0 sm:pl-2.5 w-full max-w-[860px] min-h-[55px] shadow-lg backdrop-blur-sm">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center w-full divide-y sm:divide-y-0">
               {/* Buy Dropdown */}
               <div

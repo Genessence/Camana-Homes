@@ -128,10 +128,10 @@ const Header: React.FC<HeaderProps> = ({
           
           <div className="relative">
             <button onClick={openLeadModal} className={cn(
-              "flex items-center justify-center h-[40px] px-5 py-2 font-dm-sans text-[14px] font-medium transition-colors",
+              "flex items-center justify-center h-[40px] px-[21px] py-2 border font-dm-sans text-[14px] font-medium transition-colors",
               isTransparent 
-                ? "bg-white text-black hover:bg-gray-100" 
-                : "bg-black text-white hover:bg-gray-900"
+                ? "border-white bg-white/14 text-white hover:bg-white/20 backdrop-blur-sm" 
+                : "border-black bg-gray-100/20 text-black hover:bg-gray-200/30"
             )}>
               List with us
               {/* <span
@@ -147,7 +147,7 @@ const Header: React.FC<HeaderProps> = ({
             {/* Subtle badge rendered inside button */}
           </div>
           
-          <Menu className={cn("w-5 h-5 cursor-pointer", textColor)} />
+          {/* <Menu className={cn("w-5 h-5 cursor-pointer", textColor)} /> */}
         </div>
       </div>
 
