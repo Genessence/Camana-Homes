@@ -322,9 +322,20 @@ const ArticleV2 = () => {
                   Read More articles by {article.author_name} →
                 </Link>
               )} */}
-              <button onClick={openLeadModal} className="mt-4 bg-white text-black h-14 w-full sm:w-[171px] inline-flex items-center justify-center">
-                Contact Agent
-              </button>
+              <div className="flex flex-col sm:flex-row gap-4 mt-4">
+                {/* About the Agent button - only show if we have agent data */}
+                {article?.author_name && (
+                  <Link
+                    to={`/agent/${article.author_name.toLowerCase().replace(/\s+/g, '-')}`}
+                    className="bg-transparent border-2 border-white text-white h-14 w-full sm:w-[171px] inline-flex items-center justify-center hover:bg-white hover:text-black transition-colors"
+                  >
+                    About the Agent
+                  </Link>
+                )}
+                <button onClick={openLeadModal} className="bg-white text-black h-14 w-full sm:w-[171px] inline-flex items-center justify-center">
+                  Contact Agent
+                </button>
+              </div>
               {/* <div className="flex items-center gap-[15px] mt-[10px] text-black">
                 <a href="#" className="w-[40px] h-[40px] rounded-full bg-white grid place-items-center">🌐</a>
                 <a href="#" className="w-[40px] h-[40px] rounded-full bg-white grid place-items-center">📷</a>
