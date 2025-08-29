@@ -1645,6 +1645,25 @@ function JournalCarousel() {
     el.scrollBy({ left: delta, behavior: 'smooth' });
   };
 
+  const formatTimeAgo = (iso: string) => {
+    const then = new Date(iso).getTime();
+    if (Number.isNaN(then)) return '';
+    const seconds = Math.floor((Date.now() - then) / 1000);
+    const intervals: Array<[number, string]> = [
+      [31536000, 'year'],
+      [2592000, 'month'],
+      [604800, 'week'],
+      [86400, 'day'],
+      [3600, 'hour'],
+      [60, 'minute']
+    ];
+    for (const [secs, label] of intervals) {
+      const count = Math.floor(seconds / secs);
+      if (count >= 1) return `${count} ${label}${count > 1 ? 's' : ''} ago`;
+    }
+    return 'just now';
+  };
+
   if (error || !articles) {
     return (
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-[30px]">
@@ -1680,17 +1699,17 @@ function JournalCarousel() {
                   <div className="p-4 flex flex-col items-center text-center gap-[12px] min-h-0">
                     {a.category && (
                       <div className="bg-[#fd2d15] px-[10px] py-[5px]">
-                        <span className="font-dm-sans text-[18px] font-extrabold text-white truncate block max-w-full">{a.category}</span>
+                        <span className="font-dm-sans text-[14px] font-extrabold text-white truncate block max-w-full ">{a.category}</span>
                       </div>
                     )}
-                    <h3 className="font-dm-sans text-[24px] lg:text-[26px] font-bold text-black text-center leading-[30px] line-clamp-3">{a.title}</h3>
+                    <h3 className="font-dm-sans text-[24px] lg:text-[26px] font-bold text-black text-center leading-[30px] line-clamp-2">{a.title}</h3>
                     <div className="font-dm-sans text-[14px] lg:text-[16px] font-normal text-black text-center flex items-center justify-center gap-3">
-                      {/* {a.author_name && ( */}
-                      <span className="font-semibold italic">By Sudoku Capital</span>
-                      {/* )} */}
-                      {/* {a.published_at && ( */}
-                      <span className="text-[#666]"> - 12 hours ago</span>
-                      {/* )} */}
+                      {a.author_name ? (
+                        <span className="font-semibold italic">By {a.author_name}</span>
+                      ) : null}
+                      {a.published_at ? (
+                        <span className="text-[#666]">- {formatTimeAgo(a.published_at)}</span>
+                      ) : null}
                     </div>
                   </div>
                 </div>
