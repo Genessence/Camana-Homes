@@ -721,8 +721,7 @@ function TrendingPropertiesGrid() {
 function TrendingPropertiesCarousel() {
   const [items, setItems] = React.useState<PropertyCard[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
-  const [currentIndex, setCurrentIndex] = React.useState(0);
-  const [itemsPerSlide, setItemsPerSlide] = React.useState(3);
+  const containerRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     API.properties
@@ -731,50 +730,32 @@ function TrendingPropertiesCarousel() {
       .catch((e) => setError(String(e)));
   }, []);
 
-  React.useEffect(() => {
-    const computeItemsPerSlide = () => {
-      const width = window.innerWidth;
-      if (width < 640) return 1; // < sm
-      if (width < 1024) return 2; // < lg
-      return 3;
-    };
-    const update = () => setItemsPerSlide(computeItemsPerSlide());
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, []);
-
   if (error) return <TrendingPropertiesPlaceholder />;
   if (!items) return <TrendingPropertiesPlaceholder />;
 
-  const totalSlides = Math.ceil(items.length / itemsPerSlide);
-  const canGoLeft = currentIndex > 0;
-  const canGoRight = currentIndex < totalSlides - 1;
-
   const goToPrevious = () => {
-    if (canGoLeft) {
-      setCurrentIndex(currentIndex - 1);
+    if (containerRef.current) {
+      const scrollAmount = window.innerWidth < 500 ? -window.innerWidth : -450;
+      containerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
 
   const goToNext = () => {
-    if (canGoRight) {
-      setCurrentIndex(currentIndex + 1);
+    if (containerRef.current) {
+      const scrollAmount = window.innerWidth < 500 ? window.innerWidth : 450;
+      containerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
-
-  const startIndex = currentIndex * itemsPerSlide;
-  const visibleItems = items.slice(startIndex, startIndex + itemsPerSlide);
 
   return (
     <div className="relative">
       {/* Carousel Container */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
-        {visibleItems.map((p) => (
+      <div ref={containerRef} className="flex gap-0 sm:gap-[18px] overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory">
+        {items.map((p) => (
           <Link
             key={p.id}
             to={`/listing/${p.slug}`}
-            className="w-full bg-white border-[8px] border-white block overflow-hidden shadow hover:shadow-lg transition-shadow"
+            className="w-[calc(100vw-32px)] sm:w-[432px] h-[416px] bg-white border-[8px] border-white block overflow-hidden shadow hover:shadow-lg transition-shadow flex-shrink-0 snap-start"
           >
             <div className="relative h-[240px] w-full overflow-hidden">
               <img
@@ -801,21 +782,20 @@ function TrendingPropertiesCarousel() {
                 )}
               </div>
             </div>
-            <div className="p-4 flex flex-col gap-[11px]">
+            <div className="p-4 flex flex-col gap-[5px]">
               <div className="flex items-center justify-between">
-                <div className="font-dm-sans text-[23.607px] font-semibold text-black leading-[28.328px] tracking-[-0.472px]">
+                <div className="font-dm-sans text-[18px] font-semibold text-black leading-[28.328px] tracking-[-0.472px]">
                   {p.price_amount && p.price_amount > 0
                     ? new Intl.NumberFormat(undefined, { style: 'currency', currency: p.price_currency, minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(p.price_amount)
                     : 'Price on Request'}
                 </div>
-                <div className="flex items-center gap-[5px]">
+                {/* <div className="flex items-center gap-[5px]">
                   <span className="font-dm-sans text-[14px] font-semibold text-black">
-                    {/* Contact Agent */}
                   </span>
                   <ArrowRight className="w-[10px] h-[5px] text-[#999] transform -rotate-90" />
-                </div>
+                </div> */}
               </div>
-              <h3 className="font-dm-sans text-[17.705px] font-normal text-black leading-[21.246px] tracking-[-0.354px]">
+              <h3 className="font-dm-sans text-[14px] font-normal text-black leading-[21.246px] tracking-[-0.354px] truncate">
                 {p.title}
               </h3>
               <div className="flex items-center gap-[10px] text-[12.8px] font-normal text-black">
@@ -895,50 +875,23 @@ function TrendingPropertiesCarousel() {
       </div>
 
       {/* Navigation Arrows */}
-      {totalSlides > 1 && (
-        <div className="flex justify-between items-center mt-8">
-          <button
-            onClick={goToPrevious}
-            disabled={!canGoLeft}
-            className={`flex items-center justify-center w-14 h-14 rounded-full border-2 transition-all ${
-              canGoLeft
-                ? "border-black text-black hover:bg-black hover:text-white shadow-lg"
-                : "border-gray-300 text-gray-300 cursor-not-allowed"
-            }`}
-            aria-label="Previous properties"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </button>
+      <div className="flex justify-between items-center mt-8">
+        <button
+          onClick={goToPrevious}
+          className="flex items-center justify-center w-14 h-14 rounded-full border-2 border-black text-black hover:bg-black hover:text-white shadow-lg transition-all"
+          aria-label="Previous properties"
+        >
+          <ArrowLeft className="w-6 h-6" />
+        </button>
 
-          <div className="flex gap-3">
-            {Array.from({ length: totalSlides }, (_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentIndex(i)}
-                className={`w-4 h-4 rounded-full transition-all ${
-                  i === currentIndex
-                    ? "bg-black scale-110"
-                    : "bg-gray-300 hover:bg-gray-400"
-                }`}
-                aria-label={`Go to slide ${i + 1}`}
-              />
-            ))}
-          </div>
-
-          <button
-            onClick={goToNext}
-            disabled={!canGoRight}
-            className={`flex items-center justify-center w-14 h-14 rounded-full border-2 transition-all ${
-              canGoRight
-                ? "border-black text-black hover:bg-black hover:text-white shadow-lg"
-                : "border-gray-300 text-gray-300 cursor-not-allowed"
-            }`}
-            aria-label="Next properties"
-          >
-            <ArrowRight className="w-6 h-6" />
-          </button>
-        </div>
-      )}
+        <button
+          onClick={goToNext}
+          className="flex items-center justify-center w-14 h-14 rounded-full border-2 border-black text-black hover:bg-black hover:text-white shadow-lg transition-all"
+          aria-label="Next properties"
+        >
+          <ArrowRight className="w-6 h-6" />
+        </button>
+      </div>
     </div>
   );
 }
@@ -1263,8 +1216,7 @@ function RecentlyViewedCarousel() {
   const visitorId = useVisitorId();
   const [items, setItems] = React.useState<PropertyCard[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
-  const [currentIndex, setCurrentIndex] = React.useState(0);
-  const [itemsPerSlide, setItemsPerSlide] = React.useState(3);
+  const containerRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     if (!visitorId) return;
@@ -1274,52 +1226,34 @@ function RecentlyViewedCarousel() {
       .catch((e) => setError(String(e)));
   }, [visitorId]);
 
-  React.useEffect(() => {
-    const computeItemsPerSlide = () => {
-      const width = window.innerWidth;
-      if (width < 640) return 1; // < sm
-      if (width < 1024) return 2; // < lg
-      return 3;
-    };
-    const update = () => setItemsPerSlide(computeItemsPerSlide());
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, []);
-
   if (error) return <TrendingPropertiesPlaceholder />;
   if (!items) return <TrendingPropertiesPlaceholder />;
   if (items.length === 0)
     return <div className="text-[#666]">No recent views yet.</div>;
 
-  const totalSlides = Math.ceil(items.length / itemsPerSlide);
-  const canGoLeft = currentIndex > 0;
-  const canGoRight = currentIndex < totalSlides - 1;
-
   const goToPrevious = () => {
-    if (canGoLeft) {
-      setCurrentIndex(currentIndex - 1);
+    if (containerRef.current) {
+      const scrollAmount = window.innerWidth < 500 ? -window.innerWidth : -450;
+      containerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
 
   const goToNext = () => {
-    if (canGoRight) {
-      setCurrentIndex(currentIndex + 1);
+    if (containerRef.current) {
+      const scrollAmount = window.innerWidth < 500 ? window.innerWidth : 450;
+      containerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
-
-  const startIndex = currentIndex * itemsPerSlide;
-  const visibleItems = items.slice(startIndex, startIndex + itemsPerSlide);
 
   return (
     <div className="relative">
       {/* Carousel Container */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
-        {visibleItems.map((p) => (
+      <div ref={containerRef} className="flex gap-0 sm:gap-[18px] overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory">
+        {items.map((p) => (
           <Link
             key={p.id}
             to={`/listing/${p.slug}`}
-            className="w-full bg-white border-[8px] border-white block overflow-hidden shadow hover:shadow-lg transition-shadow"
+            className="w-[calc(100vw-32px)] sm:w-[432px] h-[416px] bg-white border-[8px] border-white block overflow-hidden shadow hover:shadow-lg transition-shadow flex-shrink-0 snap-start"
           >
             <div className="relative h-[240px] w-full overflow-hidden">
               <img
@@ -1341,9 +1275,9 @@ function RecentlyViewedCarousel() {
                 )}
               </div>
             </div>
-            <div className="p-4 flex flex-col gap-[11px]">
+            <div className="p-4 flex flex-col gap-[5px]">
               <div className="flex items-center justify-between">
-                <div className="font-dm-sans text-[23.607px] font-semibold text-black leading-[28.328px] tracking-[-0.472px]">
+                <div className="font-dm-sans text-[18px] font-semibold text-black leading-[28.328px] tracking-[-0.472px]">
                   {(() => {
                     const amount = p.price_amount ?? 0;
                     if (!amount || amount <= 0) return 'Price on Request';
@@ -1352,14 +1286,8 @@ function RecentlyViewedCarousel() {
                     catch { return `${currency} ${Math.round(amount).toLocaleString()}`; }
                   })()}
                 </div>
-                <div className="flex items-center gap-[5px]">
-                  <span className="font-dm-sans text-[14px] font-semibold text-black">
-                    {/* Contact Agent */}
-                  </span>
-                  <ArrowRight className="w-[10px] h-[5px] text-[#999] transform -rotate-90" />
-                </div>
               </div>
-              <h3 className="font-dm-sans text-[17.705px] font-normal text-black leading-[21.246px] tracking-[-0.354px]">
+              <h3 className="font-dm-sans text-[14px] font-normal text-black leading-[21.246px] tracking-[-0.354px] truncate">
                 {p.title}
               </h3>
               <div className="flex items-center gap-[10px] text-[12.8px] font-normal text-black">
@@ -1439,50 +1367,23 @@ function RecentlyViewedCarousel() {
       </div>
 
       {/* Navigation Arrows */}
-      {totalSlides > 1 && (
-        <div className="flex justify-between items-center mt-8">
-          <button
-            onClick={goToPrevious}
-            disabled={!canGoLeft}
-            className={`flex items-center justify-center w-14 h-14 rounded-full border-2 transition-all ${
-              canGoLeft
-                ? "border-black text-black hover:bg-black hover:text-white shadow-lg"
-                : "border-gray-300 text-gray-300 cursor-not-allowed"
-            }`}
-            aria-label="Previous recently viewed"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </button>
+      <div className="flex justify-between items-center mt-8">
+        <button
+          onClick={goToPrevious}
+          className="flex items-center justify-center w-14 h-14 rounded-full border-2 border-black text-black hover:bg-black hover:text-white shadow-lg transition-all"
+          aria-label="Previous recently viewed"
+        >
+          <ArrowLeft className="w-6 h-6" />
+        </button>
 
-          <div className="flex gap-3">
-            {Array.from({ length: totalSlides }, (_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentIndex(i)}
-                className={`w-4 h-4 rounded-full transition-all ${
-                  i === currentIndex
-                    ? "bg-black scale-110"
-                    : "bg-gray-300 hover:bg-gray-400"
-                }`}
-                aria-label={`Go to recently slide ${i + 1}`}
-              />
-            ))}
-          </div>
-
-          <button
-            onClick={goToNext}
-            disabled={!canGoRight}
-            className={`flex items-center justify-center w-14 h-14 rounded-full border-2 transition-all ${
-              canGoRight
-                ? "border-black text-black hover:bg-black hover:text-white shadow-lg"
-                : "border-gray-300 text-gray-300 cursor-not-allowed"
-            }`}
-            aria-label="Next recently viewed"
-          >
-            <ArrowRight className="w-6 h-6" />
-          </button>
-        </div>
-      )}
+        <button
+          onClick={goToNext}
+          className="flex items-center justify-center w-14 h-14 rounded-full border-2 border-black text-black hover:text-white hover:bg-black shadow-lg transition-all"
+          aria-label="Next recently viewed"
+        >
+          <ArrowRight className="w-6 h-6" />
+        </button>
+      </div>
     </div>
   );
 }
@@ -1538,29 +1439,33 @@ function FeaturedSection() {
 
       {/* title + pill + price container */}
       <div className="absolute left-4 sm:left-8 lg:left-16 bottom-6 sm:bottom-8 right-4 sm:right-16 lg:right-32 text-white z-10">
-        {/* glass morphism pill 30px above title */}
-        <div className="mb-[30px]">
-          <div className="backdrop-blur-md bg-white/15 border border-white/20 text-white px-6 py-3 inline-flex items-center rounded-md">
-            <span className="font-dm-sans text-[16px] font-semibold">
-              Featured listings
-            </span>
+                  {/* Featured listings pill */}
+          <div className="mb-3">
+            <div className="bg-black/35 backdrop-blur-md text-white px-6 py-3 inline-flex items-center border-2">
+              <span className="font-dm-sans text-[14px] sm:text-[18px] font-semibold">
+                Featured listings
+              </span>
+            </div>
           </div>
-        </div>
-        <Link to={`/listing/${current.slug}`} className="block">
-          <div className="font-dm-sans text-[28px] sm:text-[32px] lg:text-[36px] font-bold mb-3 hover:underline">
-            {current.title}
-          </div>
-        </Link>
-        <div className="flex items-center gap-4 text-[16px] lg:text-[18px]">
+          <Link to={`/listing/${current.slug}`} className="block">
+            <div className="font-dm-sans text-[24px] sm:text-[28px] lg:text-[36px] font-bold mb-[-5px] hover:underline leading-tight">
+              {current.title}
+            </div>
+          </Link>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-[16px] lg:text-[18px]">
           <span className="opacity-90">
-          {current.price_amount && current.price_amount > 0
-            ? new Intl.NumberFormat(undefined, {
-                style: "currency",
-                currency: current.price_currency,
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-              }).format(current.price_amount)
-            : "Price on Request"}
+            {current.location_label}
+          </span>
+          <span className="hidden sm:block w-px h-4 bg-white/50"></span>
+          <span className="opacity-90">
+            {current.price_amount && current.price_amount > 0
+              ? new Intl.NumberFormat(undefined, {
+                  style: "currency",
+                  currency: current.price_currency,
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 0,
+                }).format(current.price_amount)
+              : "Price on Request"}
           </span>
         </div>
       </div>

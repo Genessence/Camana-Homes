@@ -191,7 +191,7 @@ const Footer: React.FC<FooterProps> = ({
                       aria-label="Currency"
                       className="w-full border border-[#cacaca] bg-white px-3 py-2 appearance-none pr-8"
                     >
-                      <option>AED</option>
+                      <option>USD</option>
                     </select>
                     <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#848484]">
                       ▾

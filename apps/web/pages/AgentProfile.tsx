@@ -206,6 +206,7 @@ export default function AgentProfile() {
         </div>
       </section>
       {/* Video banner with centered play */}
+      {0?
       <section className="max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-[70px] py-[30px]">
         <div className="relative h-[460px] md:h-[560px] bg-black rounded-lg overflow-hidden">
           {videoError ? (
@@ -299,7 +300,7 @@ export default function AgentProfile() {
             </>
           )}
         </div>
-      </section>
+      </section>:null}
       {/* Active Listings Section */}
       <section className="max-w-[1600px] mx-auto px-4 lg:px-[70px] py-16">
         <div className="space-y-8">

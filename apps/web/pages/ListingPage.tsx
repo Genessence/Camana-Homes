@@ -78,6 +78,13 @@ export default function ListingPage() {
     }
   };
 
+  const handleScrollToDetailsBody = () => {
+    const target = document.getElementById("details-body");
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   const openSingleImage = (url: string) => {
     setLightboxImages([url]);
     setLightboxIndex(0);
@@ -352,12 +359,12 @@ export default function ListingPage() {
             </button>
 
             {/* Features and amenities Button */}
-            <button onClick={handleScrollToInterior} className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors flex-shrink-0">
+            <button onClick={(property as any).details_body ? handleScrollToDetailsBody : handleScrollToInterior} className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors flex-shrink-0">
               Features and amenities
             </button>
 
             {/* Financials Button */}
-            <button onClick={handleScrollToOtherDetails} className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors flex-shrink-0">
+            <button onClick={(property as any).details_body ? handleScrollToDetailsBody : handleScrollToOtherDetails} className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors flex-shrink-0">
               Financials
             </button>
 
@@ -640,7 +647,7 @@ export default function ListingPage() {
 
                 {/* Details Body Content - Show this if available, otherwise show detailed sections */}
                 {(property as any).details_body ? (
-                  <div className="space-y-4">
+                  <div className="space-y-4" id="details-body">
 
                     <h3 className="text-[20px] font-bold text-black">Property Details</h3>
                     <div 
