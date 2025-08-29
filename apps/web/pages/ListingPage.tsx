@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { Heart, Phone, Mail } from "lucide-react";
+import { Heart } from "lucide-react";
 import LeadModal from "@/components/ui/LeadModal";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -1113,62 +1113,48 @@ export default function ListingPage() {
 
             {/* Right Column: Sidebar */}
             <div className="lg:sticky lg:top-10 lg:self-start">
-              {/* Agent/Developer Card (black design) */}
-              {/* <div className="bg-black p-4 sm:p-6 rounded-lg mb-4 flex items-center gap-4">
+              {/* Agent/Developer Card */}
+              <div className="bg-[#f8f8f8] p-4 rounded-lg mb-4 flex items-center gap-3">
                 {property.agent?.slug ? (
-                  <Link
+                  <Link 
                     to={`/agent/${property.agent.slug}`}
-                    className="w-[140px] h-[140px] sm:w-[180px] sm:h-[180px] rounded-md overflow-hidden flex-shrink-0 cursor-pointer hover:opacity-90 transition-opacity"
+                    className="w-[56px] h-[56px] rounded-full overflow-hidden bg-white flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity"
                   >
                     <img
-                      src={property.agent.avatar_url || "https://via.placeholder.com/360x360/000000/FFFFFF?text=Agent"}
+                      src={property.agent.avatar_url || "https://via.placeholder.com/112x112/f3f4f6/9ca3af?text=Logo"}
                       alt={property.agent.name}
                       className="w-full h-full object-cover"
-                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/360x360/000000/FFFFFF?text=Agent"; }}
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/112x112/f3f4f6/9ca3af?text=Logo"; }}
                     />
                   </Link>
                 ) : (
-                  <div className="w-[140px] h-[140px] sm:w-[180px] sm:h-[180px] rounded-md overflow-hidden flex-shrink-0 bg-white">
+                  <div className="w-[56px] h-[56px] rounded-full overflow-hidden bg-white flex items-center justify-center">
                     <img
-                      src={property.developer_logo_url || "https://via.placeholder.com/360x360/000000/FFFFFF?text=Developer"}
+                      src={property.developer_logo_url || "https://via.placeholder.com/112x112/f3f4f6/9ca3af?text=Logo"}
                       alt={property.developer || "Developer"}
-                      className="w-full h-full object-cover"
-                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/360x360/000000/FFFFFF?text=Developer"; }}
+                      className="w-[36px] h-[36px] object-contain"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/112x112/f3f4f6/9ca3af?text=Logo"; }}
                     />
                   </div>
                 )}
-                <div className="flex-1 min-w-0">
+                <div className="flex flex-col">
                   {property.agent?.slug ? (
                     <Link 
                       to={`/agent/${property.agent.slug}`}
-                      className="block text-white text-[24px] sm:text-[28px] font-bold leading-tight hover:opacity-90"
+                      className="text-[18px] font-bold text-black hover:text-blue-600 transition-colors cursor-pointer"
                     >
                       {property.agent.name}
                     </Link>
                   ) : (
-                    <div className="text-white text-[24px] sm:text-[28px] font-bold leading-tight">
-                      {property.developer || "Developer"}
+                    <div className="text-[18px] font-bold text-black">
+                      Direct from Developer
                     </div>
                   )}
-                  <div className="text-white/80 text-[14px] sm:text-[16px] mt-1">
-                    {property.agent?.slug
-                      ? `Licensed Real Estate Agent${property.agent.location ? ` | ${property.agent.location}` : property.location_label ? ` | ${property.location_label}` : ""}`
-                      : (property.location_label || "")}
+                  <div className="text-[14px] text-[#8c8c8c]">
+                    {property.agent?.agency?.name || property.developer || ""}
                   </div>
-                  {property.agent?.phone_number ? (
-                    <div className="mt-3 flex items-center gap-3 text-white text-[16px]">
-                      <Phone className="w-[18px] h-[18px]" />
-                      <span className="truncate">{property.agent.phone_number}</span>
-                    </div>
-                  ) : null}
-                  {property.agent?.email ? (
-                    <div className="mt-2 flex items-center gap-3 text-white text-[16px]">
-                      <Mail className="w-[18px] h-[18px]" />
-                      <span className="truncate">{property.agent.email}</span>
-                    </div>
-                  ) : null}
                 </div>
-              </div> */}
+              </div>
               {/* Top Action Buttons */}
               <div className="flex gap-3 mb-6">
                 {property.agent?.slug ? (
