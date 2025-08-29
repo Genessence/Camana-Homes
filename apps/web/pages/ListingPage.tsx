@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Heart } from "lucide-react";
 import LeadModal from "@/components/ui/LeadModal";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { apiService, PropertyDetail, PropertyStats } from "../services/api";
 import {
@@ -15,6 +15,8 @@ import {
   PropertyDescriptionSkeleton,
   MapSkeleton,
 } from "../components/PropertySkeleton";
+import LeadsApiService from "@/services/leadsApi";
+import { useToast } from "@/hooks/use-toast";
 
 // Image constants from Figma design
 const imgNewProject91 =
@@ -45,16 +47,64 @@ export default function ListingPage() {
   const [leadEmail, setLeadEmail] = useState("");
   const [leadPhone, setLeadPhone] = useState("");
   const [leadLocation, setLeadLocation] = useState("");
+  const [leadMessage, setLeadMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const openLeadModal = () => setLeadOpen(true);
   const closeLeadModal = () => {
     setLeadOpen(false);
   };
-  const submitLead = (e: React.FormEvent) => {
+
+  const submitLead = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: wire backend submit if/when endpoint is ready
-    console.log({ leadName, leadEmail, leadPhone, leadLocation, propertyId: property?.id, selectedTourDate });
-    setLeadOpen(false);
+    setIsSubmitting(true);
+
+    try {
+      // Get agent information from the property
+      const agentEmail = property?.agent?.email;
+      const agentName = property?.agent?.name;
+
+      if (!agentEmail) {
+        throw new Error('Agent information not available');
+      }
+
+      const formData = {
+        name: leadName,
+        email: leadEmail,
+        phone: leadPhone,
+        location: leadLocation,
+        message: leadMessage,
+        propertyTitle: property?.title,
+        propertySlug: property?.slug,
+        agentEmail,
+        agentName,
+      };
+
+      await LeadsApiService.submitAgentContact(formData);
+
+      // Reset form
+      setLeadName("");
+      setLeadEmail("");
+      setLeadPhone("");
+      setLeadLocation("");
+      setLeadMessage("");
+      setLeadOpen(false);
+
+      toast({
+        title: "Success!",
+        description: "Your inquiry has been submitted successfully. The agent will get back to you soon!",
+      });
+    } catch (error) {
+      console.error('Error submitting lead:', error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to submit your inquiry. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleScrollToStats = () => {
@@ -1203,16 +1253,16 @@ export default function ListingPage() {
                 {property.agent?.slug ? (
                   <Link 
                     to={`/agent/${property.agent.slug}`}
-                    className="h-[50px] px-[25px] py-[15px] bg-black text-white text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-800 transition-colors inline-flex items-center justify-center"
+                    className="h-[50px] px-[25px] py-[15px] bg-black text-white text-[14px] sm:text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-800 transition-colors inline-flex items-center justify-center"
                   >
-                    About the Agent
+                    About The Agent
                   </Link>
                 ) : (
-                  <button onClick={openLeadModal} className="h-[50px] px-[25px] py-[15px] bg-black text-white text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-800 transition-colors">
-                    About the Agent
+                  <button onClick={openLeadModal} className="h-[50px] px-[25px] py-[15px] bg-black text-white text-[14px] sm:text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-800 transition-colors">
+                    About The Agent
                   </button>
                 )}
-                <button onClick={openLeadModal} className="h-[50px] px-[25px] py-[15px] bg-black text-white text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-800 transition-colors">
+                <button onClick={openLeadModal} className="h-[50px] px-[25px] py-[15px] bg-black text-white text-[14px] sm:text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-800 transition-colors">
                   Contact Agent
                 </button>
               </div>
@@ -1572,6 +1622,9 @@ export default function ListingPage() {
         setLeadPhone={setLeadPhone}
         leadLocation={leadLocation}
         setLeadLocation={setLeadLocation}
+        leadMessage={leadMessage}
+        setLeadMessage={setLeadMessage}
+        isLoading={isSubmitting}
       />
     </div>
   );

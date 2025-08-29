@@ -127,7 +127,7 @@ const Footer: React.FC<FooterProps> = ({
                 "font-bold mb-4",
                 isMembers ? "text-white text-2xl" : "font-dm-sans text-[24px] text-black"
               )}>
-                About Camana
+                About Us
               </h4>
               <ul className="space-y-3 text-[16px]">
                 {footerLinks.about.map((link, index) => (

@@ -21,6 +21,8 @@ import { Link, useParams } from "react-router-dom";
 import { apiService } from "../services/api";
 import { propertiesApiService, type PropertyCard } from "../services/propertiesApi";
 import LeadModal from "@/components/ui/LeadModal";
+import LeadsApiService from "@/services/leadsApi";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AgentProfile() {
   const { slug = "" } = useParams();
@@ -67,12 +69,62 @@ export default function AgentProfile() {
   const [leadEmail, setLeadEmail] = useState("");
   const [leadPhone, setLeadPhone] = useState("");
   const [leadLocation, setLeadLocation] = useState("");
+  const [leadMessage, setLeadMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const openLeadModal = () => setLeadOpen(true);
-  const submitLead = (e: React.FormEvent) => {
-    e.preventDefault();
-    // For now, mimic ListingPage behaviour: close on submit
+  const closeLeadModal = () => {
     setLeadOpen(false);
+  };
+
+  const submitLead = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      // Get agent information from the agent profile
+      const agentEmail = agent?.email;
+      const agentName = agent?.name;
+
+      if (!agentEmail) {
+        throw new Error('Agent email not available');
+      }
+
+      const formData = {
+        name: leadName,
+        email: leadEmail,
+        phone: leadPhone,
+        location: leadLocation,
+        message: leadMessage,
+        agentEmail,
+        agentName,
+      };
+
+      await LeadsApiService.submitAgentProfileContact(formData);
+
+      // Reset form
+      setLeadName("");
+      setLeadEmail("");
+      setLeadPhone("");
+      setLeadLocation("");
+      setLeadMessage("");
+      setLeadOpen(false);
+
+      toast({
+        title: "Success!",
+        description: "Your inquiry has been submitted successfully. The agent will get back to you soon!",
+      });
+    } catch (error) {
+      console.error('Error submitting lead:', error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to submit your inquiry. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   useEffect(() => {
@@ -190,9 +242,9 @@ export default function AgentProfile() {
               </a>
             ))}
           </div>
-          {/* About the Agent (moved below social links) */}
+          {/* About The Agent (moved below social links) */}
           <div className="mt-10">
-            <h2 className="text-3xl lg:text-4xl font-bold text-black">About the Agent</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-black">About The Agent</h2>
             {agent.about ? (
               <div className="prose max-w-none text-gray-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: agent.about }} />
             ) : (
@@ -386,8 +438,11 @@ export default function AgentProfile() {
         setLeadPhone={setLeadPhone}
         leadLocation={leadLocation}
         setLeadLocation={setLeadLocation}
+        leadMessage={leadMessage}
+        setLeadMessage={setLeadMessage}
         title="Contact the Agent"
         description="Share your contact details and the agent will reach out shortly."
+        isLoading={isSubmitting}
       />
     </div>
   );

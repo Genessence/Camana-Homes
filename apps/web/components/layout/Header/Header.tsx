@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ChevronDown, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import LeadModal from '@/components/ui/LeadModal';
+import LeadsApiService from '@/services/leadsApi';
+import { useToast } from '@/hooks/use-toast';
 
 // Import logos
 import logoBlack from '../../../assets/logo-black1.png';
@@ -29,7 +31,10 @@ const Header: React.FC<HeaderProps> = ({
   const [leadEmail, setLeadEmail] = useState("");
   const [leadPhone, setLeadPhone] = useState("");
   const [leadLocation, setLeadLocation] = useState("");
+  const [leadMessage, setLeadMessage] = useState("");
   const [leadModalType, setLeadModalType] = useState<'list' | 'connect'>('list');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const openLeadModal = () => {
     setLeadModalType('list');
@@ -40,9 +45,45 @@ const Header: React.FC<HeaderProps> = ({
     setLeadModalType('connect');
     setLeadOpen(true);
   };
-  const submitLead = (e: React.FormEvent) => {
+
+  const submitLead = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLeadOpen(false);
+    setIsSubmitting(true);
+
+    try {
+      const formData = {
+        name: leadName,
+        email: leadEmail,
+        phone: leadPhone,
+        location: leadLocation,
+        message: leadMessage,
+        source: leadModalType === 'connect' ? 'Get Connected' : 'List with Us',
+      };
+
+      await LeadsApiService.submitGeneralLead(formData);
+
+      // Reset form
+      setLeadName("");
+      setLeadEmail("");
+      setLeadPhone("");
+      setLeadLocation("");
+      setLeadMessage("");
+      setLeadOpen(false);
+
+      toast({
+        title: "Success!",
+        description: "Your inquiry has been submitted successfully. We'll get back to you soon!",
+      });
+    } catch (error) {
+      console.error('Error submitting lead:', error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to submit your inquiry. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Determine variant based on location if not explicitly set
@@ -201,6 +242,8 @@ const Header: React.FC<HeaderProps> = ({
         setLeadPhone={setLeadPhone}
         leadLocation={leadLocation}
         setLeadLocation={setLeadLocation}
+        leadMessage={leadMessage}
+        setLeadMessage={setLeadMessage}
         title={leadModalType === 'connect' ? "Get Connected" : "List with us"}
         description="Tell us about yourself and we’ll get in touch."
       />

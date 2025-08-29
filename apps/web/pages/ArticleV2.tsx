@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { API } from "@shared/api";
 import type { ArticleCard, PropertyCard } from "@shared/api.types";
 import { Link, useParams } from "react-router-dom";
 import { Mail, Facebook, Instagram, Linkedin, Twitter, ArrowLeft, ArrowRight, Eye, Bed, Bath } from "lucide-react";
 import LeadModal from "@/components/ui/LeadModal";
+import LeadsApiService from "@/services/leadsApi";
+import { useToast } from "@/hooks/use-toast";
 
 const PUBLIC_IMAGE_FALLBACK = "https://camana-homes.s3.ap-south-1.amazonaws.com/properties/dubai-marina/2200xxs%20(1).webp";
 
@@ -14,13 +16,59 @@ const ArticleV2 = () => {
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
   // Lead modal state (same pattern as AgentProfile)
-  const [leadOpen, setLeadOpen] = React.useState(false);
-  const [leadName, setLeadName] = React.useState("");
-  const [leadEmail, setLeadEmail] = React.useState("");
-  const [leadPhone, setLeadPhone] = React.useState("");
-  const [leadLocation, setLeadLocation] = React.useState("");
+  const [leadOpen, setLeadOpen] = useState(false);
+  const [leadName, setLeadName] = useState("");
+  const [leadEmail, setLeadEmail] = useState("");
+  const [leadPhone, setLeadPhone] = useState("");
+  const [leadLocation, setLeadLocation] = useState("");
+  const [leadMessage, setLeadMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+
   const openLeadModal = () => setLeadOpen(true);
-  const submitLead = (e: React.FormEvent) => { e.preventDefault(); setLeadOpen(false); };
+  const closeLeadModal = () => {
+    setLeadOpen(false);
+  };
+
+  const submitLead = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const formData = {
+        name: leadName,
+        email: leadEmail,
+        phone: leadPhone,
+        location: leadLocation,
+        message: leadMessage,
+        source: `Article: ${article?.title || 'General Inquiry'}`,
+      };
+
+      await LeadsApiService.submitGeneralLead(formData);
+
+      // Reset form
+      setLeadName("");
+      setLeadEmail("");
+      setLeadPhone("");
+      setLeadLocation("");
+      setLeadMessage("");
+      setLeadOpen(false);
+
+      toast({
+        title: "Success!",
+        description: "Your inquiry has been submitted successfully. We'll get back to you soon!",
+      });
+    } catch (error) {
+      console.error('Error submitting lead:', error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to submit your inquiry. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const { slug } = useParams<{ slug?: string }>();
 
@@ -323,13 +371,13 @@ const ArticleV2 = () => {
                 </Link>
               )} */}
               <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                {/* About the Agent button - only show if we have agent data */}
+                {/* About The Agent button - only show if we have agent data */}
                 {article?.author_name && (
                   <Link
                     to={`/agent/${article.author_name.toLowerCase().replace(/\s+/g, '-')}`}
                     className="bg-transparent border-2 border-white text-white h-14 w-full sm:w-[171px] inline-flex items-center justify-center hover:bg-white hover:text-black transition-colors"
                   >
-                    About the Agent
+                    About The Agent
                   </Link>
                 )}
                 <button onClick={openLeadModal} className="bg-transparent border-2 border-white text-white h-14 w-full sm:w-[171px] inline-flex items-center justify-center">
@@ -360,6 +408,9 @@ const ArticleV2 = () => {
         setLeadPhone={setLeadPhone}
         leadLocation={leadLocation}
         setLeadLocation={setLeadLocation}
+        leadMessage={leadMessage}
+        setLeadMessage={setLeadMessage}
+        isLoading={isSubmitting}
         title="Contact the Agent"
         description="Share your contact details and the agent will reach out shortly."
       />

@@ -227,7 +227,6 @@ export default function About() {
           <div className="mb-12">
             <h2 className="text-black text-3xl lg:text-[35px] font-bold mb-4">Meet The Awesome Team</h2>
             <p className="text-black text-base">
-              Did you know? The best properties in Dubai sell out they ever hit the market did you know? The best properties in Dubai sell out they ever hit the market
             </p>
           </div>
 

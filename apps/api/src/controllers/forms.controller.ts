@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express';
 import { prisma } from '../lib/prisma.js';
+import EmailService, { LeadFormData } from '../lib/email.js';
 
 export const createTourRequest: RequestHandler = async (req, res) => {
   const {
@@ -95,5 +96,118 @@ export const createMortgageInquiry: RequestHandler = async (req, res) => {
   } catch (error) {
     console.error('Error creating mortgage inquiry:', error);
     res.status(500).json({ error: 'Failed to create mortgage inquiry' });
+  }
+};
+
+export const createGeneralLead: RequestHandler = async (req, res) => {
+  const {
+    name,
+    email,
+    phone,
+    location,
+    message,
+    source,
+  } = req.body;
+
+  if (!name || !email) {
+    return res.status(400).json({ error: 'Name and email are required' });
+  }
+
+  try {
+    // Send email
+    await EmailService.sendGeneralLeadEmail({
+      name,
+      email,
+      phone,
+      location,
+      message,
+      source,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Lead submitted successfully',
+    });
+  } catch (error) {
+    console.error('Error creating general lead:', error);
+    res.status(500).json({ error: 'Failed to submit lead' });
+  }
+};
+
+export const createAgentContact: RequestHandler = async (req, res) => {
+  const {
+    name,
+    email,
+    phone,
+    location,
+    message,
+    propertyTitle,
+    propertySlug,
+    agentEmail,
+    agentName,
+  } = req.body;
+
+  if (!name || !email || !agentEmail) {
+    return res.status(400).json({ error: 'Name, email, and agent email are required' });
+  }
+
+  try {
+    // Send email to agent and admin
+    await EmailService.sendAgentContactEmail({
+      name,
+      email,
+      phone,
+      location,
+      message,
+      propertyTitle,
+      propertySlug,
+      agentEmail,
+      agentName,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Agent contact submitted successfully',
+    });
+  } catch (error) {
+    console.error('Error creating agent contact:', error);
+    res.status(500).json({ error: 'Failed to submit agent contact' });
+  }
+};
+
+export const createAgentProfileContact: RequestHandler = async (req, res) => {
+  const {
+    name,
+    email,
+    phone,
+    location,
+    message,
+    agentEmail,
+    agentName,
+  } = req.body;
+
+  if (!name || !email || !agentEmail) {
+    return res.status(400).json({ error: 'Name, email, and agent email are required' });
+  }
+
+  try {
+    // Send email to agent and admin
+    await EmailService.sendAgentProfileContactEmail({
+      name,
+      email,
+      phone,
+      location,
+      message,
+      agentEmail,
+      agentName,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Agent profile contact submitted successfully',
+    });
+  } catch (error) {
+    console.error('Error creating agent profile contact:', error);
+    res.status(500).json({ error: 'Failed to submit agent profile contact' });
   }
 };

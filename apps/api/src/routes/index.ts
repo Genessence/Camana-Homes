@@ -17,7 +17,7 @@ router.use(s3Router);
 router.use(propertiesRouter);
 router.use(articlesRouter);
 router.use(activityRouter);
-router.use(formsRouter);
+router.use("/forms", formsRouter);
 router.use(heroSlidesRouter);
 router.use(agentsRouter);
 router.use(uploadsRouter);
