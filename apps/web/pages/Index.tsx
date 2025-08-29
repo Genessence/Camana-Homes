@@ -721,6 +721,7 @@ function TrendingPropertiesGrid() {
 function TrendingPropertiesCarousel() {
   const [items, setItems] = React.useState<PropertyCard[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
+  const [currentIndex, setCurrentIndex] = React.useState(0);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -730,6 +731,35 @@ function TrendingPropertiesCarousel() {
       .catch((e) => setError(String(e)));
   }, []);
 
+
+
+  // Sync currentIndex with scroll position
+  React.useEffect(() => {
+    const container = containerRef.current;
+    if (!container || !items) return;
+
+    const handleScroll = () => {
+      const cardWidth = window.innerWidth < 500 ? window.innerWidth - 32 : 450;
+      const gap = 18;
+      const scrollPosition = container.scrollLeft;
+      const newIndex = Math.round(scrollPosition / (cardWidth + gap));
+      setCurrentIndex(Math.max(0, Math.min(newIndex, items.length - 1)));
+    };
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [items]);
+
+  // Scroll to specific index
+  const scrollToIndex = (index: number) => {
+    if (containerRef.current) {
+      const cardWidth = window.innerWidth < 500 ? window.innerWidth - 32 : 450;
+      const scrollPosition = index * (cardWidth + 18); // 18px is the gap
+      containerRef.current.scrollTo({ left: scrollPosition, behavior: 'smooth' });
+      setCurrentIndex(index);
+    }
+  };
+
   if (error) return <TrendingPropertiesPlaceholder />;
   if (!items) return <TrendingPropertiesPlaceholder />;
 
@@ -737,6 +767,7 @@ function TrendingPropertiesCarousel() {
     if (containerRef.current) {
       const scrollAmount = window.innerWidth < 500 ? -window.innerWidth : -450;
       containerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
     }
   };
 
@@ -744,6 +775,7 @@ function TrendingPropertiesCarousel() {
     if (containerRef.current) {
       const scrollAmount = window.innerWidth < 500 ? window.innerWidth : 450;
       containerRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      setCurrentIndex((prev) => (prev + 1) % items.length);
     }
   };
 
@@ -770,11 +802,6 @@ function TrendingPropertiesCarousel() {
                     {new Intl.NumberFormat().format(p.views_count)}
                   </span>
                 </div>
-                {/* {p.has_video && (
-                  <div className="px-[9.681px] py-[8.471px] border border-white bg-black/10 backdrop-blur-[8px] text-white font-dm-sans text-[13.391px] font-medium leading-[17.14px]">
-                    Video
-                  </div>
-                )} */}
                 {p.has_virtual_tour && (
                   <div className="px-[9.681px] py-[8.471px] border border-white bg-black/10 backdrop-blur-[8px] text-white font-dm-sans text-[13.391px] font-medium leading-[17.14px]">
                     Virtual Tours
@@ -789,11 +816,6 @@ function TrendingPropertiesCarousel() {
                     ? new Intl.NumberFormat(undefined, { style: 'currency', currency: p.price_currency, minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(p.price_amount)
                     : 'Price on Request'}
                 </div>
-                {/* <div className="flex items-center gap-[5px]">
-                  <span className="font-dm-sans text-[14px] font-semibold text-black">
-                  </span>
-                  <ArrowRight className="w-[10px] h-[5px] text-[#999] transform -rotate-90" />
-                </div> */}
               </div>
               <h3 className="font-dm-sans text-[14px] font-normal text-black leading-[21.246px] tracking-[-0.354px] truncate">
                 {p.title}
@@ -872,6 +894,24 @@ function TrendingPropertiesCarousel() {
             </div>
           </Link>
         ))}
+      </div>
+
+      {/* Breadcrumbs/Progress Indicators */}
+      <div className="flex justify-center items-center mt-6 mb-8">
+        <div className="flex gap-2">
+          {items.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => scrollToIndex(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                index === currentIndex 
+                  ? 'bg-black w-8' 
+                  : 'bg-gray-300 hover:bg-gray-400'
+              }`}
+              aria-label={`Go to trending property ${index + 1}`}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Navigation Arrows */}
@@ -1392,6 +1432,8 @@ function FeaturedSection() {
   const [items, setItems] = React.useState<PropertyCard[] | null>(null);
   const [idx, setIdx] = React.useState(0);
   const [error, setError] = React.useState<string | null>(null);
+  const [isAutoScrolling, setIsAutoScrolling] = React.useState(true);
+  const autoScrollIntervalRef = React.useRef<NodeJS.Timeout | null>(null);
 
   React.useEffect(() => {
     API.properties
@@ -1402,6 +1444,53 @@ function FeaturedSection() {
       })
       .catch((e) => setError(String(e)));
   }, []);
+
+  // Auto-scroll functionality
+  React.useEffect(() => {
+    if (!items || items.length <= 1) return;
+
+    const startAutoScroll = () => {
+      if (autoScrollIntervalRef.current) {
+        clearInterval(autoScrollIntervalRef.current);
+      }
+      
+      autoScrollIntervalRef.current = setInterval(() => {
+        setIdx((prevIdx) => (prevIdx + 1) % items.length);
+      }, 3000); // Auto-advance every 3 seconds
+    };
+
+    const stopAutoScroll = () => {
+      if (autoScrollIntervalRef.current) {
+        clearInterval(autoScrollIntervalRef.current);
+        autoScrollIntervalRef.current = null;
+      }
+    };
+
+    if (isAutoScrolling) {
+      startAutoScroll();
+    } else {
+      stopAutoScroll();
+    }
+
+    // Cleanup on unmount
+    return () => {
+      if (autoScrollIntervalRef.current) {
+        clearInterval(autoScrollIntervalRef.current);
+      }
+    };
+  }, [isAutoScrolling, items]);
+
+
+
+  // Pause auto-scroll on hover
+  const handleMouseEnter = () => {
+    setIsAutoScrolling(false);
+  };
+
+  // Resume auto-scroll when not hovering
+  const handleMouseLeave = () => {
+    setIsAutoScrolling(true);
+  };
 
   // Skeleton placeholder for featured section
   const renderSkeleton = (
@@ -1428,7 +1517,11 @@ function FeaturedSection() {
   const current = items[idx];
 
   return (
-    <div className="relative w-full h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-hidden">
+    <div 
+      className="relative w-full h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-hidden"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <img
         src={current.primary_image_url}
         alt={current.title}
@@ -1469,6 +1562,23 @@ function FeaturedSection() {
           </span>
         </div>
       </div>
+      
+      {/* Progress indicator dots */}
+      <div className="absolute left-1/2 transform -translate-x-1/2 bottom-5 flex gap-2 z-10">
+        {items.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setIdx(index)}
+            className={`w-2 h-2 rounded-full transition-all ${
+              index === idx 
+                ? 'bg-white w-6' 
+                : 'bg-white/50 hover:bg-white/70'
+            }`}
+            aria-label={`Go to featured property ${index + 1}`}
+          />
+        ))}
+      </div>
+      
       {/* nav buttons bottom-right */}
       <div className="absolute right-4 sm:right-8 lg:right-16 bottom-6 sm:bottom-8 flex gap-3 z-10">
         <button

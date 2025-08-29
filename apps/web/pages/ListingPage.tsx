@@ -17,6 +17,7 @@ import {
 } from "../components/PropertySkeleton";
 import LeadsApiService from "@/services/leadsApi";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Image constants from Figma design
 const imgNewProject91 =
@@ -39,6 +40,7 @@ export default function ListingPage() {
   const [tourDates, setTourDates] = useState<Array<{ date: Date; weekday: string; day: number; monthShort: string; iso: string }>>([]);
   const [selectedTourDate, setSelectedTourDate] = useState<string | null>(null);
   const dateScrollRef = useRef<HTMLDivElement | null>(null);
+  const isMobile = useIsMobile();
 
   const [isSaved, setIsSaved] = useState(false);
 
@@ -261,17 +263,33 @@ export default function ListingPage() {
           </div>
 
           {/* Mobile: full-bleed carousel */}
-          <div className="block lg:hidden">
-            <div className="relative -mx-6">
+          <div className="block lg:hidden relative w-screen -ml-12 -mr-12">
+            <div className="relative">
               <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide">
                 {(property.images && property.images.length > 0 ? property.images.map((im) => im.url) : [property.primary_image_url]).filter(Boolean).map((url, i) => (
-                  <div key={i} className="flex-shrink-0 w-full min-w-full h-[65vh] max-h-[640px] snap-center bg-gray-200">
+                  <div 
+                    key={i} 
+                    className="flex-shrink-0 w-full min-w-full h-[320px] snap-center bg-gray-200 cursor-pointer relative"
+                    onClick={() => {
+                      if (isMobile) {
+                        window.location.href = `/listing/${slug}/gallery`;
+                      }
+                    }}
+                  >
                     <img
                       src={url as string}
                       alt={`Property image ${i + 1}`}
                       className="w-full h-full object-cover"
                       onError={(e) => { (e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/1080x720?text=Property'; }}
                     />
+                    {/* Mobile gallery hint overlay */}
+                    {isMobile && (
+                      <div className="absolute inset-0 bg-black/5 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                        <div className="bg-white/90 backdrop-blur-sm px-3 py-2 rounded-lg text-sm font-medium text-gray-800">
+                          Tap to view gallery
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -290,9 +308,15 @@ export default function ListingPage() {
           {/* Image Gallery Section */}
           <div className="hidden lg:grid grid-cols-1 lg:grid-cols-[664px_1fr] gap-4">
             {/* Main Large Image */}
-            <div className="relative w-full h-[445.72px] bg-gray-200 cursor-zoom-in" onClick={() => openSingleImage(
-              property.images[0]?.url || property.primary_image_url || "https://via.placeholder.com/664x446/f3f4f6/9ca3af?text=Property+Image"
-            )}>
+            <div className="relative w-full h-[445.72px] bg-gray-200 cursor-zoom-in" onClick={() => {
+              if (isMobile) {
+                window.location.href = `/listing/${slug}/gallery`;
+              } else {
+                openSingleImage(
+                  property.images[0]?.url || property.primary_image_url || "https://via.placeholder.com/664x446/f3f4f6/9ca3af?text=Property+Image"
+                );
+              }
+            }}>
               <img
                 src={
                   property.images[0]?.url ||
