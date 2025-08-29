@@ -324,10 +324,10 @@ export default function AgentProfile() {
                     }
                   })();
                   return (
-                    <div key={p.id} className="border border-gray-200 bg-white overflow-hidden">
+                    <div key={p.id} className="border border-gray-200 bg-white overflow-hidden w-[437.33px] h-[auto]">
                       <div className="relative">
                         <Link to={`/listing/${p.slug}`}>
-                          <img src={p.primary_image_url} alt={p.title} className="w-full h-80 object-cover" onError={(e)=>{(e.currentTarget as HTMLImageElement).src='https://via.placeholder.com/800x600?text=Listing'}} />
+                          <img src={p.primary_image_url} alt={p.title} className="w-full h-[240px] object-cover" onError={(e)=>{(e.currentTarget as HTMLImageElement).src='https://via.placeholder.com/800x600?text=Listing'}} />
                         </Link>
                         <div className="absolute top-4 right-4 flex gap-2">
                           <button title="Save to favorites" aria-label="Save to favorites" className="p-2 bg-black/10 backdrop-blur-sm border border-white hover:bg-black/20 transition-colors">
@@ -346,7 +346,7 @@ export default function AgentProfile() {
                             <ChevronRight size={12} className="text-gray-600" />
                           </Link>
                         </div>
-                        <h3 className="font-bold text-gray-900">{p.title}</h3>
+                        <h3 className="font-bold text-gray-900" style={{fontSize: "18px"}}>{p.title}</h3>
                         <div className="flex items-center gap-4 text-sm text-black">
                           <div className="flex items-center gap-1">
                             <Bed size={14} />
@@ -361,7 +361,7 @@ export default function AgentProfile() {
                             <span>{(p.area_value ?? 0).toLocaleString()}.4 hectares </span>
                           </div>
                         </div>
-                        <hr className="border-gray-200" />
+                        {/* <hr className="border-gray-200" /> */}
                       </div>
                     </div>
                   );

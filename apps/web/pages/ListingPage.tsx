@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { Heart } from "lucide-react";
+import { Heart, Phone, Mail } from "lucide-react";
 import LeadModal from "@/components/ui/LeadModal";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -956,7 +956,7 @@ export default function ListingPage() {
                 </div>
 
                 {/* School Information Section */}
-                <div className="space-y-4">
+                {/* <div className="space-y-4">
                   <h3 className="text-[20px] font-bold text-black">
                     School information
                   </h3>
@@ -978,10 +978,10 @@ export default function ListingPage() {
                       </span>
                     </div>
                   </div>
-                </div>
+                </div> */}
 
                 {/* Other Property Details Section */}
-                <div className="space-y-4" id="other-property-details">
+                {/* <div className="space-y-4" id="other-property-details">
                   <h3 className="text-[20px] font-bold text-black">
                     Other property details
                   </h3>
@@ -1105,7 +1105,7 @@ export default function ListingPage() {
                       </span>
                     </div>
                   </div>
-                </div>
+                </div> */}
                   </>
                 )}
               </div>
@@ -1113,53 +1113,76 @@ export default function ListingPage() {
 
             {/* Right Column: Sidebar */}
             <div className="lg:sticky lg:top-10 lg:self-start">
-              {/* Agent/Developer Card */}
-              <div className="bg-[#f8f8f8] p-4 rounded-lg mb-4 flex items-center gap-3">
+              {/* Agent/Developer Card (black design) */}
+              {/* <div className="bg-black p-4 sm:p-6 rounded-lg mb-4 flex items-center gap-4">
                 {property.agent?.slug ? (
-                  <Link 
+                  <Link
                     to={`/agent/${property.agent.slug}`}
-                    className="w-[56px] h-[56px] rounded-full overflow-hidden bg-white flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity"
+                    className="w-[140px] h-[140px] sm:w-[180px] sm:h-[180px] rounded-md overflow-hidden flex-shrink-0 cursor-pointer hover:opacity-90 transition-opacity"
                   >
                     <img
-                      src={property.agent.avatar_url || "https://via.placeholder.com/112x112/f3f4f6/9ca3af?text=Logo"}
+                      src={property.agent.avatar_url || "https://via.placeholder.com/360x360/000000/FFFFFF?text=Agent"}
                       alt={property.agent.name}
                       className="w-full h-full object-cover"
-                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/112x112/f3f4f6/9ca3af?text=Logo"; }}
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/360x360/000000/FFFFFF?text=Agent"; }}
                     />
                   </Link>
                 ) : (
-                  <div className="w-[56px] h-[56px] rounded-full overflow-hidden bg-white flex items-center justify-center">
+                  <div className="w-[140px] h-[140px] sm:w-[180px] sm:h-[180px] rounded-md overflow-hidden flex-shrink-0 bg-white">
                     <img
-                      src={property.developer_logo_url || "https://via.placeholder.com/112x112/f3f4f6/9ca3af?text=Logo"}
+                      src={property.developer_logo_url || "https://via.placeholder.com/360x360/000000/FFFFFF?text=Developer"}
                       alt={property.developer || "Developer"}
-                      className="w-[36px] h-[36px] object-contain"
-                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/112x112/f3f4f6/9ca3af?text=Logo"; }}
+                      className="w-full h-full object-cover"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/360x360/000000/FFFFFF?text=Developer"; }}
                     />
                   </div>
                 )}
-                <div className="flex flex-col">
+                <div className="flex-1 min-w-0">
                   {property.agent?.slug ? (
                     <Link 
                       to={`/agent/${property.agent.slug}`}
-                      className="text-[18px] font-bold text-black hover:text-blue-600 transition-colors cursor-pointer"
+                      className="block text-white text-[24px] sm:text-[28px] font-bold leading-tight hover:opacity-90"
                     >
                       {property.agent.name}
                     </Link>
                   ) : (
-                    <div className="text-[18px] font-bold text-black">
-                      Direct from Developer
+                    <div className="text-white text-[24px] sm:text-[28px] font-bold leading-tight">
+                      {property.developer || "Developer"}
                     </div>
                   )}
-                  <div className="text-[14px] text-[#8c8c8c]">
-                    {property.agent?.agency?.name || property.developer || ""}
+                  <div className="text-white/80 text-[14px] sm:text-[16px] mt-1">
+                    {property.agent?.slug
+                      ? `Licensed Real Estate Agent${property.agent.location ? ` | ${property.agent.location}` : property.location_label ? ` | ${property.location_label}` : ""}`
+                      : (property.location_label || "")}
                   </div>
+                  {property.agent?.phone_number ? (
+                    <div className="mt-3 flex items-center gap-3 text-white text-[16px]">
+                      <Phone className="w-[18px] h-[18px]" />
+                      <span className="truncate">{property.agent.phone_number}</span>
+                    </div>
+                  ) : null}
+                  {property.agent?.email ? (
+                    <div className="mt-2 flex items-center gap-3 text-white text-[16px]">
+                      <Mail className="w-[18px] h-[18px]" />
+                      <span className="truncate">{property.agent.email}</span>
+                    </div>
+                  ) : null}
                 </div>
-              </div>
+              </div> */}
               {/* Top Action Buttons */}
               <div className="flex gap-3 mb-6">
-                <button onClick={openLeadModal} className="h-[50px] px-[25px] py-[15px] bg-black text-white text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-800 transition-colors">
-                  Book the Tour
-                </button>
+                {property.agent?.slug ? (
+                  <Link 
+                    to={`/agent/${property.agent.slug}`}
+                    className="h-[50px] px-[25px] py-[15px] bg-black text-white text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-800 transition-colors inline-flex items-center justify-center"
+                  >
+                    About the Agent
+                  </Link>
+                ) : (
+                  <button onClick={openLeadModal} className="h-[50px] px-[25px] py-[15px] bg-black text-white text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-800 transition-colors">
+                    About the Agent
+                  </button>
+                )}
                 <button onClick={openLeadModal} className="h-[50px] px-[25px] py-[15px] bg-black text-white text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-800 transition-colors">
                   Contact Agent
                 </button>
@@ -1286,6 +1309,7 @@ export default function ListingPage() {
               </div>
 
               {/* Mortgage Calculator Section */}
+              {0?
               <div className="bg-[#f8f8f8] p-6 rounded-lg mt-6">
                 {/* Calculator Title */}
                 <h3 className="text-[20px] font-bold text-black mb-6">
@@ -1404,7 +1428,7 @@ export default function ListingPage() {
                 <button className="w-full h-[50px] bg-black text-white text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-800 transition-colors rounded">
                   Continue
                 </button>
-              </div>
+              </div>:null}
             </div>
           </div>
 

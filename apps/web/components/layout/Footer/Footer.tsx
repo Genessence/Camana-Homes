@@ -26,7 +26,6 @@ const Footer: React.FC<FooterProps> = ({
       "Partnerships", 
       "Affiliate program",
       "Journal",
-      "Camana vs Airbnb"
     ],
     support: [
       "Help centre",

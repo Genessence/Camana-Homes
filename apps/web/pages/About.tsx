@@ -210,11 +210,11 @@ export default function About() {
               <div className="text-black text-xl font-medium">Verified listings</div>
             </div>
             <div className="bg-gray-100 p-8">
-              <div className="text-brand-red text-[40px] font-medium mb-2">20 +</div>
+              <div className="text-brand-red text-[40px] font-medium mb-2">10 +</div>
               <div className="text-black text-xl font-medium">Global Markets</div>
             </div>
             <div className="bg-gray-100 p-8">
-              <div className="text-brand-red text-[40px] font-medium mb-2">5000 +</div>
+              <div className="text-brand-red text-[40px] font-medium mb-2">100 +</div>
               <div className="text-black text-xl font-medium">Elite agents</div>
             </div>
           </div>
