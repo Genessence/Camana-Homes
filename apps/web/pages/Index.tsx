@@ -68,7 +68,7 @@ const Index = () => {
   const [locationValue, setLocationValue] = React.useState<string>('Dubai');
   const [locationOpen, setLocationOpen] = React.useState<boolean>(false);
   const locationRef = React.useRef<HTMLDivElement | null>(null);
-  const [priceValue, setPriceValue] = React.useState<string>('$500,000');
+  const [priceValue, setPriceValue] = React.useState<string>('Price');
   const [priceOpen, setPriceOpen] = React.useState<boolean>(false);
   const priceRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -270,12 +270,12 @@ const Index = () => {
                     className="absolute left-0 top-full mt-1 z-[50] bg-white border border-gray-200 shadow-lg w-[200px] max-h-[260px] overflow-auto"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    {['$500,000','$1,000,000','$ 2,000,000','$3,000,000','$4,000,000','$5,000,000+'].map((opt) => (
+                    {['Price','$500,000','$1,000,000','$ 2,000,000','$3,000,000','$4,000,000','$5,000,000+'].map((opt) => (
                       <button
                         key={opt}
                         type="button"
                         onClick={() => { setPriceValue(opt); setPriceOpen(false); }}
-                        className={`w-full text-left px-3 py-2 text-[14px] hover:bg-gray-100 ${priceValue===opt ? 'bg-gray-50 font-medium' : ''}`}
+                        className={`w-full text-left px-3 py-3 text-[14px] hover:bg-gray-100 ${priceValue===opt ? 'bg-gray-50 font-medium' : ''}`}
                         role="option"
                         aria-selected={priceValue===opt}
                       >

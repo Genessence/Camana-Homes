@@ -57,6 +57,7 @@ export interface PropertyCard {
   agent: {
     id: number;
     name: string;
+    slug: string | null;
     avatar_url: string;
     phone_number: string;
     email: string;

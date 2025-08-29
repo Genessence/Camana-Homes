@@ -59,7 +59,7 @@ export default function StayInTheKnow() {
             href={p.url}
             target="_blank"
             rel="noreferrer"
-            className="relative group block h-[300px] sm:h-[340px] overflow-hidden"
+            className="relative group block h-[598px] overflow-hidden"
           >
             <img
               src={p.imageUrl}

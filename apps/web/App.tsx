@@ -28,6 +28,7 @@ import AgentCreate from "./pages/AgentCreate";
 import AgentsList from "./pages/AgentsList";
 import ArticlesList from "./pages/ArticlesList";
 import ArticleCreate from "./pages/ArticleCreate";
+import PropertiesList from "./pages/PropertiesList";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +55,7 @@ const AppRoutes = () => {
         <Route path="/listing/:slug" element={<ListingPage />} />
         <Route path="/listing/:slug/gallery" element={<Gallery />} />
         <Route path="/properties" element={<Properties />} />
+        <Route path="/properties/list" element={<PropertiesList />} />
         <Route path="/properties/new" element={<PropertyCreate />} />
         <Route path="/agents" element={<AgentsList />} />
         <Route path="/articles" element={<ArticlesList />} />

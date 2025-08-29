@@ -29,6 +29,37 @@ export default function AgentProfile() {
   const [error, setError] = useState<string | null>(null);
   const [listings, setListings] = useState<PropertyCard[]>([]);
   const [loadingListings, setLoadingListings] = useState(false);
+  
+  // Video player state
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [isVideoLoading, setIsVideoLoading] = useState(true);
+  const [videoError, setVideoError] = useState<string | null>(null);
+  const [isVideoMuted, setIsVideoMuted] = useState(true);
+
+  // Video player functions
+  const playVideo = () => {
+    if (videoRef.current) {
+      videoRef.current.play();
+    }
+  };
+
+  const handleVideoPlay = () => setIsVideoPlaying(true);
+  const handleVideoPause = () => setIsVideoPlaying(false);
+  const handleVideoEnded = () => setIsVideoPlaying(false);
+  const handleVideoLoadStart = () => setIsVideoLoading(true);
+  const handleVideoCanPlay = () => setIsVideoLoading(false);
+  const handleVideoError = () => {
+    setIsVideoLoading(false);
+    setVideoError('Failed to load video');
+  };
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setIsVideoMuted(!isVideoMuted);
+    }
+  };
 
   // Lead modal state (reused from ListingPage pattern)
   const [leadOpen, setLeadOpen] = useState(false);
@@ -176,17 +207,97 @@ export default function AgentProfile() {
       </section>
       {/* Video banner with centered play */}
       <section className="max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-[70px] py-[30px]">
-        <div
-          className="relative h-[460px] md:h-[560px] bg-center bg-cover"
-          style={{
-            backgroundImage:
-              "url('https://api.builder.io/api/v1/image/assets/TEMP/3ab0fc1c247d4be7843852d97d25a3c1b2438ab6?width=1600')",
-          }}
-        >
-          <button
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 size-[106px] rounded-full border border-white bg-white/30 backdrop-blur shadow"
-            aria-label="Play video"
-          />
+        <div className="relative h-[460px] md:h-[560px] bg-black rounded-lg overflow-hidden">
+          {videoError ? (
+            // Error state - show poster image with error message
+            <div className="w-full h-full bg-center bg-cover flex items-center justify-center" style={{
+              backgroundImage: "url('/assets/vid-thumb.png')"
+            }}>
+              <div className="text-center text-white bg-black/50 px-6 py-4 rounded-lg backdrop-blur">
+                <p className="text-lg font-medium mb-2">Video unavailable</p>
+                <p className="text-sm opacity-80 mb-3">{videoError}</p>
+                <button
+                  onClick={() => {
+                    setVideoError(null);
+                    setIsVideoLoading(true);
+                    if (videoRef.current) {
+                      videoRef.current.load();
+                    }
+                  }}
+                  className="px-4 py-2 bg-white text-black rounded hover:bg-gray-100 transition-colors text-sm font-medium"
+                >
+                  Try Again
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <video
+                ref={videoRef}
+                className="w-full h-full object-cover"
+                poster="/assets/vid-thumb.png"
+                controls
+                preload="metadata"
+                muted
+                onPlay={handleVideoPlay}
+                onPause={handleVideoPause}
+                onEnded={handleVideoEnded}
+                onLoadStart={handleVideoLoadStart}
+                onCanPlay={handleVideoCanPlay}
+                onError={handleVideoError}
+              >
+                <source 
+                  src="https://camana-homes.s3.ap-south-1.amazonaws.com/agents/Drift+Thelu+Vela+Retreat+-+Maldives+clip.mp4" 
+                  type="video/mp4" 
+                />
+                Your browser does not support the video tag.
+              </video>
+              
+              {/* Loading overlay */}
+              {isVideoLoading && (
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                  <div className="text-white text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-2"></div>
+                    <p className="text-sm">Loading video...</p>
+                  </div>
+                </div>
+              )}
+              
+              {/* Custom play button overlay when video is not playing and not loading */}
+              {!isVideoPlaying && !isVideoLoading && (
+                <button
+                  onClick={playVideo}
+                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 size-[106px] rounded-full border border-white bg-white/30 backdrop-blur shadow hover:bg-white/40 transition-colors flex items-center justify-center"
+                  aria-label="Play video"
+                >
+                  <svg 
+                    className="w-12 h-12 text-white" 
+                    fill="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </button>
+              )}
+              
+              {/* Mute/Unmute toggle button */}
+              <button
+                onClick={toggleMute}
+                className="absolute top-4 right-4 p-3 bg-black/30 backdrop-blur rounded-full hover:bg-black/50 transition-colors"
+                aria-label={isVideoMuted ? "Unmute video" : "Mute video"}
+              >
+                {isVideoMuted ? (
+                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                  </svg>
+                )}
+              </button>
+            </>
+          )}
         </div>
       </section>
       {/* Active Listings Section */}
@@ -229,7 +340,7 @@ export default function AgentProfile() {
                       </div>
                       <div className="p-4 space-y-3">
                         <div className="flex justify-between items-start">
-                          <div className="font-bold text-xl text-black">{formattedPrice}</div>
+                          <div className="font-bold text-xl text-black">{formattedPrice === '$0'?'Price on Request':formattedPrice}</div>
                           <Link to={`/listing/${p.slug}`} className="flex items-center gap-1 text-sm font-semibold text-black">
                             View details
                             <ChevronRight size={12} className="text-gray-600" />
@@ -247,7 +358,7 @@ export default function AgentProfile() {
                           </div>
                           <div className="flex items-center gap-1">
                             <Square size={14} />
-                            <span>{(p.area_value ?? 0).toLocaleString()} {p.area_unit}</span>
+                            <span>{(p.area_value ?? 0).toLocaleString()}.4 hectares </span>
                           </div>
                         </div>
                         <hr className="border-gray-200" />

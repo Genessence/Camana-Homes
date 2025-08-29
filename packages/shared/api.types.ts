@@ -18,6 +18,7 @@ export type Agency = {
 export type Agent = {
   id: number;
   name: string;
+  slug?: string | null;
   avatar_url?: string | null;
   phone_number?: string | null;
   agency?: Agency | null;
@@ -50,6 +51,7 @@ export type PropertyCard = {
   view_description?: string | null;
   year_built?: number | null;
   description?: string | null;
+  details_body?: string | null;
   saves_count: number;
   completion_date?: string | null;
   payment_options?: string | null;
@@ -62,6 +64,7 @@ export type PropertyCard = {
   has_video: boolean;
   has_virtual_tour: boolean;
   views_count: number;
+  is_featured: boolean;
   primary_image_url: string;
   image_urls: string[];
   agent?: Agent | null;

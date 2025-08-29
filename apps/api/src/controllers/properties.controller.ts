@@ -21,6 +21,7 @@ function mapPropertyCard(p: any) {
     view_description: p.viewDescription ?? null,
     year_built: p.yearBuilt ?? null,
     description: p.description ?? '',
+    details_body: p.detailsBody ?? null,
     saves_count: p.savesCount,
     completion_date: p.completionDate ?? null,
     payment_options: p.paymentOptions ?? null,
@@ -31,12 +32,14 @@ function mapPropertyCard(p: any) {
     has_video: p.hasVideo,
     has_virtual_tour: p.hasVirtualTour,
     views_count: p.viewsCount,
+    is_featured: p.isFeatured,
     primary_image_url: p.images?.[0]?.url ?? '',
     image_urls: (p.images || []).map((i: any) => i.url),
     agent: p.agent
       ? {
           id: p.agent.id,
           name: p.agent.name,
+          slug: p.agent.slug ?? null,
           avatar_url: p.agent.avatarUrl ?? '',
           phone_number: p.agent.phoneNumber ?? '',
           email: p.agent.email ?? '',
@@ -282,6 +285,7 @@ export const create: RequestHandler = async (req, res) => {
       viewDescription: data.viewDescription ?? null,
       yearBuilt: data.yearBuilt ?? null,
       description: data.description ?? null,
+      detailsBody: data.detailsBody ?? null,
       savesCount: 0,
       completionDate: data.completionDate ?? null,
       paymentOptions: data.paymentOptions ?? null,
@@ -314,5 +318,73 @@ export const create: RequestHandler = async (req, res) => {
 
   const withRels = await prisma.property.findUnique({ where: { id: created.id }, include: { images: { orderBy: { sortOrder: 'asc' } }, agent: { include: { agency: true } } } });
   res.status(201).json(mapPropertyCard(withRels));
+};
+
+export const deleteProperty: RequestHandler = async (req, res) => {
+  const { id } = req.params;
+  const propertyId = Number(id);
+  
+  if (Number.isNaN(propertyId)) {
+    return res.status(400).json({ error: 'Invalid property ID' });
+  }
+
+  try {
+    // Check if property exists
+    const property = await prisma.property.findUnique({ where: { id: propertyId } });
+    if (!property) {
+      return res.status(404).json({ error: 'Property not found' });
+    }
+
+    // Delete related records first (due to foreign key constraints)
+    await prisma.propertyImage.deleteMany({ where: { propertyId } });
+    await prisma.tourRequest.deleteMany({ where: { propertyId } });
+    await prisma.mortgageInquiry.deleteMany({ where: { propertyId } });
+    await prisma.recentlyViewed.deleteMany({ where: { propertyId } });
+    await prisma.heroSlide.deleteMany({ where: { propertyId } });
+    
+    // Delete the property
+    await prisma.property.delete({ where: { id: propertyId } });
+    
+    res.json({ ok: true, message: 'Property deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting property:', error);
+    res.status(500).json({ error: 'Failed to delete property' });
+  }
+};
+
+export const toggleFeatured: RequestHandler = async (req, res) => {
+  const { id } = req.params;
+  const propertyId = Number(id);
+  
+  console.log('Toggle featured request - ID:', id, 'Type:', typeof id, 'Parsed:', propertyId);
+  
+  if (Number.isNaN(propertyId)) {
+    return res.status(400).json({ error: 'Invalid property ID' });
+  }
+
+  try {
+    const property = await prisma.property.findUnique({ where: { id: propertyId } });
+    console.log('Property found:', property ? { id: property.id, title: property.title, isFeatured: property.isFeatured } : 'Not found');
+    
+    if (!property) {
+      return res.status(404).json({ error: 'Property not found' });
+    }
+
+    const updatedProperty = await prisma.property.update({
+      where: { id: propertyId },
+      data: { isFeatured: !property.isFeatured }
+    });
+
+    console.log('Property updated:', { id: updatedProperty.id, isFeatured: updatedProperty.isFeatured });
+
+    res.json({ 
+      ok: true, 
+      isFeatured: updatedProperty.isFeatured,
+      message: `Property ${updatedProperty.isFeatured ? 'marked as' : 'removed from'} featured` 
+    });
+  } catch (error) {
+    console.error('Error toggling featured status:', error);
+    res.status(500).json({ error: 'Failed to toggle featured status' });
+  }
 };
 

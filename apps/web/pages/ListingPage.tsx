@@ -591,22 +591,30 @@ export default function ListingPage() {
                 {property.description || "-"}
               </div> */}
 
-              {/* Detailed Property Description */}
+          {/* Detailed Property Description */}
               <div className="space-y-8">
                 {/* Property Description Blocks */}
                 <div className="space-y-4">
-                  {property.description ? (
+                  {property.description && (
                     <p className="text-[16px] text-[#8c8c8c] leading-[24px]">
                       {property.description}
-                    </p>
-                  ) : (
-                    <p className="text-[16px] text-[#8c8c8c] leading-[24px]">
-                      No detailed description available for this property.
                     </p>
                   )}
                 </div>
 
-                {/* Property Overview Section */}
+                {/* Details Body Content - Show this if available, otherwise show detailed sections */}
+                {(property as any).details_body ? (
+                  <div className="space-y-4">
+
+                    <h3 className="text-[20px] font-bold text-black">Property Details</h3>
+                    <div 
+                      className="text-[16px] text-[#8c8c8c] leading-[24px] prose prose-sm max-w-none bg-white border border-gray-200 rounded-lg p-6"
+                      dangerouslySetInnerHTML={{ __html: (property as any).details_body }}
+                    />
+                  </div>
+                ) : (
+                  <>
+                    {/* Property Overview Section */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
                     <h3 className="text-[20px] font-bold text-black">
@@ -1098,6 +1106,8 @@ export default function ListingPage() {
                     </div>
                   </div>
                 </div>
+                  </>
+                )}
               </div>
             </div>
 
@@ -1105,18 +1115,41 @@ export default function ListingPage() {
             <div className="lg:sticky lg:top-10 lg:self-start">
               {/* Agent/Developer Card */}
               <div className="bg-[#f8f8f8] p-4 rounded-lg mb-4 flex items-center gap-3">
-                <div className="w-[56px] h-[56px] rounded-full overflow-hidden bg-white flex items-center justify-center">
-                  <img
-                    src={property.agent?.avatar_url || property.developer_logo_url || "https://via.placeholder.com/112x112/f3f4f6/9ca3af?text=Logo"}
-                    alt={property.agent?.name || property.developer || "Developer"}
-                    className={property.agent?.avatar_url ? "w-full h-full object-cover" : "w-[36px] h-[36px] object-contain"}
-                    onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/112x112/f3f4f6/9ca3af?text=Logo"; }}
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <div className="text-[18px] font-bold text-black">
-                    {property.agent?.name || "Direct from Developer"}
+                {property.agent?.slug ? (
+                  <Link 
+                    to={`/agent/${property.agent.slug}`}
+                    className="w-[56px] h-[56px] rounded-full overflow-hidden bg-white flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity"
+                  >
+                    <img
+                      src={property.agent.avatar_url || "https://via.placeholder.com/112x112/f3f4f6/9ca3af?text=Logo"}
+                      alt={property.agent.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/112x112/f3f4f6/9ca3af?text=Logo"; }}
+                    />
+                  </Link>
+                ) : (
+                  <div className="w-[56px] h-[56px] rounded-full overflow-hidden bg-white flex items-center justify-center">
+                    <img
+                      src={property.developer_logo_url || "https://via.placeholder.com/112x112/f3f4f6/9ca3af?text=Logo"}
+                      alt={property.developer || "Developer"}
+                      className="w-[36px] h-[36px] object-contain"
+                      onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/112x112/f3f4f6/9ca3af?text=Logo"; }}
+                    />
                   </div>
+                )}
+                <div className="flex flex-col">
+                  {property.agent?.slug ? (
+                    <Link 
+                      to={`/agent/${property.agent.slug}`}
+                      className="text-[18px] font-bold text-black hover:text-blue-600 transition-colors cursor-pointer"
+                    >
+                      {property.agent.name}
+                    </Link>
+                  ) : (
+                    <div className="text-[18px] font-bold text-black">
+                      Direct from Developer
+                    </div>
+                  )}
                   <div className="text-[14px] text-[#8c8c8c]">
                     {property.agent?.agency?.name || property.developer || ""}
                   </div>
@@ -1376,6 +1409,7 @@ export default function ListingPage() {
           </div>
 
           {/* Property Location Section */}
+          {0 ?
           <div className="space-y-6">
             <h3 className="text-[20px] font-bold text-black">
               <span className="text-black">Property </span>
@@ -1419,7 +1453,7 @@ export default function ListingPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </div>:null}
         </div>
       </main>
 
