@@ -13,8 +13,8 @@ const ArticleV2 = () => {
   const [article, setArticle] = React.useState<ArticleCard | null>(null);
   const [related, setRelated] = React.useState<PropertyCard[] | null>(null);
   const [featuredProperty, setFeaturedProperty] = React.useState<PropertyCard | null>(null);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   // Lead modal state (same pattern as AgentProfile)
   const [leadOpen, setLeadOpen] = useState(false);
   const [leadName, setLeadName] = useState("");
@@ -28,6 +28,57 @@ const ArticleV2 = () => {
   const openLeadModal = () => setLeadOpen(true);
   const closeLeadModal = () => {
     setLeadOpen(false);
+  };
+
+  // Sharing functionality
+  const shareViaEmail = () => {
+    if (!article) return;
+    
+    const subject = encodeURIComponent(article.title);
+    const body = encodeURIComponent(
+      `Check out this article: ${article.title}\n\n${article.excerpt || ''}\n\nRead more at: ${window.location.href}`
+    );
+    
+    window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
+  };
+
+  const shareViaFacebook = () => {
+    if (!article) return;
+    
+    const url = encodeURIComponent(window.location.href);
+    const quote = encodeURIComponent(article.title);
+    
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${quote}`,
+      '_blank',
+      'width=600,height=400'
+    );
+  };
+
+  const shareViaLinkedIn = () => {
+    if (!article) return;
+    
+    const url = encodeURIComponent(window.location.href);
+    const title = encodeURIComponent(article.title);
+    const summary = encodeURIComponent(article.excerpt || '');
+    
+    // Try multiple LinkedIn sharing methods for better compatibility
+    const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}&title=${title}&summary=${summary}`;
+    
+    // Fallback: Open LinkedIn post creation page
+    const fallbackUrl = `https://www.linkedin.com/feed/update/url=${url}`;
+    
+    // First try the official sharing API
+    const popup = window.open(
+      linkedInUrl,
+      '_blank',
+      'width=600,height=600'
+    );
+    
+    // If popup is blocked or doesn't work, fallback to direct post creation
+    if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+      window.open(fallbackUrl, '_blank');
+    }
   };
 
   const submitLead = async (e: React.FormEvent) => {
@@ -181,11 +232,27 @@ const ArticleV2 = () => {
           <div className="flex flex-row lg:flex-col items-center lg:items-start gap-[14px] lg:sticky lg:top-[20px] h-fit">
             <h3 className="font-inter text-[16px] font-bold text-black">Share to:</h3>
             <div className="flex flex-row lg:flex-col gap-[7px]">
-              {[Mail, Facebook, Instagram, Linkedin, Twitter].map((Icon, i) => (
-                <div key={i} className="flex items-center justify-center w-[56px] h-[56px] rounded-full border border-black/16 hover:bg-gray-100 cursor-pointer transition-colors">
-                  <Icon className="w-[22px] h-[22px] text-black" />
-                </div>
-              ))}
+              <div 
+                onClick={shareViaEmail}
+                className="flex items-center justify-center w-[56px] h-[56px] rounded-full border border-black/16 hover:bg-gray-100 cursor-pointer transition-colors"
+                title="Share via Email"
+              >
+                <Mail className="w-[22px] h-[22px] text-black" />
+              </div>
+              <div 
+                onClick={shareViaFacebook}
+                className="flex items-center justify-center w-[56px] h-[56px] rounded-full border border-black/16 hover:bg-gray-100 cursor-pointer transition-colors"
+                title="Share on Facebook"
+              >
+                <Facebook className="w-[22px] h-[22px] text-black" />
+              </div>
+              <div 
+                onClick={shareViaLinkedIn}
+                className="flex items-center justify-center w-[56px] h-[56px] rounded-full border border-black/16 hover:bg-gray-100 cursor-pointer transition-colors"
+                title="Share on LinkedIn"
+              >
+                <Linkedin className="w-[22px] h-[22px] text-black" />
+              </div>
             </div>
           </div>
 
