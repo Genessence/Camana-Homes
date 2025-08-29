@@ -312,19 +312,16 @@ const ArticleV2 = () => {
                 {article?.author_name ? `Written by ${article.author_name}` : "Author"}
               </h2>
               <p className="font-dm-sans text-[17px] font-medium leading-[25px] opacity-80">
-                Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of
-                classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock looked up
-                one of the more obscure Latin words, consectetur, and discovered the undoubtable source. Lorem Ipsum
-                comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" by Cicero.
+              Sana Barkati is a seasoned real estate professional with over seven years of experience in Dubai’s dynamic property market, where she has successfully sold more than AED 200M worth of real estate. Currently with Sarsan Capital, Sana has expanded her expertise to international markets, specializing in luxury real estate across the Maldives. Her portfolio already includes the landmark sale of a private island, alongside a growing collection of high-value properties. With a reputation for market insight, client trust, and exceptional deal execution, Sana brings a global perspective to luxury investments and lifestyle-driven real estate.
               </p>
-              {article?.author_name && (
+              {/* {article?.author_name && (
                 <Link
                   to="/journal"
                   className="text-red-400 underline underline-offset-4 hover:text-red-300 w-fit"
                 >
                   Read More articles by {article.author_name} →
                 </Link>
-              )}
+              )} */}
               <button onClick={openLeadModal} className="mt-4 bg-white text-black h-14 w-full sm:w-[171px] inline-flex items-center justify-center">
                 Contact Agent
               </button>
