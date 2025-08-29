@@ -192,7 +192,7 @@ export default function ListingPage() {
       <main className="max-w-[1600px] mx-auto px-12 py-6 relative">
         <div className="flex flex-col gap-5 mt-[-50px]">
           {/* Breadcrumb Navigation Section */}
-          <div className="text-[18px] font-medium text-[#8c8c8c] tracking-[-0.36px] leading-[27px]">
+          <div className="hidden lg:block text-[18px] font-medium text-[#8c8c8c] tracking-[-0.36px] leading-[27px]">
             <Link
               to="/"
               className="text-[#8c8c8c] hover:text-[#fd2d15] transition-colors"
@@ -203,8 +203,35 @@ export default function ListingPage() {
             <span className="text-[#fd2d15]">Property Listings</span>
           </div>
 
+          {/* Mobile: full-bleed carousel */}
+          <div className="block lg:hidden">
+            <div className="relative -mx-6">
+              <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide">
+                {(property.images && property.images.length > 0 ? property.images.map((im) => im.url) : [property.primary_image_url]).filter(Boolean).map((url, i) => (
+                  <div key={i} className="flex-shrink-0 w-full min-w-full h-[65vh] max-h-[640px] snap-center bg-gray-200">
+                    <img
+                      src={url as string}
+                      alt={`Property image ${i + 1}`}
+                      className="w-full h-full object-cover"
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = 'https://via.placeholder.com/1080x720?text=Property'; }}
+                    />
+                  </div>
+                ))}
+              </div>
+              {/* Carousel Breadcrumbs */}
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                {(property.images && property.images.length > 0 ? property.images.map((im) => im.url) : [property.primary_image_url]).filter(Boolean).map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-2 h-2 rounded-full bg-white/60 border border-white/20"
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+
           {/* Image Gallery Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-[664px_1fr] gap-4">
+          <div className="hidden lg:grid grid-cols-1 lg:grid-cols-[664px_1fr] gap-4">
             {/* Main Large Image */}
             <div className="relative w-full h-[445.72px] bg-gray-200 cursor-zoom-in" onClick={() => openSingleImage(
               property.images[0]?.url || property.primary_image_url || "https://via.placeholder.com/664x446/f3f4f6/9ca3af?text=Property+Image"
