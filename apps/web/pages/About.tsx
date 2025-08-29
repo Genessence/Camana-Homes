@@ -237,7 +237,7 @@ export default function About() {
               <img
                 src={vijayImg}
                 alt="Vijay Singh - Founder & CEO"
-                className="w-full h-full object-cover transition-transform duration-300 ease-out scale-110 group-hover:scale-125"
+                className="w-full h-full object-cover transition-transform duration-300 ease-out scale-150 group-hover:scale-160 object-top"
               />
               <div className="pointer-events-none absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 ease-out"></div>
               <div className="absolute inset-x-0 bottom-0 translate-y-6 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out p-4 bg-gradient-to-t from-black/70 to-transparent">
@@ -255,7 +255,7 @@ export default function About() {
               <img
                 src={madhurImg}
                 alt="Madhur Sinha - Founder & COO"
-                className="w-full h-full object-cover transition-transform duration-300 ease-out scale-110 group-hover:scale-125"
+                className="w-full h-full object-cover transition-transform duration-300 ease-out scale-125 group-hover:scale-135 object-top"
               />
               <div className="pointer-events-none absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 ease-out"></div>
               <div className="absolute inset-x-0 bottom-0 translate-y-6 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out p-4 bg-gradient-to-t from-black/70 to-transparent">

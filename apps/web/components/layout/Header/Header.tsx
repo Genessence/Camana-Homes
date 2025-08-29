@@ -29,8 +29,17 @@ const Header: React.FC<HeaderProps> = ({
   const [leadEmail, setLeadEmail] = useState("");
   const [leadPhone, setLeadPhone] = useState("");
   const [leadLocation, setLeadLocation] = useState("");
+  const [leadModalType, setLeadModalType] = useState<'list' | 'connect'>('list');
 
-  const openLeadModal = () => setLeadOpen(true);
+  const openLeadModal = () => {
+    setLeadModalType('list');
+    setLeadOpen(true);
+  };
+
+  const openConnectModal = () => {
+    setLeadModalType('connect');
+    setLeadOpen(true);
+  };
   const submitLead = (e: React.FormEvent) => {
     e.preventDefault();
     setLeadOpen(false);
@@ -105,12 +114,15 @@ const Header: React.FC<HeaderProps> = ({
 
         {/* Right Actions */}
         <div className="flex items-center gap-3">
-          <button className={cn(
-            "hidden md:flex items-center justify-center h-[40px] px-[21px] py-2 border font-dm-sans text-[14px] font-medium transition-colors",
-            isTransparent 
-              ? "border-white bg-white/14 text-white hover:bg-white/20 backdrop-blur-sm" 
-              : "border-black bg-gray-100/20 text-black hover:bg-gray-200/30"
-          )}>
+          <button 
+            onClick={openConnectModal}
+            className={cn(
+              "hidden md:flex items-center justify-center h-[40px] px-[21px] py-2 border font-dm-sans text-[14px] font-medium transition-colors",
+              isTransparent 
+                ? "border-white bg-white/14 text-white hover:bg-white/20 backdrop-blur-sm" 
+                : "border-black bg-gray-100/20 text-black hover:bg-gray-200/30"
+            )}
+          >
             Get Connected
           </button>
           
@@ -189,7 +201,7 @@ const Header: React.FC<HeaderProps> = ({
         setLeadPhone={setLeadPhone}
         leadLocation={leadLocation}
         setLeadLocation={setLeadLocation}
-        title="List with us"
+        title={leadModalType === 'connect' ? "Get Connected" : "List with us"}
         description="Tell us about yourself and we’ll get in touch."
       />
     </header>
