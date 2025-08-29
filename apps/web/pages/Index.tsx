@@ -165,7 +165,7 @@ const Index = () => {
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); setBuyOpen((o) => !o); }}
-                  className="flex-1 text-left font-dm-sans text-[16px] font-normal text-black px-[12px] py-[12px] sm:py-0"
+                  className="flex-1 text-left font-dm-sans text-[16px] font-normal text-white sm:text-black px-[12px] py-[12px] sm:py-0"
                   aria-haspopup="listbox"
                   aria-expanded={buyOpen}
                 >
@@ -208,8 +208,8 @@ const Index = () => {
                   aria-haspopup="listbox"
                   aria-expanded={locationOpen}
                 >
-                  <MapPin className="w-[18px] h-[18px] text-black" />
-                  <span className="font-dm-sans text-[16px] font-normal text-black">
+                  <MapPin className="w-[18px] h-[18px] text-white sm:text-black" />
+                  <span className="font-dm-sans text-[16px] font-normal text-white sm:text-black">
                     {locationValue}
                   </span>
                 </button>
@@ -239,7 +239,7 @@ const Index = () => {
 
               {/* Beds & Bath */}
               <div className="flex items-center justify-between border-[#d9d9d9] sm:border-r pr-[15px] w-full sm:w-[162px] cursor-pointer hover:bg-gray-50 transition-colors">
-                <span className="font-dm-sans text-[16px] font-normal text-black px-[12px] py-[12px] sm:px-[8px] sm:py-0">
+                <span className="font-dm-sans text-[16px] font-normal text-white sm:text-black px-[12px] py-[12px] sm:px-[8px] sm:py-0">
                   Beds & Bath
                 </span>
                 <div className="w-[38px] h-[55px] hidden sm:flex items-center justify-center">
@@ -256,7 +256,7 @@ const Index = () => {
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); setPriceOpen((o) => !o); }}
-                  className="font-dm-sans text-[16px] font-normal text-black px-[12px] py-[12px] sm:py-0 flex-1 text-left"
+                  className="font-dm-sans text-[16px] font-normal text-white sm:text-black px-[12px] py-[12px] sm:py-0 flex-1 text-left"
                   aria-haspopup="listbox"
                   aria-expanded={priceOpen}
                 >

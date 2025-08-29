@@ -340,41 +340,50 @@ export default function ListingPage() {
           </div>
 
           {/* Action Buttons Section */}
-          <div className="flex flex-wrap gap-[15px]">
+          <div className="flex flex-nowrap gap-[15px] overflow-x-auto scrollbar-hide pb-2">
             {/* Detailed Property Description Button */}
-            <button className="h-[50px] px-[25px] py-[15px] bg-black text-white text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-800 transition-colors">
+            <button className="h-[50px] px-[25px] py-[15px] bg-black text-white text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-800 transition-colors flex-shrink-0">
               Detailed Property Description
             </button>
 
             {/* Area & lot Button */}
-            <button onClick={handleScrollToStats} className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors">
+            <button onClick={handleScrollToStats} className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors flex-shrink-0">
               Area & lot
             </button>
 
             {/* Features and amenities Button */}
-            <button onClick={handleScrollToInterior} className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors">
+            <button onClick={handleScrollToInterior} className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors flex-shrink-0">
               Features and amenities
             </button>
 
             {/* Financials Button */}
-            <button onClick={handleScrollToOtherDetails} className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors">
+            <button onClick={handleScrollToOtherDetails} className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors flex-shrink-0">
               Financials
             </button>
 
-            {/* Video Button */}
-            <button className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors">
-              Video
-            </button>
+            {/* Video/Virtual Tour Button */}
+            {slug === "exclusive-private-island-resort-maldives" ? (
+              <button 
+                onClick={() => window.open('https://geckodigital.co/vt/DriftTheluVeligaRetreat/', '_blank')}
+                className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors flex-shrink-0"
+              >
+                Virtual Tour
+              </button>
+            ) : (
+              <button className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors flex-shrink-0">
+                Video
+              </button>
+            )}
 
             {/* Like Button */}
-            <button className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors">
+            {/* <button className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors">
               Like
-            </button>
+            </button> */}
 
             {/* Share Button */}
-            <button className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors">
+            {/* <button className="h-[50px] px-[25px] py-[15px] border border-[#d9d9d9] bg-white text-black text-[16px] font-semibold tracking-[-0.32px] leading-[20px] hover:bg-gray-50 transition-colors">
               Share
-            </button>
+            </button> */}
           </div>
 
           {/* Two-Column Layout: Property Details + Right Sidebar */}
